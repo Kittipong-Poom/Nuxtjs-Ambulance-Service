@@ -9,31 +9,6 @@ const port = 3001; // You can choose any port you prefer
 app.use(cors());
 app.use(bodyParser.json());
 
-let patients = [
-  {
-    id: 1,
-    hnnumber: 'HN001',
-    age: 25,
-    gender: 'Male',
-    numberphone: '123456789',
-    address: '123 Street, City',
-    coordinate: '12.34,56.78'
-  },
-  // Add more sample data if needed
-  
-];
-let jobs = [
-    {
-      id: 2,
-      hnnumberj: 'HN005',
-      age: 25,
-      gender: 'Girl',
-      numberphone: '9283125251',
-      address: '123 Jackson',
-      coordinate: '12.34,56.78'
-    },
-]
-
 // CRUD operations
 
 // Get all patients

@@ -7,6 +7,7 @@
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
     </v-card-title>
+
     <v-data-table :headers="headers" :items="desserts" :search="search">
       <template v-slot:item.action="{ item }">
         <v-icon small class="mr-2" @click="openDialog('edit', item)">
@@ -80,16 +81,7 @@ export default {
         { text: 'Coordinate', value: 'coordinate' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
-      desserts: [
-        {
-          hnnumber: '',
-          age: '',
-          gender: '',
-          numberphone: '',
-          address: '',
-          coordinate: ''
-        }
-      ],
+      desserts: [],
       dialog: false,
       dialogTitle: '',
       editedItem: {
@@ -100,24 +92,20 @@ export default {
         address: '',
         coordinate: ''
       },
-      async fetch() {
-        // Fetch data from the server before rendering the component
-        await this.loadData();
-      },
-      async asyncData({ params }) {
-        // Populate initial data on the server side
-        const { data } = await axios.get('http://localhost:3001/api/patients');
-        const desserts = response.data;
-
-        return { desserts };
-      },
       snackbar: false,
       snackbarColor: 'กรอกข้อมูลสำเร็จ', // You can customize the color
       snackbarMessage: '',
     };
 
   },
+  fetch(){
+    this.loadData()
+  },
+  // created(){
+  //   this.loadData()
+  // },
   methods: {
+
     openDialog(action, item = null) {
       // Set dialog properties based on the action
       this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'Edit Item';
@@ -198,7 +186,6 @@ export default {
         this.confirmItem = null;
       }
     },
-
 
     async loadData() {
       try {
