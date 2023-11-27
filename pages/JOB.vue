@@ -81,15 +81,7 @@ export default {
         { text: 'เพิ่มเติม', value: 'other' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
-      desserts: [
-        {
-          hnnumberj: '',
-          appointmenttime: '',
-          patienttype: '',
-          date:'',
-          other:'',
-        }
-      ],
+      desserts: [],
       dialog: false,
       dialogTitle: '',
       editedItem: {
@@ -98,20 +90,17 @@ export default {
           patienttype: '',
           date:'',
           other:'',
-      },
-      async fetch() {
+      }, 
+      snackbar: false,
+      snackbarColor: 'กรอกข้อมูลสำเร็จ', // You can customize the color
+      snackbarMessage: '',
+    }
+    
+  },
+  fetch() {
     // Fetch data from the server before rendering the component
-    await this.loadData();
+     this.loadData();
       },
-      async asyncData({ params }) {
-    // Populate initial data on the server side
-    const { data } = await axios.get('http://localhost:3001/api/patients');
-    const desserts = response.data;
-
-    return { desserts };
-  },
-    };
-  },
   methods: {
     openDialog(action, item = null) {
       // Set dialog properties based on the action
