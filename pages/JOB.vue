@@ -1,5 +1,8 @@
 <template>
   <v-card>
+    <v-card-title justify="center" class="center-container1">
+      <h1 class="dashboardtext">Dashboard JOB</h1>
+    </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
         เพิ่มรายการ

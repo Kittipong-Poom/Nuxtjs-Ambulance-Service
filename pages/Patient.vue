@@ -1,5 +1,4 @@
 
-
 <template>
   
   <v-card>
@@ -262,11 +261,11 @@ body {
 }
 
 .dashboardtext{
-  background-color: aqua;
   display: inline;
-  font-size: 25px;
-  color: black;
-
+  font-size: 35px;
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 </style>
