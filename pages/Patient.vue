@@ -1,5 +1,11 @@
+
+
 <template>
+  
   <v-card>
+    <v-card-title justify="center" class="center-container1">
+      <h1 class="dashboardtext">Dashboard ผู้ป่วย</h1>
+    </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
         เพิ่มรายการ
@@ -19,16 +25,13 @@
       </template>
     </v-data-table>
 
-    <v-snackbar v-model="snackbar" :color="snackbarColor" timeout="4000">
-      {{ snackbarMessage }}
-      <v-btn text @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
+    
 
 
-     <!---ปุ่มลบ-->
+    <!---ปุ่มลบ-->
 
 
-     <v-dialog v-model="confirm" max-width="350">
+    <v-dialog v-model="confirm" max-width="350">
       <v-card>
         <v-card-title class="headline">
           ยืนยันการลบ?
@@ -48,10 +51,7 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar v-model="snackbar" :color="snackbarColor" timeout="4000">
-      {{ snackbarMessage }}
-      <v-btn text @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
+    
 
     <!-- Include the dialog -->
     <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
@@ -62,7 +62,7 @@
 <script>
 import DialogForm from '~/components/DialogForm.vue';
 import axios from 'axios'
-
+import Swal from 'sweetalert2';
 export default {
   components: {
     DialogForm
@@ -92,13 +92,12 @@ export default {
         address: '',
         coordinate: ''
       },
-      snackbar: false,
-      snackbarColor: 'กรอกข้อมูลสำเร็จ', // You can customize the color
-      snackbarMessage: '',
+      
+
     };
 
   },
-  fetch(){
+  fetch() {
     this.loadData()
   },
   // created(){
@@ -112,6 +111,9 @@ export default {
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
+
+    
+
     async saveItem(editedItem) {
       let response;
       if (!editedItem.id) {
@@ -137,22 +139,29 @@ export default {
       this.closeDialog();
 
       // Show the success snackbar
-      this.showSnackbar('กรอกข้อมูลสำเร็จ', 'success');
-    }, catch(error) {
-      // Show an error snackbar if something goes wrong
-      this.showSnackbar('Error saving item', 'error');
-      console.error('Error saving item:', error);
+      
 
+      Swal.fire({
+        icon: "success",
+        title: "กรอกข้อมูลสำเร็จ",
+        width: 600,
+        padding: "3em",
+        color: "#716add",
+        background: "#fff url(/images/trees.png)",
+        backdrop: `
+    rgba(0,0,123,0.4)
+    url("https://media.tenor.com/xzjlrhYq_lQAAAAj/cat-nyan-cat.gif")
+    left top
+    no-repeat
+  `
+      });
     },
 
-    showSnackbar(message, color) {
-      this.snackbarMessage = message;
-      this.snackbarColor = color;
-      this.snackbar = true;
-    },
+    
 
     async deleteItem(item) {
       // Store the item to be confirmed for deletion
+
       this.confirmItem = item;
       this.confirm = true;
     },
@@ -167,23 +176,55 @@ export default {
       // Check if there is a confirmed item for deletion
       if (this.confirmItem) {
         const item = this.confirmItem;
-        try {
-          const response = await axios.delete(`http://localhost:3001/api/patients/${item.id}`);
-          if (response.status === 200) {
-            // Remove the deleted patient from the local state
-            this.desserts = this.desserts.filter(p => p.id !== item.id);
-            this.showSnackbar('ลบข้อมูลสำเร็จ', 'success');
-          } else {
-            this.showSnackbar('เกิดข้อผิดพลาดในการลบข้อมูล', 'error');
-          }
-        } catch (error) {
-          console.error('Error deleting item:', error);
-          this.showSnackbar('Error deleting item', 'error');
-        }
 
-        // Reset the confirm dialog and clear the confirmItem
-        this.confirm = false;
-        this.confirmItem = null;
+        // Show a confirmation dialog using SweetAlert2
+        const result = await Swal.fire({
+          title: 'ยืนยันการลบ?',
+          text: 'เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+        });
+
+        if (result.isConfirmed) {
+          // If the user confirms, proceed with the deletion
+          try {
+            const response = await axios.delete(`http://localhost:3001/api/patients/${item.id}`);
+            if (response.status === 200) {
+              // Remove the deleted patient from the local state
+              this.desserts = this.desserts.filter(p => p.id !== item.id);
+
+              // Show success notification
+              Swal.fire({
+                icon: 'success',
+                title: 'ลบข้อมูลสำเร็จ',
+              });
+            } else {
+              // Show an error notification
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'เกิดข้อผิดพลาดในการลบข้อมูล',
+              });
+            }
+          } catch (error) {
+            console.error('Error deleting item:', error);
+
+            // Show an error notification
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Error deleting item',
+            });
+          }
+
+          // Reset the confirm dialog and clear the confirmItem
+          this.confirm = false;
+          this.confirmItem = null;
+        }
       }
     },
 
@@ -200,8 +241,32 @@ export default {
       this.dialog = false;
       this.dialogTitle = '';
       this.editedItem = {};
-    }
+    },
+
   }
 };
 </script>
 
+<style>
+body {
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif; 
+}
+
+.center-container1{
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  
+}
+
+.dashboardtext{
+  background-color: aqua;
+  display: inline;
+  font-size: 25px;
+  color: black;
+
+}
+
+</style>

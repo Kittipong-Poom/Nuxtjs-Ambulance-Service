@@ -10,7 +10,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // CRUD operations
-
+let patients = []
+let jobs =[]
 // Get all patients
 app.get('/api/patients', (req, res) => {
   res.json(patients);

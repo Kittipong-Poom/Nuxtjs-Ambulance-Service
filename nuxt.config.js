@@ -30,8 +30,8 @@ export default {
   plugins: [
     
     {src:'~/plugins/vue-notification.js', ssr:false},
-    {src:"~/plugins/vue2-google-map.js"}
-
+    {src:"~/plugins/vue2-google-map.js"},
+    
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -47,6 +47,13 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    [
+      'nuxt-sweetalert2',
+      {
+        confirmButtonColor: '#FFFFFF'
+      }
+    ]
+    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
