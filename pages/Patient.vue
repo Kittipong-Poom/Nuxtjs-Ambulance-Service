@@ -24,11 +24,7 @@
       </template>
     </v-data-table>
 
-    
-
-
     <!---ปุ่มลบ-->
-
 
     <v-dialog v-model="confirm" max-width="350">
       <v-card>
