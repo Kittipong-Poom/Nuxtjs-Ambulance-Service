@@ -3,7 +3,7 @@
   
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">Dashboard ผู้ป่วย</h1>
+      <h1 class="dashboardtext">Dashboard Patient</h1>
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
