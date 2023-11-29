@@ -75,10 +75,10 @@ export default {
       search: '',
       headers: [
         { text: 'HN', value: 'hnnumberj' },
-        { text: 'เวลานัดหมาย', value: 'appointmenttime' },
-        { text: 'ประเภทผู้ป่วย', value: 'patienttype' },
-        { text: 'วันที่', value: 'date' },
-        { text: 'เพิ่มเติม', value: 'other' },
+        { text: 'Appointment', value: 'appointmenttime' },
+        { text: 'PatientType', value: 'patienttype' },
+        { text: 'Date', value: 'date' },
+        { text: 'Other', value: 'other' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
       desserts: [],
