@@ -102,7 +102,7 @@ export default {
 
     openDialog(action, item = null) {
       // Set dialog properties based on the action
-      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'Edit Item';
+      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูล';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
@@ -143,12 +143,7 @@ export default {
         padding: "3em",
         color: "#716add",
         background: "#fff url(/images/trees.png)",
-        backdrop: `
-    rgba(0,0,123,0.4)
-    url("https://media.tenor.com/xzjlrhYq_lQAAAAj/cat-nyan-cat.gif")
-    left top
-    no-repeat
-  `
+        
       });
     },
 
@@ -259,7 +254,7 @@ body {
 .dashboardtext{
   display: inline;
   font-size: 35px;
-  color: white;
+  color: #000000;
   font-weight: 700;
   text-transform: uppercase;
 }

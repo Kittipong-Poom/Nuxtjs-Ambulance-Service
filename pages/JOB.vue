@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">Dashboard JOB</h1>
+      <h1 class="dashboardtext" >Dashboard JOB</h1>
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
@@ -135,12 +135,7 @@ export default {
         padding: "3em",
         color: "#716add",
         background: "#fff url(/images/trees.png)",
-        backdrop: `
-    rgba(0,0,123,0.4)
-    url("https://media.tenor.com/xzjlrhYq_lQAAAAj/cat-nyan-cat.gif")
-    left top
-    no-repeat
-  `
+        
       });
 
       this.closeDialog();

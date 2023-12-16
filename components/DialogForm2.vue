@@ -41,7 +41,7 @@
         } ,
 
         patienttype: (value) =>{
-        if (value?.length >= 2) return true
+        if (value?.length >= 0) return true
 
         return 'กรอกประเภทผู้ป่วยให้ครบ'
         },
