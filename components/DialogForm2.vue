@@ -50,10 +50,6 @@
 
           return 'กรอกวันที่ให้ชัดเจน'
         },
-        other:(value) => {
-          if (value?.length >3 && /[0-4-]+/.test(value)) return true
-          return 'กรอกข้อมูลให้ครบ'
-          }
         }
       }
     },

@@ -72,6 +72,7 @@ export default {
     return {
       confirm: false,
       confirmItem: null,
+      endpointUrl: process.env.NODE_ENV == 'development'  ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       search: '',
       headers: [
         { text: 'HN', value: 'hnnumberj' },
@@ -99,6 +100,10 @@ export default {
     // Fetch data from the server before rendering the component
      this.loadData();
       },
+      mounted(){
+    console.log('ENV', this.endpointUrl)
+  },
+      
   methods: {
     openDialog(action, item = null) {
       // Set dialog properties based on the action
@@ -108,13 +113,26 @@ export default {
     },
     async saveItemj(editedItem) {
       let response;
+
+      // let endpointUrl = ''
       if (!editedItem.id) {
+
+        // if(process.env.NODE_ENV == 'development') {
+        //   endpointUrl = 'http://localhost:5000'
+        // }
+        // else{
+        // // Add new patient
+        //   endpointUrl = 'https://ambulance-fbf9.onrender.com/'
+        // }
+
         // Add new patient
-        response = await axios.post('http://localhost:3001/api/jobs', editedItem);
+        response = await axios.post(this.endpointUrl+'/api/jobs', editedItem);
       } else {
         // Update existing patient
-        response = await axios.put(`http://localhost:3001/api/jobs/${editedItem.id}`, editedItem);
+        response = await axios.put(`${this.endpointUrl}/api/jobs/${editedItem.id}`, editedItem);
       }
+
+      
 
       const savedJob = response.data;
 
@@ -174,7 +192,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(`http://localhost:3001/api/jobs/${item.id}`);
+            const response = await axios.delete(this.endpointUrl+`/api/jobs/${item.id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
@@ -213,7 +231,7 @@ export default {
 
     async loadData() {
       try {
-        const { data } = await axios.get('http://localhost:3001/api/jobs');
+        const { data } = await axios.get(this.endpointUrl+'/api/jobs');
         this.desserts = data;
       } catch (error) {
         console.error('Error loading data:', error);

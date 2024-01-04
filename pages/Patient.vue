@@ -23,7 +23,9 @@
         </v-icon>
       </template>
     </v-data-table>
-
+    <template>
+  
+</template>
     <!---ปุ่มลบ-->
 
     <v-dialog v-model="confirm" max-width="350">
@@ -67,6 +69,7 @@ export default {
       confirm: false,
       confirmItem: null,
       search: '',
+      endpointUrl: process.env.NODE_ENV == 'development'  ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
         { text: 'HN', value: 'hnnumber' },
         { text: 'Age', value: 'age' },
@@ -95,9 +98,10 @@ export default {
   fetch() {
     this.loadData()
   },
-  // created(){
-  //   this.loadData()
-  // },
+  mounted(){
+    console.log('ENV', this.endpointUrl)
+    
+  },
   methods: {
 
     openDialog(action, item = null) {
@@ -111,15 +115,30 @@ export default {
 
     async saveItem(editedItem) {
       let response;
+      // let endpointUrl = ''
       if (!editedItem.id) {
+
+        // if(process.env.NODE_ENV == 'development') {
+        //   endpointUrl = 'http://localhost:3001'
+        // }
+        // else{
+        // // Add new patient
+        //   endpointUrl = 'https://ambulance555.web.app'
+        // }
+
         // Add new patient
-        response = await axios.post('http://localhost:3001/api/patients', editedItem);
+        response = await axios.post(this.endpointUrl+'/api/patients', editedItem);
       } else {
         // Update existing patient
-        response = await axios.put(`http://localhost:3001/api/patients/${editedItem.id}`, editedItem);
+        response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.id}`, editedItem);
       }
-
+      console.log('response',response)
       const savedPatient = response.data;
+      
+      
+     
+      
+      
 
       // Update the local state or trigger a refresh from the server
       // based on your application's architecture
@@ -182,7 +201,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(`http://localhost:3001/api/patients/${item.id}`);
+            const response = await axios.delete(this.endpointUrl+`/api/patients/${item.id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
@@ -220,8 +239,10 @@ export default {
 
     async loadData() {
       try {
-        const { data } = await axios.get('http://localhost:3001/api/patients');
+        
+        const { data } = await axios.get(this.endpointUrl+'/api/patients')
         this.desserts = data;
+        console.log("CHECKK HELLO", data)
       } catch (error) {
         console.error('Error loading data:', error);
       }
