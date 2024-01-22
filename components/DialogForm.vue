@@ -13,6 +13,7 @@
         <v-text-field v-model="editedItem.gender" label="Gender" :rules="[rules.gender]"></v-text-field>
         <v-text-field v-model="editedItem.numberphone" label="NumberPhone" :rules="[rules.phone]" ></v-text-field>
         <v-text-field v-model="editedItem.address" label="Address" :rules="[rules.address]"></v-text-field>
+        <v-text-field v-model="editedItem.status" label="Status Patient" :rules="[rules.status]"></v-text-field>
         <v-text-field v-model="editedItem.coordinate" label="Coordinate" :rules="[rules.coordinate]"></v-text-field>
       </v-card-text>
       <v-card-actions>

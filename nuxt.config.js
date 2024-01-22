@@ -24,12 +24,15 @@ export default {
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],
-
+  presets:[
+    "@babel/preset-env"
+  ],
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    
     {src:'~/plugins/vue-notification.js', ssr:false},
     {src:"~/plugins/vue2-google-map.js"},
+    '~/plugins/vuetify.js',
+
     
   ],
 
@@ -82,6 +85,17 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    vendor:["vue2-google-maps"]
+    vendor:["vue2-google-maps"],
+    extend(config, ctx) {
+      // Add a rule to handle .js files inside the vue-chartjs module
+      config.module.rules.push({
+        test: /\/node_modules\/vue-chartjs.*\.js$/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: ['@babel/plugin-proposal-class-properties'],
+        },
+      });
+    }, 
   }
 }

@@ -1,6 +1,5 @@
 
 <template>
-  
   <v-card>
     <v-card-title justify="center" class="center-container1">
       <h1 class="dashboardtext">Dashboard Patient</h1>
@@ -22,10 +21,17 @@
           mdi-delete
         </v-icon>
       </template>
+
+      <template v-slot:item.status="{ item }">
+        <v-chip :color="getStatusColor(item.status)" dark>
+          {{ item.status }}
+        </v-chip>
+      </template>
+
     </v-data-table>
     <template>
-  
-</template>
+
+    </template>
     <!---ปุ่มลบ-->
 
     <v-dialog v-model="confirm" max-width="350">
@@ -48,7 +54,7 @@
       </v-card>
     </v-dialog>
 
-    
+
 
     <!-- Include the dialog -->
     <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
@@ -69,7 +75,7 @@ export default {
       confirm: false,
       confirmItem: null,
       search: '',
-      endpointUrl: process.env.NODE_ENV == 'development'  ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
         { text: 'HN', value: 'hnnumber' },
         { text: 'Age', value: 'age' },
@@ -77,9 +83,16 @@ export default {
         { text: 'NumberPhone', value: 'numberphone' },
         { text: 'Address', value: 'address' },
         { text: 'Coordinate', value: 'coordinate' },
+        { text: 'ประเภทผู้ป่วย', value: 'status' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
       desserts: [],
+      statusColorMap: {
+        'ฉุกเฉิน':'red',
+        'ฉุกเฉินเร่งด่วน':'red',
+        'หมดสติ':'yellow',
+        'บาดเจ็บเล็กน้อย':'green',
+      },
       dialog: false,
       dialogTitle: '',
       editedItem: {
@@ -88,99 +101,87 @@ export default {
         gender: '',
         numberphone: '',
         address: '',
-        coordinate: ''
+        coordinate: '',
+        status: ''
       },
-      
-
     };
-
   },
   fetch() {
     this.loadData()
   },
-  mounted(){
+  mounted() {
     console.log('ENV', this.endpointUrl)
-    
+
   },
   methods: {
-
+    getStatusColor(status) {
+      // Add logic to determine the color based on the status value
+      return this.statusColorMap[status] || 'defaultColor';
+    },
     openDialog(action, item = null) {
       // Set dialog properties based on the action
-      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูล';
+      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
-
-    
-
     async saveItem(editedItem) {
-      let response;
-      // let endpointUrl = ''
-      if (!editedItem.id) {
+      try {
+        let response;
 
-        // if(process.env.NODE_ENV == 'development') {
-        //   endpointUrl = 'http://localhost:3001'
-        // }
-        // else{
-        // // Add new patient
-        //   endpointUrl = 'https://ambulance555.web.app'
-        // }
+        if (!editedItem.id) {
+          // Add new patient
+          response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
+          Swal.fire({
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
+          });
+        } else {
+          // Update existing patient
+          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.id}`, editedItem);
+          Swal.fire({
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
+          });
+        }
+        console.log('response', response);
+        const savedPatient = response.data;
+        // Update the local state or trigger a refresh from the server
+        // based on your application's architecture
+        // For simplicity, updating the local state here:
+        if (!editedItem.id) {
+          // Add new patient
+          this.desserts.push(savedPatient);
+        } else {
+          // Update existing patient
+          const index = this.desserts.findIndex(item => item.id === savedPatient.id);
+          this.desserts[index] = savedPatient;
+        }
+        this.closeDialog();
+      } catch (error) {
+        console.error('Error saving item:', error);
 
-        // Add new patient
-        response = await axios.post(this.endpointUrl+'/api/patients', editedItem);
-      } else {
-        // Update existing patient
-        response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.id}`, editedItem);
+        // Show an error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'ไม่สามารถเพิ่มข้อมูลได้',
+        });
       }
-      console.log('response',response)
-      const savedPatient = response.data;
-      
-      
-     
-      
-      
-
-      // Update the local state or trigger a refresh from the server
-      // based on your application's architecture
-      // For simplicity, updating the local state here:
-      if (!editedItem.id) {
-        this.desserts.push(savedPatient);
-      } else {
-        const index = this.desserts.findIndex(item => item.id === editedItem.id);
-        this.$set(this.desserts, index, savedPatient);
-      }
-
-      this.closeDialog();
-
-      // Show the success snackbar
-      
-
-      Swal.fire({
-        icon: "success",
-        title: "กรอกข้อมูลสำเร็จ",
-        width: 600,
-        padding: "3em",
-        color: "#716add",
-        background: "#fff url(/images/trees.png)",
-        
-      });
     },
-
     
-
     async deleteItem(item) {
       // Store the item to be confirmed for deletion
 
       this.confirmItem = item;
       this.confirm = true;
     },
-
     cancelDelete() {
       // Reset the confirm dialog and clear the confirmItem
       this.confirm = false;
       this.confirmItem = null;
     },
-
     async submitDelete() {
       // Check if there is a confirmed item for deletion
       if (this.confirmItem) {
@@ -201,7 +202,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl+`/api/patients/${item.id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
@@ -236,13 +237,11 @@ export default {
         }
       }
     },
-
     async loadData() {
       try {
-        
-        const { data } = await axios.get(this.endpointUrl+'/api/patients')
+        const { data } = await axios.get(this.endpointUrl + '/api/patients')
         this.desserts = data;
-        console.log("CHECKK HELLO", data)
+        console.log("This data", data)
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -260,24 +259,23 @@ export default {
 
 <style>
 body {
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif; 
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.center-container1{
+.center-container1 {
   padding-top: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  
+
 }
 
-.dashboardtext{
+.dashboardtext {
   display: inline;
   font-size: 35px;
   color: #000000;
   font-weight: 700;
   text-transform: uppercase;
 }
-
 </style>
