@@ -90,8 +90,8 @@ export default {
         },
         {
           icon:'mdi-star',
-          title:'Chart',
-          to:'/Chart'
+          title:'Dashboard',
+          to:'/App'
         }
       ],
       miniVariant: false,

@@ -2,7 +2,7 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">Dashboard Patient</h1>
+      <h1 class="dashboardtext">Datatable Patient</h1>
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
@@ -88,10 +88,10 @@ export default {
       ],
       desserts: [],
       statusColorMap: {
-        'ฉุกเฉิน':'red',
-        'ฉุกเฉินเร่งด่วน':'red',
-        'หมดสติ':'yellow',
-        'บาดเจ็บเล็กน้อย':'green',
+        'ฉุกเฉิน': 'red',
+        'ฉุกเฉินเร่งด่วน': 'red',
+        'หมดสติ': 'yellow',
+        'บาดเจ็บเล็กน้อย': 'green',
       },
       dialog: false,
       dialogTitle: '',
@@ -150,15 +150,19 @@ export default {
         // Update the local state or trigger a refresh from the server
         // based on your application's architecture
         // For simplicity, updating the local state here:
-        if (!editedItem.id) {
-          // Add new patient
-          this.desserts.push(savedPatient);
-        } else {
-          // Update existing patient
-          const index = this.desserts.findIndex(item => item.id === savedPatient.id);
-          this.desserts[index] = savedPatient;
-        }
-        this.closeDialog();
+
+        this.$nextTick(() => {
+          if (!editedItem.id) {
+            // Add new patient
+            this.desserts.push(savedPatient);
+          } else {
+            // Update existing patient
+            const index = this.desserts.findIndex(item => item.id === savedPatient.id);
+            this.$set(this.desserts, index, savedPatient.id);
+          }
+          this.closeDialog();
+        });
+
       } catch (error) {
         console.error('Error saving item:', error);
 
@@ -170,7 +174,7 @@ export default {
         });
       }
     },
-    
+
     async deleteItem(item) {
       // Store the item to be confirmed for deletion
 
