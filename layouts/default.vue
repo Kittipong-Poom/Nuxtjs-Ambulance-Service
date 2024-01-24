@@ -91,7 +91,7 @@ export default {
         {
           icon:'mdi-star',
           title:'Dashboard',
-          to:'/App'
+          to:'/Dashboard'
         }
       ],
       miniVariant: false,

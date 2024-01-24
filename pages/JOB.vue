@@ -1,20 +1,14 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext" >Datatable JOB</h1>
+      <h1 class="dashboardtext">Datatable JOB</h1>
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
         เพิ่มรายการ
       </v-btn>
       <v-spacer />
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      />
+      <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
     </v-card-title>
     <v-data-table :headers="headers" :items="desserts" :search="search">
       <template v-slot:item.action="{ item }">
@@ -47,16 +41,11 @@
       </v-card>
     </v-dialog>
 
-    
+
 
     <!-- Include the dialog -->
-    <dialog-form2
-      :dialog="dialog"
-      :edited-item="editedItem"
-      :dialog-title="dialogTitle"
-      @save="saveItemj"
-      @close="closeDialog"
-    />
+    <dialog-form2 :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItemj"
+      @close="closeDialog" />
   </v-card>
 </template>
 
@@ -70,9 +59,10 @@ export default {
   },
   data() {
     return {
+      jobs: [],
       confirm: false,
       confirmItem: null,
-      endpointUrl: process.env.NODE_ENV == 'development'  ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       search: '',
       headers: [
         { text: 'HN', value: 'hnnumberj' },
@@ -86,80 +76,90 @@ export default {
       dialog: false,
       dialogTitle: '',
       editedItem: {
-          hnnumberj: '',
-          appointmenttime: '',
-          patienttype: '',
-          date:'',
-          other:'',
-      }, 
-      
-    }
-    
-  },
-  fetch() {
-    // Fetch data from the server before rendering the component
-     this.loadData();
+        hnnumberj: '',
+        appointmenttime: '',
+        patienttype: '',
+        date: '',
+        other: '',
       },
-      mounted(){
+
+    }
+
+  },
+  async fetch() {
+    // Fetch data from the server before rendering the component
+    await this.loadData();
+  },
+  mounted() {
     console.log('ENV', this.endpointUrl)
   },
-      
   methods: {
     openDialog(action, item = null) {
       // Set dialog properties based on the action
-      this.dialogTitle = action === 'add' ? 'จัดการข้อมูลสำหรับJOB' : 'Edit Item';
+      this.dialogTitle = action === 'add' ? 'จัดการข้อมูลสำหรับJOB' : 'แก้ไข้ข้อมูลของ JOB';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
     async saveItemj(editedItem) {
-      let response;
+      try {
+        let response;
 
-      // let endpointUrl = ''
-      if (!editedItem.id) {
+        if (!editedItem.id) {
+          // Add new job
+          response = await axios.post(`${this.endpointUrl}/api/jobs`, editedItem);
+          Swal.fire({
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
+          });
+        } else {
+          // Update existing job
+          response = await axios.put(`${this.endpointUrl}/api/jobs/${editedItem.id}`, editedItem);
+          Swal.fire({
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
+          });
+        }
+        console.log('response', response);
+        const savedJob = response.data;
+        // Update the local state or trigger a refresh from the server
+        // based on your application's architecture
+        // For simplicity, updating the local state here:
 
-        // if(process.env.NODE_ENV == 'development') {
-        //   endpointUrl = 'http://localhost:5000'
-        // }
-        // else{
-        // // Add new patient
-        //   endpointUrl = 'https://ambulance-fbf9.onrender.com/'
-        // }
+        await this.$nextTick();
+          if (!this.jobs) {
+            this.jobs = [];
+          }
 
-        // Add new patient
-        response = await axios.post(this.endpointUrl+'/api/jobs', editedItem);
-      } else {
-        // Update existing patient
-        response = await axios.put(`${this.endpointUrl}/api/jobs/${editedItem.id}`, editedItem);
+          if (!editedItem.id) {
+            // Add new job
+            this.jobs.push(savedJob);  // assuming you have a jobs array
+          } else {
+            // Update existing job
+            const index = this.jobs.findIndex(item => item.id === savedJob.id);
+            if (index !== -1) {
+              this.$set(this.jobs, index, savedJob);
+            } else {
+              console.error('Job not found in the array');
+            }
+          }
+          this.closeDialog();
+        ;
+
+      } catch (error) {
+        console.error('Error saving item:', error);
+
+        // Show an error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'ไม่สามารถเพิ่มข้อมูลได้',
+        });
       }
-
-      
-
-      const savedJob = response.data;
-
-      // Update the local state or trigger a refresh from the server
-      // based on your application's architecture
-      // For simplicity, updating the local state here:
-      if (!editedItem.id) {
-        this.desserts.push(savedJob);
-      } else {
-        const index = this.desserts.findIndex(item => item.id === editedItem.id);
-        this.$set(this.desserts, index, savedJob);
-      }
-
-      Swal.fire({
-        icon: "success",
-        title: "กรอกข้อมูลสำเร็จ",
-        width: 600,
-        padding: "3em",
-        color: "#716add",
-        background: "#fff url(/images/trees.png)",
-        
-      });
-
-      this.closeDialog();
     },
-     
-      // Show an error snackbar if something goes wrong
+
+    // Show an error snackbar if something goes wrong
     async deleteItem(item) {
       // Store the item to be confirmed for deletion
       this.confirmItem = item;
@@ -192,7 +192,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl+`/api/jobs/${item.id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/jobs/${item.id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
@@ -231,8 +231,9 @@ export default {
 
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl+'/api/jobs');
+        const { data } = await axios.get(this.endpointUrl + '/api/jobs');
         this.desserts = data;
+        console.log("This data", data)
       } catch (error) {
         console.error('Error loading data:', error);
       }

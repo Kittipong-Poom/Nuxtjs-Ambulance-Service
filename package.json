@@ -30,6 +30,7 @@
     "express": "^4.18.2",
     "hchs-vue-charts": "^1.2.8",
     "nuxt": "2.15.8",
+    "nuxt-storage": "^1.2.2",
     "nuxt-sweetalert2": "^1.0.0",
     "sass": "^1.70.0",
     "sass-loader": "^10.5.2",

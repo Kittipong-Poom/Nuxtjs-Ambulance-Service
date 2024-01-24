@@ -27,7 +27,7 @@
           {{ item.status }}
         </v-chip>
       </template>
-
+  
     </v-data-table>
     <template>
 
@@ -64,11 +64,14 @@
 
 <script>
 import DialogForm from '~/components/DialogForm.vue';
+import DepartmentCard from '~/components/DepartmentCard.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
-  components: {
-    DialogForm
+  components: { 
+    DialogForm,
+    DepartmentCard,
+
   },
   data() {
     return {
@@ -106,9 +109,11 @@ export default {
       },
     };
   },
-  fetch() {
-    this.loadData()
-  },
+    fetch(){
+      this.loadData()
+    
+    },
+    
   mounted() {
     console.log('ENV', this.endpointUrl)
 
@@ -131,6 +136,7 @@ export default {
         if (!editedItem.id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
+          this.$store.commit('incrementPatientCount');
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -210,7 +216,7 @@ export default {
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
-
+              this.$store.commit('decrementPatientCount');
               // Show success notification
               Swal.fire({
                 icon: 'success',

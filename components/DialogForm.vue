@@ -49,7 +49,7 @@ export default {
         },
         gender: (value)=>{
           if (value?.length >=2) return true
-
+ 
           return 'กรุณากรอกเพศให้ถูกต้อง'
         },
         age:(value) =>{
