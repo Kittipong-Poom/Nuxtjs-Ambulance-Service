@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
-        เพิ่มรายการ
+        ADD
       </v-btn>
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
@@ -44,7 +44,7 @@
 
 
     <!-- Include the dialog -->
-    <dialog-form2 :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItemj"
+    <dialog-form2 :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
       @close="closeDialog" />
   </v-card>
 </template>
@@ -91,6 +91,7 @@ export default {
     await this.loadData();
   },
   mounted() {
+
     console.log('ENV', this.endpointUrl)
   },
   methods: {
@@ -100,20 +101,21 @@ export default {
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
-    async saveItemj(editedItem) {
+    async saveItem(editedItem) {
       try {
         let response;
 
         if (!editedItem.id) {
-          // Add new job
+          // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/jobs`, editedItem);
+          this.$store.commit('incrementJobsCount');
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
             text: 'แก้ไขข้อมูลสำเร็จ',
           });
         } else {
-          // Update existing job
+          // Update existing patient
           response = await axios.put(`${this.endpointUrl}/api/jobs/${editedItem.id}`, editedItem);
           Swal.fire({
             icon: 'success',
@@ -122,30 +124,22 @@ export default {
           });
         }
         console.log('response', response);
-        const savedJob = response.data;
+        const savedJobs = response.data;
         // Update the local state or trigger a refresh from the server
         // based on your application's architecture
         // For simplicity, updating the local state here:
 
-        await this.$nextTick();
-          if (!this.jobs) {
-            this.jobs = [];
-          }
-
+        this.$nextTick(() => {
           if (!editedItem.id) {
-            // Add new job
-            this.jobs.push(savedJob);  // assuming you have a jobs array
+            // Add new patient
+            this.desserts.push(savedJobs); // Assuming savedJobs is an array
           } else {
-            // Update existing job
-            const index = this.jobs.findIndex(item => item.id === savedJob.id);
-            if (index !== -1) {
-              this.$set(this.jobs, index, savedJob);
-            } else {
-              console.error('Job not found in the array');
-            }
+            // Update existing patient
+            const index = this.desserts.findIndex(item => item.id === savedJobs.id);
+            this.$set(this.desserts, index, savedJobs.id);
           }
           this.closeDialog();
-        ;
+        });
 
       } catch (error) {
         console.error('Error saving item:', error);
@@ -196,12 +190,14 @@ export default {
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
-
+              this.$store.commit('decrementJobsCount');
               // Show success notification
               Swal.fire({
                 icon: 'success',
                 title: 'ลบข้อมูลสำเร็จ',
+
               });
+              console.warn('This data delete already')
             } else {
               // Show an error notification
               Swal.fire({

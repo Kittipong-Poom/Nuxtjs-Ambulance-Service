@@ -6,7 +6,7 @@
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
-        เพิ่มรายการ
+        ADD
       </v-btn>
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
@@ -222,6 +222,7 @@ export default {
                 icon: 'success',
                 title: 'ลบข้อมูลสำเร็จ',
               });
+              console.warn('This data delete already')
             } else {
               // Show an error notification
               Swal.fire({

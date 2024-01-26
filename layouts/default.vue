@@ -32,7 +32,7 @@
       </v-btn>
     </v-col>
 
-    <v-col cols="auto">
+    <!-- <v-col cols="auto">
       <v-btn text to="/Patient">About
         <v-icon >mdi-information</v-icon>
       </v-btn>
@@ -42,7 +42,7 @@
       <v-btn text to="/contact">Contact
         <v-icon >mdi-contacts</v-icon>
       </v-btn>
-    </v-col>
+    </v-col> -->
 
       </v-row>
     </v-app-bar>
@@ -79,12 +79,12 @@ export default {
           to: '/Apps'
         },
         {
-          icon: 'mdi-map',
+          icon: 'mdi-database',
           title: 'Patient',
           to: '/Patient'
         },
         {
-          icon: 'mdi-map',
+          icon: 'mdi-database',
           title: 'JOB',
           to: '/JOB'
         },

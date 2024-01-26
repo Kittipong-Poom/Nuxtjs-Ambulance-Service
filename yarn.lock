@@ -1385,11 +1385,6 @@
     methods "^1.1.2"
     path-to-regexp "^6.2.1"
 
-"@kurkle/color@^0.3.0":
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/@kurkle/color/-/color-0.3.2.tgz"
-  integrity sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -3366,6 +3361,11 @@ chardet@^0.7.0:
   resolved "https://registry.npmjs.org/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+chart.js@3.8.0:
+  version "3.8.0"
+  resolved "https://registry.npmjs.org/chart.js/-/chart.js-3.8.0.tgz#c6c14c457b9dc3ce7f1514a59e9b262afd6f1a94"
+  integrity sha512-cr8xhrXjLIXVLOBZPkBZVF6NDeiVIrPLHcMhnON7UufudL+CNeRrD+wpYanswlm8NpudMdrt3CHoLMQMxJhHRg==
+
 chart.js@^2.3.0:
   version "2.9.4"
   resolved "https://registry.npmjs.org/chart.js/-/chart.js-2.9.4.tgz"
@@ -3373,13 +3373,6 @@ chart.js@^2.3.0:
   dependencies:
     chartjs-color "^2.1.0"
     moment "^2.10.2"
-
-chart.js@^4.4.1:
-  version "4.4.1"
-  resolved "https://registry.npmjs.org/chart.js/-/chart.js-4.4.1.tgz"
-  integrity sha512-C74QN1bxwV1v2PEujhmKjOZ7iUM4w6BWs23Md/6aOZZSlwMzeCIDGuZay++rBgChYru7/+QFeoQW0fQoP534Dg==
-  dependencies:
-    "@kurkle/color" "^0.3.0"
 
 chartjs-color-string@^0.6.0:
   version "0.6.0"
@@ -10829,10 +10822,10 @@ vue-autocomplete@^0.0.2:
   dependencies:
     vue "^1.0.7"
 
-vue-chartjs@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.npmjs.org/vue-chartjs/-/vue-chartjs-5.3.0.tgz"
-  integrity sha512-8XqX0JU8vFZ+WA2/knz4z3ThClduni2Nm0BMe2u0mXgTfd9pXrmJ07QBI+WAij5P/aPmPMX54HCE1seWL37ZdQ==
+vue-chartjs@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/vue-chartjs/-/vue-chartjs-4.0.0.tgz#91fbf5154c4b0a8a95d145288b914c38257caa1e"
+  integrity sha512-fNBUNWvbhwMjuaOq1t36oV+78l2t60S4OAvIK3gXbBPtlk9QPs0xPj8qQZQgJYtX0lJ/iC6fIK+A11QTcnFa3Q==
 
 vue-client-only@^2.0.0:
   version "2.1.0"

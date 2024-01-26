@@ -1,19 +1,82 @@
 <template>
-  <div class="hero">
-    <div class="content">
-      <h1>Ambulance</h1>
-      <v-row justify="center" class="center-container">
-        <v-btn class="custom-btn" height="65px" color="#3FD69F" dark to="/Patient">
-          จัดการข้อมูลผู้ป่วยใหม่
+  <div class="section">
+     <!-- patient -->
+    <v-card
+      
+      class="mx-auto my-12"
+      max-width="374"
+    >
+      <template v-slot:loader="{ isActive }">
+        <v-progress-linear
+          :active="isActive"
+          height="4"
+          indeterminate
+        ></v-progress-linear>
+      </template>
+
+      <v-img
+        cover
+        height="250"
+        src="https://cdn.discordapp.com/attachments/879568332402085888/1199760931761180732/pixlr-image-generator-1bbdf9c6-dc01-4fd1-b203-94acbeeb54b4.png?ex=65c3b770&is=65b14270&hm=6199992fab8d923fee7198eea53dc4c46f23f62589ae0be349f1098b92161dcb&"
+      ></v-img>
+        
+      <v-btn to="/Patient" height="50px" class="distance" color="#3FD69F">
+          Patient
         </v-btn>
-        <!-- First Dialog -->
-        <!-- Content for the first dialog -->
-        <v-btn to="/JOB" height="65px" class="distance" color="#3FD69F" dark>
-          จัดการข้อมูลสำหรับJOB
+    </v-card>
+
+    <!-- job -->
+
+    <v-card
+      
+      class="mx-auto my-12"
+      max-width="374"
+    >
+      <template v-slot:loader="{ isActive }">
+        <v-progress-linear
+          :active="isActive"
+          color="deep-purple"
+          height="4"
+          indeterminate
+        ></v-progress-linear>
+      </template>
+
+      <v-img
+        cover
+        height="250"
+        src="https://cdn.discordapp.com/attachments/879568332402085888/1199764667485134858/image.png?ex=65c3baeb&is=65b145eb&hm=4d3ab5b088e95b9ff235e75335bf0ba3505c3be43033a9da3e07ce1d0c3e453c&"
+      ></v-img>
+        
+      <v-btn to="/JOB" height="50px" class="distance" color="#3FD69F">
+          Job
         </v-btn>
-        <!-- Second2 Dialog -->
-      </v-row>
-    </div>
+    </v-card>
+
+<!-- Dashboard -->
+    <v-card
+      
+      class="mx-auto my-12"
+      max-width="374"
+    >
+      <template v-slot:loader="{ isActive }">
+        <v-progress-linear
+          :active="isActive"
+          color="deep-purple"
+          height="4"
+          indeterminate
+        ></v-progress-linear>
+      </template>
+
+      <v-img
+        cover
+        height="250"
+        src="https://cdn.discordapp.com/attachments/879568332402085888/1199762571243294841/image.png?ex=65c3b8f7&is=65b143f7&hm=1ed4736514b2d7ae743c355764d77ffdb3d9a94302c7ba336c1b6a2b2fd68c4c&"
+      ></v-img>
+        
+      <v-btn to="/Dashboard" height="50px" class="distance" color="#3FD69F">
+          Dashboard
+      </v-btn>
+    </v-card>
   </div>
 </template>
 
@@ -25,64 +88,12 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.hero {
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0.9;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(rgba(12, 3, 51, 0.3), rgba(12, 3, 51, 0.3)), url('/ambualance4.jpg');
-  background-size: cover;
-  z-index: 1;
-}
-
-.content {
-  text-align: center;
-  z-index: 1000; /* Ensure the content is above the pseudo-element overlay */
-  
-}
-
-.content h1 {
-  font-size: 160px;
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.center-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 50vh;
+.section {
+  margin: auto;
 }
 
 .distance {
-  margin: 25px;
-  color: #000000;
-  border-radius: 25px;
-}
-
-.custom-btn {
-  color: #000000;
-  border-radius: 25px;
-}
-
-.Ambutext {
-  color: #000000;
-  font-size: 25px;
-  font-family: Inter;
-  background-color: #3FD69F;
+  text-align: center;
+  display:flex;
 }
 </style>

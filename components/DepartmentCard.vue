@@ -8,13 +8,14 @@
                     <v-sheet :elevation="7" class="mx-auto rounded-xl" height="70" width="225">
                         <v-sheet class="my-box rounded-xl pa-2 d-flex justify-space-between align-center">
                             <div>
-                                <div>Patient</div>
+                                <div class="font-weight-black">Patient</div>
                                 <div class="text-lg-h6 update">{{ $store.state.patientCount }}</div>
                             </div>
-                            <img class="img-select" src="patient1.jpg" alt="" style="width: 40%; height: auto;">
+                            <v-icon color="#129" size="x-large">mdi-doctor</v-icon>
                         </v-sheet>
                     </v-sheet>
                 </v-sheet>
+                
 
                 <!-- Patient Card 2 -->
                 <v-sheet class="pa-12 " color="grey-lighten-3">
@@ -22,9 +23,9 @@
                         <v-sheet class="my-box rounded-xl pa-2 d-flex justify-space-between align-center">
                             <div>
                                 <div>Job</div>
-                                <div class="text-lg-h6 update">{{ patientCount }}</div>
+                                <div class="text-lg-h6 update">{{ $store.state.jobsCount }}</div>
                             </div>
-                            <img class="img-select" src="patient1.jpg" alt="" style="width: 40%; height: auto;">
+                            <v-icon  size="x-large">mdi-account-hard-hat</v-icon>
                         </v-sheet>
                     </v-sheet>
                 </v-sheet>
@@ -35,36 +36,26 @@
                         <v-sheet class="pa-2 rounded-xl d-flex justify-space-between align-center">
                             <div>
                                 <div>Ambulance Car</div>
-                                <div class="text-lg-h6">{{ ambulanceCarCount }}</div>
+                                <div class="text-lg-h6">NaN</div>
                             </div>
-                            <img class="img-select" src="patient1.jpg" alt="" style="width: 40%; height: auto;">
+                            <v-icon color="red" size="x-large">mdi-ambulance</v-icon>
                         </v-sheet>
                     </v-sheet>
                 </v-sheet>
                 <!-- Repeat for other elevations -->
             </v-row>
-
-            <!-- Additional Rows -->
-            <v-row justify="center">
-                <v-sheet class="pa-12" color="grey-lighten-3">
-                    <v-sheet :elevation="7" class="mx-auto" height="90" width="225"></v-sheet>
-                </v-sheet>
-
-                <v-sheet class="pa-12" color="grey-lighten-3">
-                    <v-sheet :elevation="7" class="mx-auto" height="90" width="225"></v-sheet>
-                </v-sheet>
-
-                <v-sheet class="pa-12" color="grey-lighten-3">
-                    <v-sheet :elevation="7" class="mx-auto" height="90" width="225"></v-sheet>
-                </v-sheet>
-                <!-- Repeat for other elevations -->
-            </v-row>
+            <!-- Additional Rows -->        
         </v-container>
+        <BarChart />
     </div>
 </template>
   
 <script>
+ import BarChart from '../components/BarChart.vue'
 export default {
+    components: {
+      BarChart
+    },
     computed: {
         patientCount() {
             return this.$store.state.patientCount;

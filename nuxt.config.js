@@ -52,8 +52,9 @@ export default {
     [
       'nuxt-sweetalert2',
       {
-        confirmButtonColor: '#FFFFFF'
+        confirmButtonColor: '#FFFFFF',
       }
+      
     ]
     
   ],
