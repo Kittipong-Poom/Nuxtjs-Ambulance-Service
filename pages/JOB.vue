@@ -90,6 +90,9 @@ export default {
     // Fetch data from the server before rendering the component
     await this.loadData();
   },
+ // The `mounted()` lifecycle hook is a function that is called after the Vue instance has been mounted
+ // to the DOM. In this case, the `mounted()` function is logging the value of `this.endpointUrl` to
+ // the console.
   mounted() {
 
     console.log('ENV', this.endpointUrl)
