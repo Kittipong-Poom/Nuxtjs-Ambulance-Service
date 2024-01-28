@@ -1,11 +1,11 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">Datatable JOB</h1>
+      <h1 class="dashboardtext">Data table JOB</h1>
     </v-card-title>
     <v-card-title>
       <v-btn depressed color="primary" @click="openDialog('add')">
-        ADD
+        ADD NEW JOB
       </v-btn>
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />

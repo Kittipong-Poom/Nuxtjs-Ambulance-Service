@@ -1,4 +1,8 @@
 // store/index.js
+/**
+ * The above code exports a state object and mutations object in JavaScript, which can be used to
+ * manage the patient count and jobs count.
+ */
 export const state = () => ({
     patientCount : 0, // Initialize patient count
     jobsCount : 0

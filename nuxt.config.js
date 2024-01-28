@@ -66,6 +66,8 @@ export default {
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
+ /* The `vuetify` configuration in the Nuxt.js configuration file is used to customize the Vuetify
+ theme for your application. */
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {

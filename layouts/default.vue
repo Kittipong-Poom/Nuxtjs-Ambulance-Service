@@ -1,52 +1,40 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
+    <v-navigation-drawer color="#1A437B" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
       <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+        <v-list-item  v-for="(item, i) in items" :key="i" :to="item.to" router exact>
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon :style="{ color: 'white' }">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title :style="{ color: 'white' }">{{ item.title }}</v-list-item-title>
           </v-list-item-content>
-          
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
+
+    <v-app-bar color="#285CA2" :clipped-left="clipped" fixed app>
+      <v-app-bar-nav-icon color="#FFFF" @click.stop="drawer = !drawer" />
+      <v-btn color="#FFFF" icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
+      <v-btn color="#FFFF" icon @click.stop="clipped = !clipped">
         <v-icon>mdi-application</v-icon>
       </v-btn>
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
-      
+      <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
+
       <v-spacer />
 
       <v-row justify="end" align="center">
         <v-col cols="auto">
-      <v-btn text to="/" >Home
-        <v-icon >mdi-home</v-icon>
-      </v-btn>
-    </v-col>
-
-    <!-- <v-col cols="auto">
-      <v-btn text to="/Patient">About
-        <v-icon >mdi-information</v-icon>
-      </v-btn>
-    </v-col>
-
-    <v-col cols="auto">
-      <v-btn text to="/contact">Contact
-        <v-icon >mdi-contacts</v-icon>
-      </v-btn>
-    </v-col> -->
-
+          <v-btn to="/" class="ma-2 white--text" color="#3A87E3">
+            <v-icon color="#FFF">mdi-home</v-icon>
+            Home
+          </v-btn>
+        </v-col>
       </v-row>
     </v-app-bar>
-    
+
     <v-main>
       <v-container>
         <Nuxt />
@@ -55,7 +43,6 @@
 
   </v-app>
 </template>
-
 <script >
 
 
@@ -69,7 +56,7 @@ export default {
 
       items: [
         {
-          icon: 'mdi-bell-ring',
+          icon: 'mdi-home-account',
           title: 'Welcome',
           to: '/'
         },
@@ -79,25 +66,26 @@ export default {
           to: '/Apps'
         },
         {
-          icon: 'mdi-database',
+          icon: 'mdi-table',
           title: 'Patient',
           to: '/Patient'
         },
         {
-          icon: 'mdi-database',
+          icon: 'mdi-table',
           title: 'JOB',
           to: '/JOB'
         },
         {
-          icon:'mdi-star',
-          title:'Dashboard',
-          to:'/Dashboard'
+          icon: 'mdi-view-dashboard',
+          title: 'Dashboard',
+          to: '/Dashboard'
         }
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Ambulance-Service'
+      title: 'Ambulance-Service',
+
     }
   },
   methods: {
@@ -105,3 +93,19 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* Add hover effect for v-list-item */
+.v-list-item:hover,
+.v-list-item--active {
+  background-color: #3A87E3; /* Change to your desired hover color */
+  cursor: pointer;
+}
+
+/* Add hover effect for v-btn inside v-list-item */
+.v-list-item:hover .v-btn,
+.v-list-item--active .v-btn {
+  color: #3A87E3; /* Change to your desired button hover color */
+}
+
+</style>

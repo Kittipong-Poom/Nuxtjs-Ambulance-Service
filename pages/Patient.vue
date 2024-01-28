@@ -2,11 +2,11 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">Datatable Patient</h1>
+      <h1 class="dashboardtext">Data table Patient</h1>
     </v-card-title>
     <v-card-title>
-      <v-btn depressed color="primary" @click="openDialog('add')">
-        ADD
+      <v-btn depressed class="button" color="primary" @click="openDialog('add')">
+        ADD NEW PATIENT
       </v-btn>
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
@@ -288,5 +288,27 @@ body {
   color: #000000;
   font-weight: 700;
   text-transform: uppercase;
+}
+.button {
+  height: 45px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
+
+.button:hover {
+  background-color: #285CA2;
+  box-shadow: 0px 15px 20px rgba(0, 47, 255, 0.4);
+  color: #ffffff;
+  transform: translateY(-7px);
 }
 </style>
