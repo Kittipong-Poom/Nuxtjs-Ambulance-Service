@@ -8,11 +8,11 @@
         </v-card-title>
         <v-card-text>
           <!-- Your form fields go here -->
-          <v-text-field v-model="editedItem.hnnumberj" label="HN(Hospital Number)" :rules="[rules.hnnumberj]"></v-text-field>
-          <v-text-field v-model="editedItem.appointmenttime" label="เวลานัดหมาย" :rules="[rules.appointmenttime]"></v-text-field>
-          <v-text-field v-model="editedItem.patienttype" label="ประเภทผู้ป่วย" :rules="[rules.patienttype]"></v-text-field>
-          <v-text-field v-model="editedItem.date" label="วันที่" :rules="[rules.date]"></v-text-field>
-          <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"></v-text-field>
+          <!-- <v-text-field v-model="editedItem.hnnumberj" label="HN(Hospital Number)" :rules="[rules.hnnumberj]"></v-text-field> -->
+          <v-text-field v-model="saved.appointmenttime" label="เวลานัดหมาย" :rules="[rules.appointmenttime]"></v-text-field>
+          <!-- <v-text-field v-model="editedItem.patienttype" label="ประเภทผู้ป่วย" :rules="[rules.patienttype]"></v-text-field> -->
+          <v-text-field v-model="saved.service_date" label="วันที่" :rules="[rules.service_date]"></v-text-field>
+          <v-text-field v-model="saved.description" label="เพิ่มเติม" :rules="[rules.description]"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-btn color="blue darken-1" @click="save">Save</v-btn>
@@ -23,17 +23,22 @@
   </template>
   
   <script>
+  
   export default {
     props: {
       dialog: Boolean,
-      editedItem: Object,
-      dialogTitle: String
+      saved: Object,
+      dialogTitle: String,
+      patient: Object,
     },
 
     data () {
       return{
+        appointmenttime: '',
+      service_date: '',
+      description: '',
         rules: {
-        hnnumberj: (value) => !!value || "กรอกข้อมูลให้ครบ",
+        // hnnumberj: (value) => !!value || "กรอกข้อมูลให้ครบ",
 
         appointmenttime:  (value) => {
           if (value?.length >=3) return true
@@ -45,7 +50,7 @@
 
         return 'กรอกประเภทผู้ป่วยให้ครบ'
         },
-        date: (value)=>{
+        service_date: (value)=>{
           if (value?.length >=2) return true
 
           return 'กรอกวันที่ให้ชัดเจน'
@@ -56,7 +61,7 @@
     methods: {
       save() {
         // Save the edited item and close the dialog
-        this.$emit('save', this.editedItem);
+        this.$emit('save');
         this.close();
       },
       close() {

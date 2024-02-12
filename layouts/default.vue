@@ -55,15 +55,11 @@ export default {
 
 
       items: [
+
         {
-          icon: 'mdi-home-account',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-map',
-          title: 'Map-Service',
-          to: '/Apps'
+          icon: 'mdi-view-dashboard',
+          title: 'Dashboard',
+          to: '/Dashboard'
         },
         {
           icon: 'mdi-table',
@@ -71,15 +67,26 @@ export default {
           to: '/Patient'
         },
         {
-          icon: 'mdi-table',
-          title: 'JOB',
-          to: '/JOB'
+          icon: 'mdi-doctor',
+          title: 'Queue',
+          to: '/Queue'
         },
         {
-          icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
-          to: '/Dashboard'
-        }
+          icon: 'mdi-map',
+          title: 'Map-Service',
+          to: '/Apps'
+        },
+        
+        
+        // {
+        //   icon: 'mdi-home-account',
+        //   title: 'Welcome',
+        //   to: '/'
+        // },
+        
+        
+        
+        
       ],
       miniVariant: false,
       right: true,

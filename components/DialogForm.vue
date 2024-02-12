@@ -8,15 +8,14 @@
         <v-card-text>
 
           <!-- Your form fields go here -->
-          <v-text-field v-model="editedItem.hnnumber" label="HN(Hospital Number)"
-            :rules="[rules.hnnumber]"></v-text-field>
+          <v-text-field v-model="editedItem.hnnumber" label="HN(Hospital Number)" :rules="[rules.hnnumber]"
+            ref="hnnumber"></v-text-field>
           <v-text-field v-model="editedItem.age" label="Age" :rules="[rules.age]"></v-text-field>
-          <v-select v-model="editedItem.gender" label="เพศ"
-            :items="['ชาย','หญิง','อื่นๆ']"></v-select>
+          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
           <v-text-field v-model="editedItem.numberphone" label="NumberPhone" :rules="[rules.phone]"></v-text-field>
           <v-text-field v-model="editedItem.address" label="Address" :rules="[rules.address]"></v-text-field>
           <v-select v-model="editedItem.status" label="เลือกประเภท"
-            :items="['ฉุกเฉิน','ฉุกเฉินเร่งด่วน','หมดสติ','บาดเจ็บเล็กน้อย']"></v-select>
+            :items="['ฉุกเฉิน', 'ฉุกเฉินเร่งด่วน', 'หมดสติ', 'บาดเจ็บเล็กน้อย','ให้มารับที่พัก']"></v-select>
           <v-text-field v-model="editedItem.coordinate" label="Coordinate" :rules="[rules.coordinate]"></v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -80,14 +79,18 @@ export default {
     },
     validateForm() {
       for (const key in this.editedItem) {
-        if (!this.editedItem[key]) {
-          this.$refs[key].validate;
-          return false;
+        const fieldRef = this.$refs[key];
 
+        if (fieldRef && fieldRef.validate) {
+          fieldRef.validate();
+          if (fieldRef.hasError) {
+            return false;
+          }
         }
       }
       return true;
     }
+    
   }
 };
 </script>

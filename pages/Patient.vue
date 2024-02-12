@@ -12,7 +12,7 @@
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
     </v-card-title>
 
-    <v-data-table :headers="headers" :items="desserts" :search="search">
+    <v-data-table depressed  :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
         <v-icon small class="mr-2" @click="openDialog('edit', item)">
           mdi-pencil
@@ -65,13 +65,14 @@
 <script>
 import DialogForm from '~/components/DialogForm.vue';
 import DepartmentCard from '~/components/DepartmentCard.vue';
+import BarChartPatient from '~/components/BarChartPatient.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
   components: { 
     DialogForm,
     DepartmentCard,
-
+    BarChartPatient,
   },
   data() {
     return {
@@ -80,7 +81,7 @@ export default {
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN', value: 'hnnumber' },
+        { text: 'HN(Hospital Number)', value: 'hnnumber' },
         { text: 'Age', value: 'age' },
         { text: 'Gender', value: 'gender' },
         { text: 'NumberPhone', value: 'numberphone' },
@@ -95,6 +96,7 @@ export default {
         'ฉุกเฉินเร่งด่วน': 'red',
         'หมดสติ': 'yellow',
         'บาดเจ็บเล็กน้อย': 'green',
+        'ให้มารับที่พัก' : 'green',
       },
       dialog: false,
       dialogTitle: '',
@@ -116,9 +118,11 @@ export default {
     
   mounted() {
     console.log('ENV', this.endpointUrl)
-
+    this.loadData();
   },
   methods: {
+    
+
     getStatusColor(status) {
       // Add logic to determine the color based on the status value
       return this.statusColorMap[status] || 'defaultColor';
@@ -133,10 +137,11 @@ export default {
       try {
         let response;
 
-        if (!editedItem.id) {
+        if (!editedItem.patient_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
           this.$store.commit('incrementPatientCount');
+
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -144,7 +149,7 @@ export default {
           });
         } else {
           // Update existing patient
-          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.id}`, editedItem);
+          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.patient_id}`, editedItem);
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -158,17 +163,17 @@ export default {
         // For simplicity, updating the local state here:
 
         this.$nextTick(() => {
-          if (!editedItem.id) {
+          if (!editedItem.patient_id) {
             // Add new patient
             this.desserts.push(savedPatient);
           } else {
             // Update existing patient
-            const index = this.desserts.findIndex(item => item.id === savedPatient.id);
-            this.$set(this.desserts, index, savedPatient.id);
+            const index = this.desserts.findIndex(item => item.patient_id === savedPatient.patient_id);
+            this.$set(this.desserts, index, savedPatient.patient_id);
           }
           this.closeDialog();
         });
-
+        
       } catch (error) {
         console.error('Error saving item:', error);
 
@@ -212,10 +217,10 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.patient_id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
-              this.desserts = this.desserts.filter(p => p.id !== item.id);
+              this.desserts = this.desserts.filter(p => p.patient_id !== item.patient_id);
               this.$store.commit('decrementPatientCount');
               // Show success notification
               Swal.fire({
@@ -253,6 +258,7 @@ export default {
         const { data } = await axios.get(this.endpointUrl + '/api/patients')
         this.desserts = data;
         console.log("This data", data)
+        this.$emit('data-loaded', data);
       } catch (error) {
         console.error('Error loading data:', error);
       }

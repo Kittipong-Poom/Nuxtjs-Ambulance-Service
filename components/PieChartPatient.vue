@@ -1,5 +1,5 @@
 <template>
-    <Bar
+    <Pie
       :chart-options="chartOptions"
       :chart-data="chartData"
       :chart-id="chartId"
@@ -13,29 +13,28 @@
   </template>
   
   <script>
-  import { Bar } from 'vue-chartjs/legacy'
+  import { Pie } from 'vue-chartjs/legacy'
   
   import {
     Chart as ChartJS,
     Title,
     Tooltip,
     Legend,
-    BarElement,
-    CategoryScale,
-    LinearScale
+    ArcElement,
+    CategoryScale
   } from 'chart.js'
   
-  ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+  ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
   
   export default {
-    name: 'BarChart',
+    name: 'PieChartPatient',
     components: {
-      Bar
+      Pie
     },
     props: {
       chartId: {
         type: String,
-        default: 'bar-chart'
+        default: 'pie-chart'
       },
       datasetIdKey: {
         type: String,
@@ -65,25 +64,11 @@
     data() {
       return {
         chartData: {
-          labels: [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-          ],
+          labels: ['ฉุกเฉิน', 'บาดเจ็บเล็กน้อย', 'หมดสติ', 'ฉุกเฉินเร่งด่วน','มารับที่พัก'],
           datasets: [
             {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+              backgroundColor: ['#C1E8FF', '#668Dc0', '#2d82b5', '#DD1B16','#86B6F6'],
+              data: [40, 20,80, 10,20]
             }
           ]
         },

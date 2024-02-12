@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
       <h1 class="dashboardtext">Data table JOB</h1>
@@ -50,12 +50,13 @@
 </template>
 
 <script>
-import DialogForm2 from '~/components/DialogForm2.vue';
+import DialogQueue from '~/components/DialogQueue.vue';
+
 import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
   components: {
-    DialogForm2
+    DialogQueue
   },
   data() {
     return {
@@ -87,19 +88,15 @@ export default {
 
   },
   async fetch() {
-    // Fetch data from the server before rendering the component
     await this.loadData();
   },
- // The `mounted()` lifecycle hook is a function that is called after the Vue instance has been mounted
- // to the DOM. In this case, the `mounted()` function is logging the value of `this.endpointUrl` to
- // the console.
+
   mounted() {
 
     console.log('ENV', this.endpointUrl)
   },
   methods: {
     openDialog(action, item = null) {
-      // Set dialog properties based on the action
       this.dialogTitle = action === 'add' ? 'จัดการข้อมูลสำหรับJOB' : 'แก้ไข้ข้อมูลของ JOB';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
@@ -118,7 +115,7 @@ export default {
             text: 'แก้ไขข้อมูลสำเร็จ',
           });
         } else {
-          // Update existing patient
+
           response = await axios.put(`${this.endpointUrl}/api/jobs/${editedItem.id}`, editedItem);
           Swal.fire({
             icon: 'success',
@@ -128,9 +125,6 @@ export default {
         }
         console.log('response', response);
         const savedJobs = response.data;
-        // Update the local state or trigger a refresh from the server
-        // based on your application's architecture
-        // For simplicity, updating the local state here:
 
         this.$nextTick(() => {
           if (!editedItem.id) {
@@ -246,3 +240,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.dashboardtext{
+  font-family: 'Open Sans', sans-serif;
+}
+
+</style> -->
