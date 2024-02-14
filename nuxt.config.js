@@ -32,7 +32,8 @@ export default {
     {src:'~/plugins/vue-notification.js', ssr:false},
     {src:"~/plugins/vue2-google-map.js"},
     '~/plugins/vuetify.js',
-
+    { src: '~/plugins/chart.js', mode: 'client' },
+ 
     
   ],
 

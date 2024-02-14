@@ -10,16 +10,17 @@
           <!-- Your form fields go here -->
           <v-text-field v-model="editedItem.hnnumber" label="HN(Hospital Number)" :rules="[rules.hnnumber]"
             ref="hnnumber"></v-text-field>
-          <v-text-field v-model="editedItem.age" label="Age" :rules="[rules.age]"></v-text-field>
+          <v-text-field v-model="editedItem.age" label="อายุ" :rules="[rules.age]"></v-text-field>
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
-          <v-text-field v-model="editedItem.numberphone" label="NumberPhone" :rules="[rules.phone]"></v-text-field>
-          <v-text-field v-model="editedItem.address" label="Address" :rules="[rules.address]"></v-text-field>
-          <v-select v-model="editedItem.status" label="เลือกประเภท"
-            :items="['ฉุกเฉิน', 'ฉุกเฉินเร่งด่วน', 'หมดสติ', 'บาดเจ็บเล็กน้อย','ให้มารับที่พัก']"></v-select>
-          <v-text-field v-model="editedItem.coordinate" label="Coordinate" :rules="[rules.coordinate]"></v-text-field>
+          <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์" :rules="[rules.phone]"></v-text-field>
+          <v-text-field v-model="editedItem.address" label="ที่อยู่" :rules="[rules.address]"></v-text-field>
+          <v-text-field v-model="editedItem.time" label="เวลา" :rules="[rules.address]"></v-text-field>
+          <v-select v-model="editedItem.type" label="เลือกประเภท"
+            :items="['ฉุกเฉิน', 'หมดสติ', 'บาดเจ็บเล็กน้อย','ให้มารับที่พัก']"></v-select>
+          <v-text-field v-model="editedItem.coordinate" label="พิกัด" ></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue darken-1" @click="save">Save</v-btn>
+          <v-btn v-if="dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่')" color="blue darken-1" @click="save">Save</v-btn>
           <v-btn color="blue darken-1" @click="close">Cancel</v-btn>
         </v-card-actions>
       </form>
@@ -32,7 +33,8 @@ export default {
   props: {
     dialog: Boolean,
     editedItem: Object,
-    dialogTitle: String
+    dialogTitle: String,
+ 
   },
   data() {
     return {
@@ -40,7 +42,7 @@ export default {
         hnnumber: (value) => !!value || "กรอกข้อมูลให้ครบ",
 
         phone: (value) => {
-          if (value?.length > 9 && /[0-9-]+/.test(value)) return true
+          if (value?.length > 8 && /[0-9-]+/.test(value)) return true
           return 'Phone number needs to be at least 9 digits.'
         },
 
@@ -55,13 +57,9 @@ export default {
           return 'กรุณากรอกเพศให้ถูกต้อง'
         },
         age: (value) => {
-          if (value?.length > 1 && /[0-2-]+/.test(value)) return true
+          if (value?.length > 0 && /[0-5-]+/.test(value)) return true
           return 'กรอกอายุให้ถูกต้อง'
         },
-        coordinate: (value) => {
-          if (value?.length > 3 && /[0-4-]+/.test(value)) return true
-          return 'กรอกพิกัด อย่างน้อย 4 ตัว'
-        }
       }
     }
   },

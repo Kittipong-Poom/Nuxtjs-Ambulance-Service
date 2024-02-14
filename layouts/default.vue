@@ -72,6 +72,11 @@ export default {
           to: '/Queue'
         },
         {
+          icon: 'mdi-doctor',
+          title: 'QueueJob',
+          to: '/QueueJob'
+        },
+        {
           icon: 'mdi-map',
           title: 'Map-Service',
           to: '/Apps'

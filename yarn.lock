@@ -2019,6 +2019,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/datatables.net@^1.10.28":
+  version "1.10.28"
+  resolved "https://registry.yarnpkg.com/@types/datatables.net/-/datatables.net-1.10.28.tgz#f7e2f999acb1130c2da6b07c0a37f3c5d8b34928"
+  integrity sha512-Y6SZZCdJt7vXROaTBc/ifwhAqSBg7V0urM+RqZt3Tj9JN1U8KSgQ7EKpFG88g/j4MVrlYDfSH+yqSnK0MaIwMw==
+  dependencies:
+    "@types/jquery" "*"
+
 "@types/estree@^1.0.0":
   version "1.0.5"
   resolved "https://registry.npmjs.org/@types/estree/-/estree-1.0.5.tgz"
@@ -2077,6 +2084,13 @@
   integrity sha512-SSrD0c1OQzlFX7pGu1eXxSEjemej64aaNPRhhVYUGqXh0BtldAAx37MG8btcumvpgKyZp1F5Gn3JkktdxiFv6w==
   dependencies:
     "@types/node" "*"
+
+"@types/jquery@*", "@types/jquery@^3.5.29":
+  version "3.5.29"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.29.tgz#3c06a1f519cd5fc3a7a108971436c00685b5dcea"
+  integrity sha512-oXQQC9X9MOPRrMhPHHOsXqeQDnWeCDT3PelUIg/Oy8FAbzSZtFHRjc7IpbfFVmpLtJ+UOoywpRsuO5Jxjybyeg==
+  dependencies:
+    "@types/sizzle" "*"
 
 "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.8":
   version "7.0.15"
@@ -2174,6 +2188,11 @@
     "@types/http-errors" "*"
     "@types/mime" "*"
     "@types/node" "*"
+
+"@types/sizzle@*":
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.8.tgz#518609aefb797da19bf222feb199e8f653ff7627"
+  integrity sha512-0vWLNK2D5MT9dg0iOo8GlKguPAU02QjmZitPEsXRuJXU/OGIOt9vT9Fc26wtYuavLxtO45v9PGleoL9Z0k1LHg==
 
 "@types/source-list-map@*":
   version "0.1.6"
@@ -4127,6 +4146,21 @@ cyclist@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/cyclist/-/cyclist-1.0.2.tgz"
   integrity sha512-0sVXIohTfLqVIW3kb/0n6IiWF3Ifj5nm2XaSrLq2DI6fKIGa2fYAZdk917rUneaeLVpYfFcyXE2ft0fe3remsA==
+
+datatables.net-bs5@^1.13.10:
+  version "1.13.10"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs5/-/datatables.net-bs5-1.13.10.tgz#5e8b74a15ad31ba6ae13fe7c156d4e4326090ce9"
+  integrity sha512-6SPQ7NWufVD4+ibxVMHmaWiObz4SGBaNeZglne4m2xwThaWIAPiJ9OQ2QypcN9Y7ap2uU6QVTPvVmorA9CF5fQ==
+  dependencies:
+    datatables.net "1.13.8"
+    jquery ">=1.7"
+
+datatables.net@1.13.8:
+  version "1.13.8"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.8.tgz#05a2fb5a036b0b65b66d1bb1eae0ba018aaea8a3"
+  integrity sha512-2pDamr+GUwPTby2OgriVB9dR9ftFKD2AQyiuCXzZIiG4d9KkKFQ7gqPfNmG7uj9Tc5kDf+rGj86do4LAb/V71g==
+  dependencies:
+    jquery ">=1.7"
 
 de-indent@^1.0.2:
   version "1.0.2"
@@ -6439,6 +6473,11 @@ jose@^4.14.6:
   version "4.15.4"
   resolved "https://registry.npmjs.org/jose/-/jose-4.15.4.tgz"
   integrity sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==
+
+jquery@>=1.7, jquery@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
 js-tokens@^4.0.0:
   version "4.0.0"

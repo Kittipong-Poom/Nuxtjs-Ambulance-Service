@@ -2,36 +2,37 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">Data table Patient</h1>
+      <h1 class="dashboardtext">ตารางข้อมูลผู้ป่วย</h1>
     </v-card-title>
     <v-card-title>
       <v-btn depressed class="button" color="primary" @click="openDialog('add')">
-        ADD NEW PATIENT
+        จัดการผู้ป่วยใหม่
       </v-btn>
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
     </v-card-title>
 
-    <v-data-table depressed  :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+    <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2" @click="openDialog('edit', item)">
-          mdi-pencil
+        <v-icon small class="mr-2"  @click="openDialog('edit', item)">
+          mdi-pencil-outline
         </v-icon>
-        <v-icon small @click="deleteItem(item)">
+        <v-icon small class="mr-2" color="primary" @click="openWatchDialog(item)">
+          mdi-magnify
+        </v-icon>
+        <v-icon small color="red" @click="deleteItem(item)">
           mdi-delete
         </v-icon>
       </template>
-
-      <template v-slot:item.status="{ item }">
-        <v-chip :color="getStatusColor(item.status)" dark>
-          {{ item.status }}
+ 
+      <template v-slot:item.type="{ item }">
+        <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
+          {{ item.type }}
         </v-chip>
       </template>
-  
-    </v-data-table>
-    <template>
 
-    </template>
+    </v-data-table>
+    
     <!---ปุ่มลบ-->
 
     <v-dialog v-model="confirm" max-width="350">
@@ -69,7 +70,7 @@ import BarChartPatient from '~/components/BarChartPatient.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
-  components: { 
+  components: {
     DialogForm,
     DepartmentCard,
     BarChartPatient,
@@ -77,26 +78,28 @@ export default {
   data() {
     return {
       confirm: false,
+      showSaveButton: true,
       confirmItem: null,
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN(Hospital Number)', value: 'hnnumber' },
-        { text: 'Age', value: 'age' },
-        { text: 'Gender', value: 'gender' },
-        { text: 'NumberPhone', value: 'numberphone' },
-        { text: 'Address', value: 'address' },
-        { text: 'Coordinate', value: 'coordinate' },
-        { text: 'ประเภทผู้ป่วย', value: 'status' },
+        { text: 'HN', value: 'hnnumber' },
+        { text: 'อายุ', value: 'age' },
+        { text: 'เพศ', value: 'gender' },
+        { text: 'เบอร์โทรศัพท์', value: 'numberphone' },
+        { text: 'ที่อยู่', value: 'address' },
+        { text: 'เวลา', value: 'time' },
+        { text: 'พิกัด', value: 'coordinate' },
+        { text: 'ประเภทผู้ป่วย', value: 'type' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
+      //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
       statusColorMap: {
         'ฉุกเฉิน': 'red',
-        'ฉุกเฉินเร่งด่วน': 'red',
         'หมดสติ': 'yellow',
         'บาดเจ็บเล็กน้อย': 'green',
-        'ให้มารับที่พัก' : 'green',
+        'ให้มารับที่พัก': 'green',
       },
       dialog: false,
       dialogTitle: '',
@@ -106,31 +109,35 @@ export default {
         gender: '',
         numberphone: '',
         address: '',
+        time:'',
         coordinate: '',
-        status: ''
+        type: ''
       },
     };
   },
-    fetch(){
-      this.loadData()
-    
-    },
-    
+  fetch() {
+    this.loadData()
+  },
+
   mounted() {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
   methods: {
-    
 
-    getStatusColor(status) {
-      // Add logic to determine the color based on the status value
-      return this.statusColorMap[status] || 'defaultColor';
+
+    getStatusColor(type) {
+      return this.statusColorMap[type] || 'defaultColor';
     },
     openDialog(action, item = null) {
-      // Set dialog properties based on the action
       this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
       this.editedItem = action === 'add' ? {} : { ...item };
+      this.dialog = true;
+    },
+    openWatchDialog(item) {
+      this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
+      this.editedItem = { ...item };
+ 
       this.dialog = true;
     },
     async saveItem(editedItem) {
@@ -173,7 +180,7 @@ export default {
           }
           this.closeDialog();
         });
-        
+
       } catch (error) {
         console.error('Error saving item:', error);
 
@@ -295,6 +302,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
 }
+
 .button {
   height: 45px;
   font-size: 14px;
@@ -317,4 +325,9 @@ body {
   color: #ffffff;
   transform: translateY(-7px);
 }
+.my-chip {
+  width: 120px; 
+  justify-content: center;
+}
+
 </style>
