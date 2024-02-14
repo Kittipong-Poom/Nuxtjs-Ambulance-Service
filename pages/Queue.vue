@@ -40,11 +40,12 @@
             </v-card-item>
             <v-card-actions class="ma-3 justify-center d-flex align-centerg">
               <v-btn color="#49C8FF" class="rounded-xl white--text" @click="openDialog('add')">
-                ลงเวลา&รับงาน
+                รับงาน
               </v-btn>
               <DialogQueue :dialog="dialog" :saved="saved" :dialog-title="dialogTitle" @save="savejob" @close="close"
                 @open-dialog="openDialog" />
             </v-card-actions>
+            
           </v-card>
         </v-row>
       </v-col>
@@ -54,14 +55,15 @@
 
 <script>
 import DialogQueue from '~/components/DialogQueue.vue';
-
+import QueueJob from './QueueJob.vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
 export default {
   components: {
-    DialogQueue
+    DialogQueue,
+    QueueJob,
   },
   data() {
     return {
@@ -79,8 +81,13 @@ export default {
   },
   mounted() {
     this.loadData();
+    this.$on('open-queue-dialog', this.openQueueDialogFromJob);
   },
   methods: {
+    openQueueDialogFromJob(patientData) {
+      this.selectedPatientData = patientData;
+      this.dialog = true;
+    },
     //เลือก Card ที่เราเลือก
     selectCard(index) {
       this.selectedCardIndex = index;
