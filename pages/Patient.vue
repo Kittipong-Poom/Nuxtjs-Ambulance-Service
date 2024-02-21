@@ -5,11 +5,12 @@
       <h1 class="dashboardtext">ตารางข้อมูลผู้ป่วย</h1>
     </v-card-title>
     <v-card-title>
+      <!-- Add new information -->
       <v-btn depressed class="button" color="primary" @click="openDialog('add')">
         จัดการผู้ป่วยใหม่
       </v-btn>
       <v-spacer />
-      <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details />
+      <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
     </v-card-title>
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
@@ -17,7 +18,7 @@
         <v-icon small class="mr-2"  @click="openDialog('edit', item)">
           mdi-pencil-outline
         </v-icon>
-        <v-icon small class="mr-2" color="primary" @click="openWatchDialog(item)">
+        <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
           mdi-magnify
         </v-icon>
         <v-icon small color="red" @click="deleteItem(item)">
@@ -59,7 +60,7 @@
 
     <!-- Include the dialog -->
     <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
-      @close="closeDialog" />
+      @close="closeDialog" :view-mode="viewMode" />
   </v-card>
 </template>
 
@@ -78,8 +79,8 @@ export default {
   data() {
     return {
       confirm: false,
-      showSaveButton: true,
       confirmItem: null,
+      dialogVisible: false,
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
@@ -97,8 +98,6 @@ export default {
       desserts: [],
       statusColorMap: {
         'ฉุกเฉิน': 'red',
-        'หมดสติ': 'yellow',
-        'บาดเจ็บเล็กน้อย': 'green',
         'ให้มารับที่พัก': 'green',
       },
       dialog: false,
@@ -124,7 +123,10 @@ export default {
     this.loadData();
   },
   methods: {
-
+    redirectToPatientDetail(item) {
+    
+    console.log('คลิก Row นี้:', item);
+  },
 
     getStatusColor(type) {
       return this.statusColorMap[type] || 'defaultColor';
@@ -133,13 +135,16 @@ export default {
       this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
+      this.viewMode = action !== 'add';
+      this.viewMode = false;
     },
     openWatchDialog(item) {
-      this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
-      this.editedItem = { ...item };
- 
-      this.dialog = true;
-    },
+  this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
+  this.dialogVisible = true;
+  this.editedItem = { ...item };
+  this.dialog = true;
+  this.viewMode = true;
+},
     async saveItem(editedItem) {
       try {
         let response;
@@ -194,7 +199,7 @@ export default {
     },
 
     async deleteItem(item) {
-      // Store the item to be confirmed for deletion
+      
 
       this.confirmItem = item;
       this.confirm = true;
@@ -275,6 +280,7 @@ export default {
       this.dialog = false;
       this.dialogTitle = '';
       this.editedItem = {};
+      this.dialogVisible = false;
     },
 
   }

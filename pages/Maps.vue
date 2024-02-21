@@ -48,7 +48,7 @@ export default {
         { position: { lng: 99.876470, lat: 20.043806 } },
         { position: { lng: 99.873938, lat: 20.031244 } }
       ]
-    };
+    }; 
   },
   methods: {
     async searchAddress() {

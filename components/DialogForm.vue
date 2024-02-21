@@ -1,27 +1,32 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600">
+  <v-dialog v-model="dialog" max-width="650"  >
     <v-card>
-      <v-card-title>
-        <span class="headline">{{ dialogTitle }}</span>
+      <v-card-title class="text-center d-flex justify-center align-center">
+        <span class="headline  ">{{ dialogTitle }}</span>
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
 
           <!-- Your form fields go here -->
-          <v-text-field v-model="editedItem.hnnumber" label="HN(Hospital Number)" :rules="[rules.hnnumber]"
-            ref="hnnumber"></v-text-field>
-          <v-text-field v-model="editedItem.age" label="อายุ" :rules="[rules.age]"></v-text-field>
-          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
-          <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์" :rules="[rules.phone]"></v-text-field>
-          <v-text-field v-model="editedItem.address" label="ที่อยู่" :rules="[rules.address]"></v-text-field>
-          <v-text-field v-model="editedItem.time" label="เวลา" :rules="[rules.address]"></v-text-field>
+          <v-text-field v-model="editedItem.hnnumber" label="HN(Hospital Number)"  :rules="[rules.hnnumber]" ref="hnnumber"
+            :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.age" label="อายุ" :rules="[rules.age]"  :readonly="viewMode"></v-text-field>
+          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
+            :readonly="viewMode"></v-select>
+          <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์" :rules="[rules.phone]"
+            :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.address" label="ที่อยู่" :rules="[rules.address]"
+            :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.time" label="เวลา" :readonly="viewMode"></v-text-field>
           <v-select v-model="editedItem.type" label="เลือกประเภท"
-            :items="['ฉุกเฉิน', 'หมดสติ', 'บาดเจ็บเล็กน้อย','ให้มารับที่พัก']"></v-select>
-          <v-text-field v-model="editedItem.coordinate" label="พิกัด" ></v-text-field>
+            :items="['ฉุกเฉิน', 'ให้มารับที่พัก']" :readonly="viewMode"></v-select>
+          <v-text-field v-model="editedItem.coordinate" label="พิกัด" :readonly="viewMode"></v-text-field>
+          
         </v-card-text>
-        <v-card-actions>
-          <v-btn v-if="dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่')" color="blue darken-1" @click="save">Save</v-btn>
-          <v-btn color="blue darken-1" @click="close">Cancel</v-btn>
+        <v-card-actions >
+          <v-btn v-if="!viewMode && (dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
+            color="blue darken-1" class="white--text" @click="save">Save</v-btn>
+          <v-btn color="blue darken-1" class="white--text" @click="close">Cancel</v-btn>
         </v-card-actions>
       </form>
     </v-card>
@@ -34,39 +39,33 @@ export default {
     dialog: Boolean,
     editedItem: Object,
     dialogTitle: String,
- 
+    viewMode: Boolean,
   },
   data() {
     return {
       rules: {
-        hnnumber: (value) => !!value || "กรอกข้อมูลให้ครบ",
-
-        phone: (value) => {
-          if (value?.length > 8 && /[0-9-]+/.test(value)) return true
-          return 'Phone number needs to be at least 9 digits.'
+        hnnumber: (value) => {
+          if (!value) return "กรอกข้อมูลให้ครบ";
+          return true; // Validation passed
         },
-
         address: (value) => {
-          if (value?.length >= 2) return true
-
-          return 'ที่อยู่ต้องกรอกให้ชัดเจน'
-        },
-        gender: (value) => {
-          if (value?.length >= 2) return true
-
-          return 'กรุณากรอกเพศให้ถูกต้อง'
+          if (!value) return "กรอกที่อยู่";
+          if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";
+          return true; // Validation passed
         },
         age: (value) => {
-          if (value?.length > 0 && /[0-5-]+/.test(value)) return true
-          return 'กรอกอายุให้ถูกต้อง'
+          if (!value) return "กรอกอายุ";
+          if (!/[0-5-]+/.test(value)) return "กรอกอายุให้ถูกต้อง";
+          return true; // Validation passed
         },
-      }
-    }
+      },
+      viewMode: false, // Define viewMode in the data section
+    };
   },
   methods: {
     save() {
       // Save the edited item and close the dialog
-      if (this.validateForm()) {
+      if (!this.viewMode && this.validateForm()) {
         this.$emit('save', this.editedItem);
         this.close();
       }
@@ -88,9 +87,10 @@ export default {
       }
       return true;
     }
-    
   }
 };
 </script>
 
+<style>
 
+</style>

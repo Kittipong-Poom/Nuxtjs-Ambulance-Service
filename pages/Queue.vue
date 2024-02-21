@@ -3,7 +3,7 @@
     <!-- //หัวข้อความ -->
     <v-col cols="12">
       <v-sheet class="pa-1 text-uppercase text-center" color="grey-lighten-3">
-        <h2 class="patient align-center head  ">Your Work Queue</h2>
+        <h2 class="patient align-center head  ">งานฉุกเฉิน</h2>
       </v-sheet>
     </v-col>
     <v-row class="mt-7" align="center" justify="center">
@@ -17,34 +17,41 @@
                 {{ patient.title }}
               </v-card-title>
               <v-card-subtitle>
-                hnnumber: {{ patient.hnnumber }}
+                <h1 class="hn-font d-flex justify-center align-center"> hnnumber: {{ patient.hnnumber }}</h1>
               </v-card-subtitle>
               <v-card-subtitle>
-                Gender: {{ patient.gender }}
+                เพศ: {{ patient.gender }}
               </v-card-subtitle>
               <v-card-subtitle>
-                Age: {{ patient.age }}
+                อายุ: {{ patient.age }}
               </v-card-subtitle>
               <v-card-subtitle>
-                PhoneNumber: {{ patient.numberphone }}
+                เบอร์โทรศัพท์: {{ patient.numberphone }}
               </v-card-subtitle>
               <v-card-subtitle>
-                Coordination: {{ patient.coordinate }}
+                ที่อยู่: {{ patient.address }}
               </v-card-subtitle>
               <v-card-subtitle>
-                Patient type: {{ patient.status }}
+                เวลา: {{ patient.time }}
               </v-card-subtitle>
               <v-card-subtitle>
-                AdDress: {{ patient.address }}
+                พิกัด: {{ patient.coordinate }}
               </v-card-subtitle>
+              <v-card-subtitle>
+                ประเภทผู้ป่วย: <v-chip class="white--text" :color="getStatusColor(patient.type)"> {{
+                  patient.type }}</v-chip>
+              </v-card-subtitle>
+
+
             </v-card-item>
             <v-card-actions class="ma-3 justify-center d-flex align-centerg">
-              <v-btn color="#49C8FF" class="rounded-xl white--text" @click="openDialog('add')">
-                ลงเวลา&รับงาน
+              <v-btn color="#49C8FF" class="rounded-xl white--text" @click="openDialog('edit')">
+                แก้ไขข้อมูล
               </v-btn>
-              <DialogQueue :dialog="dialog" :saved="saved" :dialog-title="dialogTitle" @save="savejob" @close="close"
-                @open-dialog="openDialog" />
+
             </v-card-actions>
+            <DialogQueue :dialog="dialog" :saved="saved" :dialog-title="dialogTitle" @save="savejob" @close="close"
+              @open-dialog="openDialog" />
           </v-card>
         </v-row>
       </v-col>
@@ -54,14 +61,19 @@
 
 <script>
 import DialogQueue from '~/components/DialogQueue.vue';
-
+import DialogForm from '~/components/DialogForm.vue';
+import Patient from './Patient.vue';
+import QueueJob from './QueueJob.vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
 export default {
   components: {
-    DialogQueue
+    DialogQueue,
+    QueueJob,
+    DialogForm,
+    Patient,
   },
   data() {
     return {
@@ -70,7 +82,6 @@ export default {
       desserts: [],
       //saved ฟั่งชั่นนี้เก็บ object ไว้ในกรณีมีหลายตัว
       saved: {
-        appointmenttime: '',
         service_date: '',
         description: '',
       },
@@ -79,8 +90,23 @@ export default {
   },
   mounted() {
     this.loadData();
+
   },
   methods: {
+    getStatusColor(type) {
+
+      if (type === 'ฉุกเฉิน') {
+        return 'red';
+      } else if (type === 'ให้มารับที่พัก') {
+        return 'green';
+      }
+
+      return '';
+    },
+    openQueueDialogFromJob(patientData) {
+      this.selectedPatientData = patientData;
+      this.dialog = true;
+    },
     //เลือก Card ที่เราเลือก
     selectCard(index) {
       this.selectedCardIndex = index;
@@ -90,14 +116,14 @@ export default {
     removeSelectedCard() {
       if (this.selectedCardIndex !== null) {
         this.desserts.splice(this.selectedCardIndex, 1);
-        this.selectedCardIndex = null; 
+        this.selectedCardIndex = null;
       }
     },
     //ฟังชั่นนี้เอาไว้เซฟ ข้อมูล
     async savejob() {
       try {
         const postData = {
-          appointmenttime: this.saved.appointmenttime.trim(),
+
           service_date: this.saved.service_date.trim(),
           description: this.saved.description.trim(),
           patient_id: this.saved.patient_id
@@ -149,7 +175,7 @@ export default {
       try {
         const res = await axios.get(this.endpointUrl + '/api/patients');
         // this.desserts = data.data;
-        this.desserts = res.data;
+        this.desserts = res.data.filter(patient => patient.type === 'ฉุกเฉิน');
         console.log(this.desserts);
         // console.log("Loaded data:", data);
       }
@@ -170,6 +196,10 @@ export default {
 
 
 <style scoped>
+.hn-font {
+  font-size: 22px;
+}
+
 body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -185,7 +215,7 @@ body {
 }
 
 .head {
-  font-size: 17px;
+  font-size: 29px;
   background-color: #2FB6FF;
   margin: 0;
   padding: 10px;
@@ -195,4 +225,3 @@ body {
 
 }
 </style>
-

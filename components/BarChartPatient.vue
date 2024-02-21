@@ -78,7 +78,7 @@
           ],
           datasets: [
             {
-              label: 'Patient Data',
+              label: 'ข้อมูล ผู้ป่วย',
               backgroundColor: '#86B6F6',
               data: [ 20, 12, 39, 10]
             }

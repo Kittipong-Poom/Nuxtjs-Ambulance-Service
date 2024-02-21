@@ -1229,6 +1229,28 @@
   dependencies:
     tslib "^2.1.0"
 
+"@fortawesome/fontawesome-free@^6.5.1":
+  version "6.5.1"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-free/-/fontawesome-free-6.5.1.tgz"
+  integrity sha512-CNy5vSwN3fsUStPRLX7fUYojyuzoEMSXPl7zSLJ8TgtRfjv24LOnOWKT2zYwaHZCJGkdyRnTmstR0P+Ah503Gw==
+
+"@fullcalendar/core@^6.1.10":
+  version "6.1.10"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.10.tgz#54eca62345243ec5b2f853102086da7200cd6f03"
+  integrity sha512-oTXGJSAGpCf1oY+CKp5qYjMHkJCPBkJ3SHitl63n8Q6xKeiwQ4EF6Au451euUovREwJpLmD1AyZrCnWmtB9AVg==
+  dependencies:
+    preact "~10.12.1"
+
+"@fullcalendar/daygrid@^6.1.10":
+  version "6.1.10"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/daygrid/-/daygrid-6.1.10.tgz#1012907ac02993e9896dda08502109a85ca8c308"
+  integrity sha512-Z4GRm1IyHKgxXFTWGcEI0nTsvYOIkpE0aMt3/o3ER2SZkF+hfwcDFhtj0c9+WhMjXFIWYeoTnA9rUOY7Zl/nxA==
+
+"@fullcalendar/vue@^6.1.10":
+  version "6.1.10"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/vue/-/vue-6.1.10.tgz#bb4d067bcc0858d78db7c66f47d99ce7ca9da88b"
+  integrity sha512-bQAuBEX7XA96ovAHFBBVH9j9xWzfwAjfqd1BCD2dWgMzdjRmP5FyR/aHjYuIs+lqvA4MR7aF8BcIT27FCgvALA==
+
 "@gar/promisify@^1.0.1":
   version "1.1.3"
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"
@@ -1821,7 +1843,7 @@
 
 "@nuxtjs/google-fonts@^3.1.3":
   version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@nuxtjs/google-fonts/-/google-fonts-3.1.3.tgz#c00d4adaa028b39747783bd61b13b06dffc7c99f"
+  resolved "https://registry.npmjs.org/@nuxtjs/google-fonts/-/google-fonts-3.1.3.tgz"
   integrity sha512-gHwstHXQKd/r9O2WnQR4UJbi7Rfb9No1/gF4gqP+y18h1DAAZUOYPBF5EAPGjZKgDOW2XbZHP8Rw3oSDTpIT1A==
   dependencies:
     "@nuxt/kit" "^3.8.2"
@@ -2021,7 +2043,7 @@
 
 "@types/datatables.net@^1.10.28":
   version "1.10.28"
-  resolved "https://registry.yarnpkg.com/@types/datatables.net/-/datatables.net-1.10.28.tgz#f7e2f999acb1130c2da6b07c0a37f3c5d8b34928"
+  resolved "https://registry.npmjs.org/@types/datatables.net/-/datatables.net-1.10.28.tgz"
   integrity sha512-Y6SZZCdJt7vXROaTBc/ifwhAqSBg7V0urM+RqZt3Tj9JN1U8KSgQ7EKpFG88g/j4MVrlYDfSH+yqSnK0MaIwMw==
   dependencies:
     "@types/jquery" "*"
@@ -2087,7 +2109,7 @@
 
 "@types/jquery@*", "@types/jquery@^3.5.29":
   version "3.5.29"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.29.tgz#3c06a1f519cd5fc3a7a108971436c00685b5dcea"
+  resolved "https://registry.npmjs.org/@types/jquery/-/jquery-3.5.29.tgz"
   integrity sha512-oXQQC9X9MOPRrMhPHHOsXqeQDnWeCDT3PelUIg/Oy8FAbzSZtFHRjc7IpbfFVmpLtJ+UOoywpRsuO5Jxjybyeg==
   dependencies:
     "@types/sizzle" "*"
@@ -2191,7 +2213,7 @@
 
 "@types/sizzle@*":
   version "2.3.8"
-  resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.8.tgz#518609aefb797da19bf222feb199e8f653ff7627"
+  resolved "https://registry.npmjs.org/@types/sizzle/-/sizzle-2.3.8.tgz"
   integrity sha512-0vWLNK2D5MT9dg0iOo8GlKguPAU02QjmZitPEsXRuJXU/OGIOt9vT9Fc26wtYuavLxtO45v9PGleoL9Z0k1LHg==
 
 "@types/source-list-map@*":
@@ -4149,7 +4171,7 @@ cyclist@^1.0.1:
 
 datatables.net-bs5@^1.13.10:
   version "1.13.10"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs5/-/datatables.net-bs5-1.13.10.tgz#5e8b74a15ad31ba6ae13fe7c156d4e4326090ce9"
+  resolved "https://registry.npmjs.org/datatables.net-bs5/-/datatables.net-bs5-1.13.10.tgz"
   integrity sha512-6SPQ7NWufVD4+ibxVMHmaWiObz4SGBaNeZglne4m2xwThaWIAPiJ9OQ2QypcN9Y7ap2uU6QVTPvVmorA9CF5fQ==
   dependencies:
     datatables.net "1.13.8"
@@ -4157,7 +4179,7 @@ datatables.net-bs5@^1.13.10:
 
 datatables.net@1.13.8:
   version "1.13.8"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.8.tgz#05a2fb5a036b0b65b66d1bb1eae0ba018aaea8a3"
+  resolved "https://registry.npmjs.org/datatables.net/-/datatables.net-1.13.8.tgz"
   integrity sha512-2pDamr+GUwPTby2OgriVB9dR9ftFKD2AQyiuCXzZIiG4d9KkKFQ7gqPfNmG7uj9Tc5kDf+rGj86do4LAb/V71g==
   dependencies:
     jquery ">=1.7"
@@ -5541,7 +5563,7 @@ google-auth-library@^8.0.1, google-auth-library@^8.0.2:
 
 google-fonts-helper@^3.4.1:
   version "3.4.1"
-  resolved "https://registry.yarnpkg.com/google-fonts-helper/-/google-fonts-helper-3.4.1.tgz#9670494011945347e5694ee8169c628c10a6685b"
+  resolved "https://registry.npmjs.org/google-fonts-helper/-/google-fonts-helper-3.4.1.tgz"
   integrity sha512-unq9c1NF771916DrVR2MTpMJ5iHiMSjMBApErjhWT1FZIE+7x+Qik+w6cYi5jw/KtHELz+tyGAKgQetTU9wrlA==
   dependencies:
     deepmerge "^4.3.1"
@@ -6476,7 +6498,7 @@ jose@^4.14.6:
 
 jquery@>=1.7, jquery@^3.7.1:
   version "3.7.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
+  resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
 js-tokens@^4.0.0:
@@ -7087,6 +7109,11 @@ marker-clusterer-plus@^2.1.4:
   version "2.1.4"
   resolved "https://registry.npmjs.org/marker-clusterer-plus/-/marker-clusterer-plus-2.1.4.tgz"
   integrity sha512-4WLZnYCkgsUfSC0pftldd0YrLNupSqVIEdxL979f3sXVMBHTUOF3gDa6cEuOk2z8UGyVGcANiNZgvVc333mrHA==
+
+material-design-icons@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/material-design-icons/-/material-design-icons-3.0.1.tgz"
+  integrity sha512-t19Z+QZBwSZulxptEu05kIm+UyfIdJY1JDwI+nx02j269m6W414whiQz9qfvQIiLrdx71RQv+T48nHhuQXOCIQ==
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -7766,7 +7793,7 @@ object.values@^1.1.0:
 
 ofetch@^1.3.3:
   version "1.3.3"
-  resolved "https://registry.yarnpkg.com/ofetch/-/ofetch-1.3.3.tgz#588cb806a28e5c66c2c47dd8994f9059a036d8c0"
+  resolved "https://registry.npmjs.org/ofetch/-/ofetch-1.3.3.tgz"
   integrity sha512-s1ZCMmQWXy4b5K/TW9i/DtiN8Ku+xCiHcjQ6/J/nDdssirrQNOoB165Zu8EqLMA2lln1JUth9a0aW9Ap2ctrUg==
   dependencies:
     destr "^2.0.1"
@@ -8880,6 +8907,11 @@ postcss@^8.4.14, postcss@^8.4.23, postcss@^8.4.33:
     nanoid "^3.3.7"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
+
+preact@~10.12.1:
+  version "10.12.1"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.12.1.tgz#8f9cb5442f560e532729b7d23d42fd1161354a21"
+  integrity sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==
 
 prelude-ls@~1.1.2:
   version "1.1.2"

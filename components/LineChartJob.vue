@@ -85,7 +85,7 @@
           ],
           datasets: [
             {
-              label: 'Job Request',
+              label: 'การรับงาน',
               backgroundColor: '#7BD3EA',
               data: [40, 39, 10, 40, 39, 80, 40]
             }

@@ -33,7 +33,7 @@ export default {
     {src:"~/plugins/vue2-google-map.js"},
     '~/plugins/vuetify.js',
     { src: '~/plugins/chart.js', mode: 'client' },
- 
+    
     
   ],
 
@@ -57,7 +57,7 @@ export default {
       {
         confirmButtonColor: '#FFFFFF',
       }
-      
+       
     ]
     
   ],

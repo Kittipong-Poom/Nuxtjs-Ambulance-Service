@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="head-text">Dashboard Ambulance</h1>
+    <h1 class="head-text">แดชบอร์ด</h1>
     <v-container class="bg-surface-variant">
       <v-row justify="center" align="center">
         <!-- Patient Card 1 -->
@@ -8,7 +8,7 @@
 
         <v-col cols="12">
           <v-sheet class="pa-1 text-uppercase text-center" color="grey-lighten-3">
-            <h2 class="patient align-center head  ">Patient</h2>
+            <h2 class="patient align-center head  ">ผู้ป่วย</h2>
           </v-sheet>
         </v-col>
 
@@ -32,7 +32,7 @@
 
         <v-col cols="12">
           <v-sheet class="pa-1 text-uppercase text-center" color="grey-lighten-3">
-            <h2 class="patient align-center head  ">job</h2>
+            <h2 class="patient align-center head  ">คนรับงาน</h2>
           </v-sheet>
         </v-col>
 

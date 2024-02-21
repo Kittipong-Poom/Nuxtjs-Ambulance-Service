@@ -27,7 +27,7 @@
 
       <v-row justify="end" align="center">
         <v-col cols="auto">
-          <v-btn to="/" class="ma-2 white--text" color="#3A87E3">
+          <v-btn to="/Dashboard" class="ma-2 white--text" color="#3A87E3">
             <v-icon color="#FFF">mdi-home</v-icon>
             Home
           </v-btn>
@@ -36,7 +36,8 @@
     </v-app-bar>
 
     <v-main>
-      <v-container>
+      
+      <v-container fluid>
         <Nuxt />
       </v-container>
     </v-main>
@@ -58,28 +59,34 @@ export default {
 
         {
           icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
+          title: 'แดชบอร์ด',
           to: '/Dashboard'
         },
         {
           icon: 'mdi-table',
-          title: 'Patient',
+          title: 'จัดการข้อมูลผู้ป่วย',
           to: '/Patient'
         },
         {
-          icon: 'mdi-doctor',
-          title: 'Queue',
-          to: '/Queue'
-        },
-        {
-          icon: 'mdi-doctor',
-          title: 'QueueJob',
+          icon: 'mdi-table',
+          title: 'ตารางจัดการคิวงาน',
           to: '/QueueJob'
         },
         {
+          icon: 'mdi-doctor',
+          title: 'คิวงานฉุกเฉิน',
+          to: '/Queue'
+        },
+        
+        {
+          icon: 'mdi-calendar',
+          title: 'ปฏิทินงาน',
+          to: '/Calendars'
+        },
+        {
           icon: 'mdi-map',
-          title: 'Map-Service',
-          to: '/Apps'
+          title: 'แผนที่',
+          to: '/Maps'
         },
         
         
