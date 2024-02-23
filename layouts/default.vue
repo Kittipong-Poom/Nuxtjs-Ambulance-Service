@@ -70,7 +70,7 @@ export default {
         {
           icon: 'mdi-doctor',
           title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
-          to: '/Queue'
+          to: '/Queueurgent'
         },
         {
           icon: 'mdi-table',

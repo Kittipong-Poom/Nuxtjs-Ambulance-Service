@@ -6,7 +6,7 @@
     </v-card-title>
     <v-card-title>
       <!-- Add new information -->
-      <v-btn depressed class="button" color="primary" @click="openDialog('add')">
+      <v-btn depressed class="button" color="primary" @click="openDialogurgent('add')">
         เพิ่มเคสผู้ป่วยฉุกเฉิน
       </v-btn>
       <v-spacer />
@@ -15,7 +15,7 @@
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2"  @click="openDialog('edit', item)">
+        <v-icon small class="mr-2"  @click="openDialogurgent('edit', item)">
           mdi-pencil-outline
         </v-icon>
         <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
@@ -26,9 +26,9 @@
         </v-icon>
       </template>
  
-      <template v-slot:item.type="{ item }">
-        <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
-          {{ item.type }}
+      <template v-slot:item.violence="{ item }">
+        <v-chip :color="getStatusColor(item.violence)" class="my-chip" dark>
+          {{ item.violence }}
         </v-chip>
       </template>
 
@@ -59,7 +59,7 @@
 
 
     <!-- Include the dialog -->
-    <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
+   <dialog-formurgent :dialog="dialog" :edited-item="editedItem" :dialog-title1="dialogTitle1" @save="saveItem"
       @close="closeDialog" :view-mode="viewMode" />
   </v-card>
 </template>
@@ -68,6 +68,7 @@
 import DialogForm from '~/components/DialogForm.vue';
 import DepartmentCard from '~/components/DepartmentCard.vue';
 import BarChartPatient from '~/components/BarChartPatient.vue';
+import DialogFormurgent from '~/components/DialogFormurgent.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
@@ -75,6 +76,7 @@ export default {
     DialogForm,
     DepartmentCard,
     BarChartPatient,
+    DialogFormurgent
   },
   data() {
     return {
@@ -84,34 +86,37 @@ export default {
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'วัน/เดือน/ปี', value: 'hnnumber' },
+        { text: 'วัน/เดือน/ปี', value: 'service_date' },
         { text: 'เวลา', value: 'time' },
         { text: 'เพศ', value: 'gender' },
         { text: 'อายุ', value: 'age' },
-        { text: 'ประเภทผู้ป่วย', value: 'type' },
-        { text: 'ความรุนแรงของประเภทผู้ป่วย', value: '' },
-        { text: 'กลุ่มอาการฉุกเฉิน', value: '' },
+        { text: 'ประเภทผู้ป่วย', value: 'status' },
+        { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence' },
+        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group' },
         { text: 'จุดเกิดเหตุ', value: 'coordinate' },
-        { text: 'การติดตามการนำส่งผู้ป่วย', value: '' },
+        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
       statusColorMap: {
-        'ฉุกเฉิน': 'red',
-        'ให้มารับที่พัก': 'green',
+        'ผู้ป่วยฉุกเฉินวิฤกติ': 'red',
+        'ผู้ป่วยเฉินเร่งด่วน': 'yellow',
+        'ผู้ป่วยไม่ฉุกเฉิน': 'green',
+
       },
       dialog: false,
-      dialogTitle: '',
+      dialogTitle1: '',
       editedItem: {
-        hnnumber: '',
-        age: '',
+        service_date : '',
+        time: '',
         gender: '',
-        numberphone: '',
-        address: '',
-        time:'',
+        age: '',
+        status: '',
+        violence:'',
+        emergency_group:'',
         coordinate: '',
-        type: ''
+        patient_delivery: ''
       },
     };
   },
@@ -129,18 +134,18 @@ export default {
     console.log('คลิก Row นี้:', item);
   },
 
-    getStatusColor(type) {
-      return this.statusColorMap[type] || 'defaultColor';
+    getStatusColor(violence) {
+      return this.statusColorMap[violence] || 'defaultColor';
     },
-    openDialog(action, item = null) {
-      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
+    openDialogurgent(action, item = null) {
+      this.dialogTitle1 = action === 'add' ? 'จัดการผู้ป่วยใหม่เคสฉุกเฉิน' : 'แก้ไขข้อมูลผู้ป่วยฉุกเฉิน';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
       this.viewMode = action !== 'add';
       this.viewMode = false;
     },
     openWatchDialog(item) {
-  this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
+  this.dialogTitle1 = 'ดูข้อมูลผู้ป่วยฉุกเฉิน';
   this.dialogVisible = true;
   this.editedItem = { ...item };
   this.dialog = true;
@@ -149,10 +154,10 @@ export default {
     async saveItem(editedItem) {
       try {
         let response;
-
-        if (!editedItem.patient_id) {
+        editedItem.service_date = editedItem.service_date.split('T')[0];
+        if (!editedItem.caseurgent_id) {
           // Add new patient
-          response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
+          response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
           this.$store.commit('incrementPatientCount');
 
           Swal.fire({
@@ -162,7 +167,7 @@ export default {
           });
         } else {
           // Update existing patient
-          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.patient_id}`, editedItem);
+          response = await axios.put(`${this.endpointUrl}/api/caseurgents/${editedItem.caseurgent_id }`, editedItem);
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -170,19 +175,19 @@ export default {
           });
         }
         console.log('response', response);
-        const savedPatient = response.data;
+        const savedUrgents = response.data;
         // Update the local state or trigger a refresh from the server
         // based on your application's architecture
         // For simplicity, updating the local state here:
 
         this.$nextTick(() => {
-          if (!editedItem.patient_id) {
+          if (!editedItem.caseurgent_id) {
             // Add new patient
-            this.desserts.push(savedPatient);
+            this.desserts.push(savedUrgents);
           } else {
             // Update existing patient
-            const index = this.desserts.findIndex(item => item.patient_id === savedPatient.patient_id);
-            this.$set(this.desserts, index, savedPatient.patient_id);
+            const index = this.desserts.findIndex(item => item.caseurgent_id === savedUrgents.caseurgent_id);
+            this.$set(this.desserts, index, savedUrgents.caseurgent_id);
           }
           this.closeDialog();
         });
@@ -230,10 +235,10 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.patient_id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/caseurgents/${item.caseurgent_id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
-              this.desserts = this.desserts.filter(p => p.patient_id !== item.patient_id);
+              this.desserts = this.desserts.filter(p => p.caseurgent_id !== item.caseurgent_id);
               this.$store.commit('decrementPatientCount');
               // Show success notification
               Swal.fire({
@@ -268,7 +273,8 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients')
+        const { data } = await axios.get(this.endpointUrl + '/api/caseurgents')
+        
         this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
@@ -279,7 +285,7 @@ export default {
     closeDialog() {
       // Close the dialog
       this.dialog = false;
-      this.dialogTitle = '';
+      this.dialogTitle1 = '';
       this.editedItem = {};
       this.dialogVisible = false;
     },
