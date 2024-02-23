@@ -64,19 +64,20 @@ export default {
         },
         {
           icon: 'mdi-table',
-          title: 'จัดการข้อมูลผู้ป่วย',
+          title: 'จัดการข้อมูลผู้ป่วยทั่วไป',
           to: '/Patient'
+        },
+        {
+          icon: 'mdi-doctor',
+          title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
+          to: '/Queue'
         },
         {
           icon: 'mdi-table',
           title: 'ตารางจัดการคิวงาน',
           to: '/QueueJob'
         },
-        {
-          icon: 'mdi-doctor',
-          title: 'คิวงานฉุกเฉิน',
-          to: '/Queue'
-        },
+        
         
         {
           icon: 'mdi-calendar',

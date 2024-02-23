@@ -1,6 +1,7 @@
 module.exports = {
   presets: ['@babel/preset-env'],
   plugins: [
-    ['@babel/plugin-proposal-private-property-in-object', { 'loose': true }]
-  ]
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-proposal-private-methods',
+  ],
 };

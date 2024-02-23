@@ -1,227 +1,340 @@
+
 <template>
-  <v-container>
-    <!-- //หัวข้อความ -->
-    <v-col cols="12">
-      <v-sheet class="pa-1 text-uppercase text-center" color="grey-lighten-3">
-        <h2 class="patient align-center head  ">งานฉุกเฉิน</h2>
-      </v-sheet>
-    </v-col>
-    <v-row class="mt-7" align="center" justify="center">
-      <v-col>
-        <v-row align="center" justify="center">
-          <!-- ใช้วนลูปจากการอัพข้อมูลมาจาก data table ให้มาอยู่ในรูปแบบ card -->
-          <v-card v-for="(patient, index) in desserts" :key="patient.id" outlined style="border-color: #49C8FF;"
-            class="mx-auto rounded-xl my-cards" max-width="344" hover @click="selectCard(index)">
-            <v-card-item class="text-uppercase dark--text">
-              <v-card-title class="d-flex justify-center align-center">
-                {{ patient.title }}
-              </v-card-title>
-              <v-card-subtitle>
-                <h1 class="hn-font d-flex justify-center align-center"> hnnumber: {{ patient.hnnumber }}</h1>
-              </v-card-subtitle>
-              <v-card-subtitle>
-                เพศ: {{ patient.gender }}
-              </v-card-subtitle>
-              <v-card-subtitle>
-                อายุ: {{ patient.age }}
-              </v-card-subtitle>
-              <v-card-subtitle>
-                เบอร์โทรศัพท์: {{ patient.numberphone }}
-              </v-card-subtitle>
-              <v-card-subtitle>
-                ที่อยู่: {{ patient.address }}
-              </v-card-subtitle>
-              <v-card-subtitle>
-                เวลา: {{ patient.time }}
-              </v-card-subtitle>
-              <v-card-subtitle>
-                พิกัด: {{ patient.coordinate }}
-              </v-card-subtitle>
-              <v-card-subtitle>
-                ประเภทผู้ป่วย: <v-chip class="white--text" :color="getStatusColor(patient.type)"> {{
-                  patient.type }}</v-chip>
-              </v-card-subtitle>
+  <v-card>
+    <v-card-title justify="center" class="center-container1">
+      <h1 class="dashboardtext">เคสผู้ป่วยฉุกเฉิน</h1>
+    </v-card-title>
+    <v-card-title>
+      <!-- Add new information -->
+      <v-btn depressed class="button" color="primary" @click="openDialog('add')">
+        เพิ่มเคสผู้ป่วยฉุกเฉิน
+      </v-btn>
+      <v-spacer />
+      <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
+    </v-card-title>
+
+    <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+      <template v-slot:item.action="{ item }">
+        <v-icon small class="mr-2"  @click="openDialog('edit', item)">
+          mdi-pencil-outline
+        </v-icon>
+        <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+          mdi-magnify
+        </v-icon>
+        <v-icon small color="red" @click="deleteItem(item)">
+          mdi-delete
+        </v-icon>
+      </template>
+ 
+      <template v-slot:item.type="{ item }">
+        <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
+          {{ item.type }}
+        </v-chip>
+      </template>
+
+    </v-data-table>
+    
+    <!---ปุ่มลบ-->
+
+    <v-dialog v-model="confirm" max-width="350">
+      <v-card>
+        <v-card-title class="headline">
+          ยืนยันการลบ?
+        </v-card-title>
+        <v-card-text>
+          เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn text @click="cancelDelete">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="submitDelete">
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
 
-            </v-card-item>
-            <v-card-actions class="ma-3 justify-center d-flex align-centerg">
-              <v-btn color="#49C8FF" class="rounded-xl white--text" @click="openDialog('edit')">
-                แก้ไขข้อมูล
-              </v-btn>
 
-            </v-card-actions>
-            <DialogQueue :dialog="dialog" :saved="saved" :dialog-title="dialogTitle" @save="savejob" @close="close"
-              @open-dialog="openDialog" />
-          </v-card>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+    <!-- Include the dialog -->
+    <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
+      @close="closeDialog" :view-mode="viewMode" />
+  </v-card>
 </template>
 
 <script>
-import DialogQueue from '~/components/DialogQueue.vue';
 import DialogForm from '~/components/DialogForm.vue';
-import Patient from './Patient.vue';
-import QueueJob from './QueueJob.vue';
-import axios from 'axios';
+import DepartmentCard from '~/components/DepartmentCard.vue';
+import BarChartPatient from '~/components/BarChartPatient.vue';
+import axios from 'axios'
 import Swal from 'sweetalert2';
-
-
 export default {
   components: {
-    DialogQueue,
-    QueueJob,
     DialogForm,
-    Patient,
+    DepartmentCard,
+    BarChartPatient,
   },
   data() {
     return {
+      confirm: false,
+      confirmItem: null,
+      dialogVisible: false,
+      search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
-      dialog: false,
+      headers: [
+        { text: 'วัน/เดือน/ปี', value: 'hnnumber' },
+        { text: 'เวลา', value: 'time' },
+        { text: 'เพศ', value: 'gender' },
+        { text: 'อายุ', value: 'age' },
+        { text: 'ประเภทผู้ป่วย', value: 'type' },
+        { text: 'ความรุนแรงของประเภทผู้ป่วย', value: '' },
+        { text: 'กลุ่มอาการฉุกเฉิน', value: '' },
+        { text: 'จุดเกิดเหตุ', value: 'coordinate' },
+        { text: 'การติดตามการนำส่งผู้ป่วย', value: '' },
+        { text: 'Actions', value: 'action', sortable: false }
+      ],
+      //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
-      //saved ฟั่งชั่นนี้เก็บ object ไว้ในกรณีมีหลายตัว
-      saved: {
-        service_date: '',
-        description: '',
+      statusColorMap: {
+        'ฉุกเฉิน': 'red',
+        'ให้มารับที่พัก': 'green',
       },
-      selectedCardIndex: null,
+      dialog: false,
+      dialogTitle: '',
+      editedItem: {
+        hnnumber: '',
+        age: '',
+        gender: '',
+        numberphone: '',
+        address: '',
+        time:'',
+        coordinate: '',
+        type: ''
+      },
     };
   },
-  mounted() {
-    this.loadData();
+  fetch() {
+    this.loadData()
+  },
 
+  mounted() {
+    console.log('ENV', this.endpointUrl)
+    this.loadData();
   },
   methods: {
+    redirectToPatientDetail(item) {
+    
+    console.log('คลิก Row นี้:', item);
+  },
+
     getStatusColor(type) {
-
-      if (type === 'ฉุกเฉิน') {
-        return 'red';
-      } else if (type === 'ให้มารับที่พัก') {
-        return 'green';
-      }
-
-      return '';
+      return this.statusColorMap[type] || 'defaultColor';
     },
-    openQueueDialogFromJob(patientData) {
-      this.selectedPatientData = patientData;
+    openDialog(action, item = null) {
+      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
+      this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
+      this.viewMode = action !== 'add';
+      this.viewMode = false;
     },
-    //เลือก Card ที่เราเลือก
-    selectCard(index) {
-      this.selectedCardIndex = index;
-    },
-
-    // Remove card จากที่เราเลือก
-    removeSelectedCard() {
-      if (this.selectedCardIndex !== null) {
-        this.desserts.splice(this.selectedCardIndex, 1);
-        this.selectedCardIndex = null;
-      }
-    },
-    //ฟังชั่นนี้เอาไว้เซฟ ข้อมูล
-    async savejob() {
+    openWatchDialog(item) {
+  this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
+  this.dialogVisible = true;
+  this.editedItem = { ...item };
+  this.dialog = true;
+  this.viewMode = true;
+},
+    async saveItem(editedItem) {
       try {
-        const postData = {
+        let response;
 
-          service_date: this.saved.service_date.trim(),
-          description: this.saved.description.trim(),
-          patient_id: this.saved.patient_id
-        };
-
-        //ในส่วนนี้ จะ post ก็ต่อเมื่อถ้า ลงเวลางานกรอกข้อมูลไรเสร็จ กด save ข้อมูลจะ post ทันที
-        const response = await axios.post(`${this.endpointUrl}/api/jobs`, postData);
-        console.log('postData:', postData);
-
-        if (response.status >= 200 && response.status < 300) {
+        if (!editedItem.patient_id) {
+          // Add new patient
+          response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
+          this.$store.commit('incrementPatientCount');
 
           Swal.fire({
             icon: 'success',
-            title: 'Success',
-            text: 'ลงเวลางานสำเร็จ',
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
           });
-
-          //ตัวแปรนี้ถ้ากรอกข้อมูลเสร็จจะ ทำการลบการ์ดทีละ 1 ชิ้น
-          this.removeSelectedCard(); // Remove the selected card
-
-          this.close(); // อันนี้จะปิด dialog คลิกตรงไหนก็ได้เพื่อปิด
         } else {
-
+          // Update existing patient
+          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.patient_id}`, editedItem);
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'ลงเวลางานผิดพลาด',
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'แก้ไขข้อมูลสำเร็จ',
           });
-          console.error('Error creating job:', response.data);
         }
+        console.log('response', response);
+        const savedPatient = response.data;
+        // Update the local state or trigger a refresh from the server
+        // based on your application's architecture
+        // For simplicity, updating the local state here:
+
+        this.$nextTick(() => {
+          if (!editedItem.patient_id) {
+            // Add new patient
+            this.desserts.push(savedPatient);
+          } else {
+            // Update existing patient
+            const index = this.desserts.findIndex(item => item.patient_id === savedPatient.patient_id);
+            this.$set(this.desserts, index, savedPatient.patient_id);
+          }
+          this.closeDialog();
+        });
+
       } catch (error) {
-        console.error('Error creating job:', error);
+        console.error('Error saving item:', error);
 
-
+        // Show an error notification
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Failed to create job',
+          text: 'ไม่สามารถเพิ่มข้อมูลได้',
         });
       }
     },
 
+    async deleteItem(item) {
+      
 
-    openDialog(action = null) {
-      this.dialogTitle = action === 'add' ? 'จัดการข้อมูลสำหรับ JOB' : 'แก้ไขข้อมูลของ JOB';
-      this.dialog = true;
+      this.confirmItem = item;
+      this.confirm = true;
+    },
+    cancelDelete() {
+      // Reset the confirm dialog and clear the confirmItem
+      this.confirm = false;
+      this.confirmItem = null;
+    },
+    async submitDelete() {
+      // Check if there is a confirmed item for deletion
+      if (this.confirmItem) {
+        const item = this.confirmItem;
+
+        // Show a confirmation dialog using SweetAlert2
+        const result = await Swal.fire({
+          title: 'ยืนยันการลบ?',
+          text: 'เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+        });
+
+        if (result.isConfirmed) {
+          // If the user confirms, proceed with the deletion
+          try {
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.patient_id}`);
+            if (response.status === 200) {
+              // Remove the deleted patient from the local state
+              this.desserts = this.desserts.filter(p => p.patient_id !== item.patient_id);
+              this.$store.commit('decrementPatientCount');
+              // Show success notification
+              Swal.fire({
+                icon: 'success',
+                title: 'ลบข้อมูลสำเร็จ',
+              });
+              console.warn('This data delete already')
+            } else {
+              // Show an error notification
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'เกิดข้อผิดพลาดในการลบข้อมูล',
+              });
+            }
+          } catch (error) {
+            console.error('Error deleting item:', error);
+
+            // Show an error notification
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Error deleting item',
+            });
+          }
+
+          // Reset the confirm dialog and clear the confirmItem
+          this.confirm = false;
+          this.confirmItem = null;
+        }
+      }
     },
     async loadData() {
       try {
-        const res = await axios.get(this.endpointUrl + '/api/patients');
-        // this.desserts = data.data;
-        this.desserts = res.data.filter(patient => patient.type === 'ฉุกเฉิน');
-        console.log(this.desserts);
-        // console.log("Loaded data:", data);
-      }
-      catch (error) {
+        const { data } = await axios.get(this.endpointUrl + '/api/patients')
+        this.desserts = data;
+        console.log("This data", data)
+        this.$emit('data-loaded', data);
+      } catch (error) {
         console.error('Error loading data:', error);
       }
     },
-    close() {
+    closeDialog() {
+      // Close the dialog
       this.dialog = false;
+      this.dialogTitle = '';
+      this.editedItem = {};
+      this.dialogVisible = false;
+    },
 
-    }
-  },
-
+  }
 };
 </script>
 
-
-
-
-<style scoped>
-.hn-font {
-  font-size: 22px;
-}
-
+<style>
 body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/* Add your custom styles here if needed */
-
-body {
-  font-family: 'Open Sans', sans-serif;
-}
-
-.my-cards {
-  font-family: 'Open Sans', sans-serif;
-}
-
-.head {
-  font-size: 29px;
-  background-color: #2FB6FF;
-  margin: 0;
-  padding: 10px;
-  display: inline-block;
-  border-radius: 25px;
-  color: white;
+.center-container1 {
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
 }
+
+.dashboardtext {
+  display: inline;
+  font-size: 35px;
+  color: #000000;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.button {
+  height: 45px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
+
+.button:hover {
+  background-color: #285CA2;
+  box-shadow: 0px 15px 20px rgba(0, 47, 255, 0.4);
+  color: #ffffff;
+  transform: translateY(-7px);
+}
+.my-chip {
+  width: 120px; 
+  justify-content: center;
+}
+
 </style>

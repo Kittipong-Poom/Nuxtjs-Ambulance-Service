@@ -1,67 +1,68 @@
 
 <template>
-  <v-card>
-    <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">ตารางข้อมูลผู้ป่วย</h1>
-    </v-card-title>
-    <v-card-title>
-      <!-- Add new information -->
-      <v-btn depressed class="button" color="primary" @click="openDialog('add')">
-        จัดการผู้ป่วยใหม่
-      </v-btn>
-      <v-spacer />
-      <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
-    </v-card-title>
+  <div>
+    <v-card>
+      <v-card-title justify="center" class="center-container1">
+        <h1 class="dashboardtext">ตารางข้อมูลผู้ป่วยทั่วไป</h1>
+      </v-card-title>
+      <v-card-title>
+        <!-- Add new information -->
+        <v-btn depressed class="button" color="primary" @click="openDialog('add')">
+          จัดการผู้ป่วยใหม่
+        </v-btn>
+        <v-spacer />
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
+      </v-card-title>
+  
+      <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+        <template v-slot:item.action="{ item }">
+          <v-icon small class="mr-2"  @click="openDialog('edit', item)">
+            mdi-pencil-outline
+          </v-icon>
+          <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+            mdi-magnify
+          </v-icon>
+          <v-icon small color="red" @click="deleteItem(item)">
+            mdi-delete
+          </v-icon>
+        </template>
+   
+        <template v-slot:item.type="{ item }">
+          <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
+            {{ item.type }}
+          </v-chip>
+        </template>
+  
+      </v-data-table>
+      
+      <!---ปุ่มลบ-->
+  
+      <v-dialog v-model="confirm" max-width="350">
+        <v-card>
+          <v-card-title class="headline">
+            ยืนยันการลบ?
+          </v-card-title>
+          <v-card-text>
+            เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn text @click="cancelDelete">
+              Cancel
+            </v-btn>
+            <v-btn color="green darken-1" text @click="submitDelete">
+              Confirm
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+  
+      <!-- Include the dialog -->
+      <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem" @close="closeDialog" :view-mode="viewMode" />
+    </v-card>
+  </div>
+  
 
-    <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
-      <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2"  @click="openDialog('edit', item)">
-          mdi-pencil-outline
-        </v-icon>
-        <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
-          mdi-magnify
-        </v-icon>
-        <v-icon small color="red" @click="deleteItem(item)">
-          mdi-delete
-        </v-icon>
-      </template>
- 
-      <template v-slot:item.type="{ item }">
-        <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
-          {{ item.type }}
-        </v-chip>
-      </template>
-
-    </v-data-table>
-    
-    <!---ปุ่มลบ-->
-
-    <v-dialog v-model="confirm" max-width="350">
-      <v-card>
-        <v-card-title class="headline">
-          ยืนยันการลบ?
-        </v-card-title>
-        <v-card-text>
-          เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="cancelDelete">
-            Cancel
-          </v-btn>
-          <v-btn color="green darken-1" text @click="submitDelete">
-            Confirm
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-
-
-    <!-- Include the dialog -->
-    <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
-      @close="closeDialog" :view-mode="viewMode" />
-  </v-card>
 </template>
 
 <script>
@@ -88,10 +89,12 @@ export default {
         { text: 'อายุ', value: 'age' },
         { text: 'เพศ', value: 'gender' },
         { text: 'เบอร์โทรศัพท์', value: 'numberphone' },
-        { text: 'ที่อยู่', value: 'address' },
-        { text: 'เวลา', value: 'time' },
-        { text: 'พิกัด', value: 'coordinate' },
         { text: 'ประเภทผู้ป่วย', value: 'type' },
+        { text: 'การติดตามการนำส่งผู้ป่วย', value: '' },
+        { text: 'ที่อยู่,พิกัด', value: 'address' },
+        { text: 'วันที่นัดหมาย', value: '' },
+        { text: 'เวลานัดหมาย', value: 'time' },
+        { text: 'status', value: '' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
@@ -337,3 +340,4 @@ body {
 }
 
 </style>
+
