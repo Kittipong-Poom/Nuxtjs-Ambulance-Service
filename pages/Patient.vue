@@ -94,7 +94,11 @@ export default {
         { text: 'ที่อยู่,พิกัด', value: 'address' },
         { text: 'วันที่นัดหมาย', value: 'date_service' },
         { text: 'เวลานัดหมาย', value: 'time' },
+<<<<<<< HEAD
         { text: 'status', value: 'casestatus' },
+=======
+        { text: 'สถานะ', value: 'casestatus' },
+>>>>>>> dbd46233f36ebfab8b7b07a444179bd1cbe013ab
         { text: 'Actions', value: 'action', sortable: false }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
