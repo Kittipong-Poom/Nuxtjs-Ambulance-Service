@@ -40,8 +40,6 @@
                 <v-btn color="#49C8FF" class="rounded-xl white--text" @click="openDialog('edit', patient)">
                     รับงาน
                 </v-btn>
-                <DialogQueue :dialog="dialog" :saved="saved" :dialog-title="dialogTitle" @save="savejob" @close="close"
-                    @open-dialog="openDialog" />
             </v-card-actions>
         </v-card>
         <!-- </v-row> -->

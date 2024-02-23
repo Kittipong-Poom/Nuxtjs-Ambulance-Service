@@ -15,22 +15,18 @@
 
     <v-app-bar color="#285CA2" :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon color="#FFFF" @click.stop="drawer = !drawer" />
-      <v-btn color="#FFFF" icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn color="#FFFF" icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
+      
+      
       <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
 
       <v-spacer />
 
-      <v-row justify="end" align="center">
+      <v-row  align="center">
         <v-col cols="auto">
-          <v-btn to="/Dashboard" class="ma-2 white--text" color="#3A87E3">
-            <v-icon color="#FFF">mdi-home</v-icon>
-            Home
-          </v-btn>
+          <v-col class="ma-2 white--text" color="#3A87E3" style="font-size: 35px;">
+           
+            Ambulance-Service
+          </v-col>
         </v-col>
       </v-row>
     </v-app-bar>
@@ -70,7 +66,7 @@ export default {
         {
           icon: 'mdi-doctor',
           title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
-          to: '/Queue'
+          to: '/Queueurgent'
         },
         {
           icon: 'mdi-table',
@@ -104,10 +100,30 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Ambulance-Service',
-
+        }
+    },
+    computed: {
+  pageTitle() {
+    const route = this.$route;
+    switch (route.path) {
+      case '/Dashboard':
+        return 'แดชบอร์ด';
+      case '/Patient':
+        return 'จัดการข้อมูลผู้ป่วยทั่วไป';
+      case '/Queueurgent':
+        return 'จัดการข้อมูลผู้ป่วยฉุกเฉิน';
+      case '/QueueJob':
+        return 'ตารางจัดการคิวงาน';
+      case '/Calendars':
+        return 'ปฏิทินงาน';
+      case '/Maps':
+        return 'แผนที่';
+      default:
+        return 'Ambulance-Service';
     }
-  },
+  }
+},
+
   methods: {
 
   }

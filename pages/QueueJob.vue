@@ -1,3 +1,4 @@
+
 <template>
     <v-card>
         <v-card-title class="d-flex justify-center align-center  head1">
@@ -44,11 +45,11 @@ export default {
                 { text: 'เพศ', value: 'gender' },
                 { text: 'เบอร์โทรศัพท์', value: 'numberphone' },
                 { text: 'ประเภทผู้ป่วย', value: 'type' },
-                { text: 'การติดตามการนำส่งผู้ป่วย', value: '' },
+                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
                 { text: 'ที่อยู่,พิกัด', value: 'address' },
-                { text: 'วันที่นัดหมาย', value: '' },
+                { text: 'วันที่นัดหมาย', value: 'date_service' },
                 { text: 'เวลานัดหมาย', value: 'time' },
-                { text: 'status', value: '' },
+                { text: 'status', value: 'casestatus' },
                 { text: 'Actions', value: 'action', sortable: false }
             ],
             selectedPatient: null, 
@@ -111,7 +112,3 @@ export default {
     }
 }
 </script>
-  
-
-
-   

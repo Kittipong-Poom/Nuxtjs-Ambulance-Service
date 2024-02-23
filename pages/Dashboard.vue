@@ -82,13 +82,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-transform: uppercase;
-  font-family: 'Open Sans', sans-serif;
 }
 
 .head {
   font-size: 24px;
-  background-color: #2FB6FF;
+  background-color: #4f9ac3;
   margin: 0;
   padding: 10px;
   display: inline-block;
