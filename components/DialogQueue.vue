@@ -3,17 +3,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="600">
     <v-card>
-      <v-card-title>
-        <span class="headline">{{ dialogTitle }}</span>
-      </v-card-title>
-      <v-card-text>
-        <v-text-field v-model="saved.service_date" clearable label="วันที่" ></v-text-field>
-        <v-text-field v-model="saved.description" clearable label="ระบุหมายเหตุ"></v-text-field>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn color="blue darken-1" @click="save">Save</v-btn>
-        <v-btn color="blue darken-1" @click="close">Cancel</v-btn>
-      </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>

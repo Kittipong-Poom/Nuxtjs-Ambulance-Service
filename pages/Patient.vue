@@ -3,7 +3,7 @@
   <div>
     <v-card>
       <v-card-title justify="center" class="center-container1">
-        <h1 class="dashboardtext">ตารางข้อมูลผู้ป่วยทั่วไป</h1>
+        <h1 >ตารางข้อมูลผู้ป่วยทั่วไป</h1>
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
@@ -16,15 +16,18 @@
   
       <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
         <template v-slot:item.action="{ item }">
-          <v-icon small class="mr-2"  @click="openDialog('edit', item)">
-            mdi-pencil-outline
-          </v-icon>
-          <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
-            mdi-magnify
-          </v-icon>
-          <v-icon small color="red" @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
+          <v-btn color="#4CAF50"  class="mr-2 white--text"  @click="openDialog('edit', item)">
+            <v-icon>mdi-pencil-box-multiple-outline</v-icon>
+            แก้ไข
+          </v-btn>
+          <v-btn  class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+            <v-icon>mdi-account-search-outline</v-icon>
+            ดูข้อมูล
+          </v-btn>
+          <v-btn  color="red" class="white--text" @click="deleteItem(item)">
+            <v-icon>mdi-delete</v-icon>
+            ลบ
+          </v-btn>
         </template>
    
         <template v-slot:item.type="{ item }">
@@ -94,8 +97,8 @@ export default {
         { text: 'ที่อยู่,พิกัด', value: 'address' },
         { text: 'วันที่นัดหมาย', value: 'date_service' },
         { text: 'เวลานัดหมาย', value: 'time' },
-        { text: 'สถานะ', value: 'casestatus' },
-        { text: 'Actions', value: 'action', sortable: false }
+        { text: 'status', value: 'casestatus' },
+        { text: '', value: 'action', sortable: false }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
@@ -191,7 +194,7 @@ export default {
           }
           this.closeDialog();
         });
-
+        this.desserts = await this.fetchDataFromServer();
       } catch (error) {
         console.error('Error saving item:', error);
 
@@ -254,6 +257,7 @@ export default {
                 text: 'เกิดข้อผิดพลาดในการลบข้อมูล',
               });
             }
+            this.desserts = await this.fetchDataFromServer();
           } catch (error) {
             console.error('Error deleting item:', error);
 
@@ -281,6 +285,15 @@ export default {
         console.error('Error loading data:', error);
       }
     },
+    async fetchDataFromServer() {
+    try {
+      const { data } = await axios.get(this.endpointUrl + '/api/patients');
+      return data;
+    } catch (error) {
+      console.error('Error fetching data from server:', error);
+      throw error; // Propagate the error to the caller
+    }
+  },
     closeDialog() {
       // Close the dialog
       this.dialog = false;

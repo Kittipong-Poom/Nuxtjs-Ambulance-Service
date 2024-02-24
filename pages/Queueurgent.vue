@@ -2,7 +2,7 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 class="dashboardtext">เคสผู้ป่วยฉุกเฉิน</h1>
+      <h1 >เคสผู้ป่วยฉุกเฉิน</h1>
     </v-card-title>
     <v-card-title>
       <!-- Add new information -->
@@ -15,22 +15,25 @@
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2" @click="openDialogurgent('edit', item)">
-          mdi-pencil-outline
-        </v-icon>
-        <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
-          mdi-magnify
-        </v-icon>
-        <v-icon small color="red" @click="deleteItem(item)">
-          mdi-delete
-        </v-icon>
+        <v-btn color="#4CAF50"  class="mr-2 white--text"  @click="openDialogurgent('edit', item)">
+          <v-icon>mdi-pencil-box-multiple-outline</v-icon>
+          แก้ไข
+        </v-btn>
+        <v-btn  class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+          <v-icon>mdi-account-search-outline</v-icon>
+          ดูข้อมูล
+        </v-btn>
+        <v-btn  color="red" class="white--text" @click="deleteItem(item)">
+          <v-icon>mdi-delete</v-icon>
+          ลบ
+        </v-btn>
       </template>
 
       <template v-slot:item.violence="{ item }">
-        <v-chip :color="getStatusColor(item.violence)" class="my-chip" dark>
-          {{ item.violence }}
-        </v-chip>
-      </template>
+        <v-chip :color="getStatusColor(item.violence)" :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน' }" :dark="item.violence === 'ผู้ป่วยเฉินเร่งด่วน'">
+        {{ item.violence }}
+      </v-chip>
+    </template>
 
     </v-data-table>
 
@@ -95,7 +98,7 @@ export default {
         { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group' },
         { text: 'จุดเกิดเหตุ', value: 'coordinate' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery' },
-        { text: 'Actions', value: 'action', sortable: false }
+        { text: '', value: 'action', sortable: false }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
@@ -135,7 +138,7 @@ export default {
     },
 
     getStatusColor(violence) {
-      return this.statusColorMap[violence] || 'defaultColor';
+      return this.statusColorMap[violence] || 'primary';
     },
     openDialogurgent(action, item = null) {
       this.dialogTitle1 = action === 'add' ? 'จัดการผู้ป่วยใหม่เคสฉุกเฉิน' : 'แก้ไขข้อมูลผู้ป่วยฉุกเฉิน';
@@ -318,13 +321,7 @@ body {
 
 }
 
-.dashboardtext {
-  display: inline;
-  font-size: 35px;
-  color: #000000;
-  font-weight: 700;
-  text-transform: uppercase;
-}
+
 
 .button {
   height: 45px;

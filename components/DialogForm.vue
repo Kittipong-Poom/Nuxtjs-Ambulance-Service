@@ -22,10 +22,10 @@
             :readonly="viewMode" :items="['ส่งต่อโรงพยาบาล','ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
             <v-text-field v-model="editedItem.date_service" label="วันที่นัดหมาย" 
             :readonly="viewMode"></v-text-field>
-            <v-select v-model="editedItem.casestatus" :items="['','กำลังเดินเนินงาน','เสร็จสิ้น']" label="สถานะ" 
+            <v-select v-model="editedItem.casestatus" :items="['รอรับงาน','กำลังดำเนินงาน','เสร็จสิ้น']" label="สถานะ" 
             :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.type" label="เลือกประเภท"
-            :items="[ 'ให้มารับที่พัก']" :readonly="viewMode"></v-select>
+            :items="['งานบริการ', 'ผู้ป่วยติดเตียง','อื่นๆ']" :readonly="viewMode"></v-select>
           <v-text-field v-model="editedItem.coordinate" label="พิกัด" :readonly="viewMode"></v-text-field>
           
         </v-card-text>

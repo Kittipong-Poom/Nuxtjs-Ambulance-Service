@@ -25,35 +25,46 @@
 
       <v-spacer />
 
-      <v-row justify="end" align="center">
+      
+      <v-row align="center" class="d-flex justify-end">
         <v-col cols="auto">
-          <v-btn to="/Dashboard" class="ma-2 white--text" color="#3A87E3">
-            <v-icon color="#FFF">mdi-home</v-icon>
-            Home
+          <v-btn @click="toggleMode" class="ma-2 white--text" color="#FFFF" icon>
+            <v-icon color="#FFFF">{{ darkMode ? 'mdi-brightness-6' : 'mdi-brightness-7' }}</v-icon>
           </v-btn>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on" icon color="#FFFF">
+                <v-icon>mdi-menu</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item link to="/Dashboard">
+                <v-list-item-title>Home</v-list-item-title>
+              </v-list-item>
+              <!-- Add more v-list-items for additional dropdown options -->
+            </v-list>
+          </v-menu>
         </v-col>
       </v-row>
     </v-app-bar>
 
     <v-main>
-      
       <v-container fluid>
         <Nuxt />
       </v-container>
     </v-main>
-
   </v-app>
 </template>
 <script >
 
 
 export default {
-  name: 'DefaultLayout',
+  name:'DefaultLayout',
   data() {
     return {
       clipped: false,
       drawer: false,
-
+      darkMode: false,
 
       items: [
 
@@ -131,7 +142,10 @@ export default {
   }
 },
   methods: {
-
+    toggleMode() {
+        this.darkMode = !this.darkMode
+        this.$vuetify.theme.dark = this.darkMode
+      }
   }
 }
 </script>

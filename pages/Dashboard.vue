@@ -6,10 +6,10 @@
         <!-- Patient Card 1 -->
         <DepartmentCard />
 
-        <v-col cols="12">
-          <v-sheet class="pa-1 text-uppercase text-center" color="grey-lighten-3">
+        <v-col cols="12" class="ma-2 pa-1 text-uppercase text-center" color="grey-lighten-3">
+          
             <h2 class="patient align-center head  ">ผู้ป่วย</h2>
-          </v-sheet>
+          
         </v-col>
 
         <!-- BarChart -->
@@ -82,13 +82,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-transform: uppercase;
-  font-family: 'Open Sans', sans-serif;
 }
 
 .head {
   font-size: 24px;
-  background-color: #2FB6FF;
+  background-color: #4f9ac3;
   margin: 0;
   padding: 10px;
   display: inline-block;

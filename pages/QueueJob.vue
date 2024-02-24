@@ -1,3 +1,4 @@
+
 <template>
     <v-card>
         <v-card-title class="d-flex justify-center align-center  head1">
@@ -12,9 +13,10 @@
 
         <v-data-table depressed :headers="headers" :items="filteredDesserts" :search="search">
             <template v-slot:item.action="{ item }">
-                <v-icon v-if="item.type !== 'ฉุกเฉิน'" small class="mr-2" @click="toggleDialog(item)">
-                mdi-text-box-edit
-            </v-icon>
+                <v-btn class="white--text" color="green" v-if="item.type !== 'ฉุกเฉิน'"   @click="toggleDialog(item)">
+                    <v-icon class="ma-2 ">mdi-text-box</v-icon>
+                เช็คข้อมูล
+            </v-btn>
             </template>
             <template v-slot:item.type="{ item }">
                 <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
@@ -44,12 +46,12 @@ export default {
                 { text: 'เพศ', value: 'gender' },
                 { text: 'เบอร์โทรศัพท์', value: 'numberphone' },
                 { text: 'ประเภทผู้ป่วย', value: 'type' },
-                { text: 'การติดตามการนำส่งผู้ป่วย', value: '' },
+                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
                 { text: 'ที่อยู่,พิกัด', value: 'address' },
-                { text: 'วันที่นัดหมาย', value: '' },
+                { text: 'วันที่นัดหมาย', value: 'date_service' },
                 { text: 'เวลานัดหมาย', value: 'time' },
-                { text: 'status', value: '' },
-                { text: 'Actions', value: 'action', sortable: false }
+                { text: 'status', value: 'casestatus' },
+                { text: '', value: 'action', sortable: false }
             ],
             selectedPatient: null, 
             isDialogVisible: false, 
@@ -111,7 +113,3 @@ export default {
     }
 }
 </script>
-  
-
-
-   

@@ -5,12 +5,12 @@
         <!-- <v-row align="center" justify="center"> -->
         <!-- Loop through the patient data and display it in a card format -->
         <v-card outlined style="border-color: #49C8FF;" class="mx-auto rounded-xl my-cards" max-width="300">
-            <v-card-text class="text-uppercase dark--text">
+            <v-card-text class=" dark--text">
                 <!-- <v-card-title class="d-flex justify-center align-center">
                     Case {{ nextCaseNumber }}
                 </v-card-title> -->
                 <v-card-subtitle class="d-flex justify-center align-center">
-                    <h1>hnnumber: {{ patient.hnnumber }}</h1>
+                    <h1>HNnumber: {{ patient.hnnumber }}</h1>
                 </v-card-subtitle>
                 <v-card-subtitle>
                     อายุ: {{ patient.age }}
@@ -40,8 +40,6 @@
                 <v-btn color="#49C8FF" class="rounded-xl white--text" @click="openDialog('edit', patient)">
                     รับงาน
                 </v-btn>
-                <DialogQueue :dialog="dialog" :saved="saved" :dialog-title="dialogTitle" @save="savejob" @close="close"
-                    @open-dialog="openDialog" />
             </v-card-actions>
         </v-card>
         <!-- </v-row> -->
