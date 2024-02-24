@@ -9,16 +9,16 @@
 
           <!-- Your form fields go here -->
           <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
-            <template v-slot:activator="{ on, attrs }">
+            <template  v-slot:activator="{ on, attrs }">
               <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
             </template>
-            <v-date-picker v-model="date" no-title scrollable>
+            <v-date-picker v-model="date" no-title scrollable locale="th">
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">
-                Cancel
+                ยกเลิก
               </v-btn>
               <v-btn text color="primary" @click="$refs.menu.save(date)">
-                OK
+                ตกลง
               </v-btn>
             </v-date-picker>
           </v-menu>
@@ -59,10 +59,8 @@ export default {
   },
   data() {
     return {
-      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      date: new Date().toISOString().substr(0, 10),
       menu: false,
-      modal: false,
-      menu2: false,
       rules: {
         hnnumber: (value) => {
           if (!value) return "กรอกข้อมูลให้ครบ";
@@ -86,8 +84,7 @@ export default {
     save() {
       // Save the edited item and close the dialog
       if (!this.viewMode && this.validateForm()) {
-
-        this.editedItem.service_date = this.editedItem.service_date.split('T')[0];
+        this.editedItem.service_date = this.date; // Assign the selected date
         this.$emit('save', this.editedItem);
         this.close();
       }

@@ -15,7 +15,7 @@
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2"  @click="openDialogurgent('edit', item)">
+        <v-icon small class="mr-2" @click="openDialogurgent('edit', item)">
           mdi-pencil-outline
         </v-icon>
         <v-icon small class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
@@ -25,7 +25,7 @@
           mdi-delete
         </v-icon>
       </template>
- 
+
       <template v-slot:item.violence="{ item }">
         <v-chip :color="getStatusColor(item.violence)" class="my-chip" dark>
           {{ item.violence }}
@@ -33,7 +33,7 @@
       </template>
 
     </v-data-table>
-    
+
     <!---ปุ่มลบ-->
 
     <v-dialog v-model="confirm" max-width="350">
@@ -59,7 +59,7 @@
 
 
     <!-- Include the dialog -->
-   <dialog-formurgent :dialog="dialog" :edited-item="editedItem" :dialog-title1="dialogTitle1" @save="saveItem"
+    <dialog-formurgent :dialog="dialog" :edited-item="editedItem" :dialog-title1="dialogTitle1" @save="saveItem"
       @close="closeDialog" :view-mode="viewMode" />
   </v-card>
 </template>
@@ -108,13 +108,13 @@ export default {
       dialog: false,
       dialogTitle1: '',
       editedItem: {
-        service_date : '',
+        service_date: '',
         time: '',
         gender: '',
         age: '',
         status: '',
-        violence:'',
-        emergency_group:'',
+        violence: '',
+        emergency_group: '',
         coordinate: '',
         patient_delivery: ''
       },
@@ -130,9 +130,9 @@ export default {
   },
   methods: {
     redirectToPatientDetail(item) {
-    
-    console.log('คลิก Row นี้:', item);
-  },
+
+      console.log('คลิก Row นี้:', item);
+    },
 
     getStatusColor(violence) {
       return this.statusColorMap[violence] || 'defaultColor';
@@ -145,12 +145,12 @@ export default {
       this.viewMode = false;
     },
     openWatchDialog(item) {
-  this.dialogTitle1 = 'ดูข้อมูลผู้ป่วยฉุกเฉิน';
-  this.dialogVisible = true;
-  this.editedItem = { ...item };
-  this.dialog = true;
-  this.viewMode = true;
-},
+      this.dialogTitle1 = 'ดูข้อมูลผู้ป่วยฉุกเฉิน';
+      this.dialogVisible = true;
+      this.editedItem = { ...item };
+      this.dialog = true;
+      this.viewMode = true;
+    },
     async saveItem(editedItem) {
       try {
         let response;
@@ -167,7 +167,7 @@ export default {
           });
         } else {
           // Update existing patient
-          response = await axios.put(`${this.endpointUrl}/api/caseurgents/${editedItem.caseurgent_id }`, editedItem);
+          response = await axios.put(`${this.endpointUrl}/api/caseurgents/${editedItem.caseurgent_id}`, editedItem);
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -183,15 +183,15 @@ export default {
         this.$nextTick(() => {
           if (!editedItem.caseurgent_id) {
             // Add new patient
-            this.desserts.push(savedUrgents);
+            this.desserts.push(savedUrgents); // Push the newly added item to the desserts array
           } else {
             // Update existing patient
             const index = this.desserts.findIndex(item => item.caseurgent_id === savedUrgents.caseurgent_id);
-            this.$set(this.desserts, index, savedUrgents.caseurgent_id);
+            this.$set(this.desserts, index, savedUrgents);
           }
           this.closeDialog();
         });
-
+        this.desserts = await this.fetchDataFromServer();
       } catch (error) {
         console.error('Error saving item:', error);
 
@@ -205,7 +205,7 @@ export default {
     },
 
     async deleteItem(item) {
-      
+
 
       this.confirmItem = item;
       this.confirm = true;
@@ -254,6 +254,7 @@ export default {
                 text: 'เกิดข้อผิดพลาดในการลบข้อมูล',
               });
             }
+            this.desserts = await this.fetchDataFromServer();
           } catch (error) {
             console.error('Error deleting item:', error);
 
@@ -274,7 +275,7 @@ export default {
     async loadData() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/caseurgents')
-        
+        this.desserts = await this.fetchDataFromServer();
         this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
@@ -282,6 +283,15 @@ export default {
         console.error('Error loading data:', error);
       }
     },
+    async fetchDataFromServer() {
+    try {
+      const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
+      return data;
+    } catch (error) {
+      console.error('Error fetching data from server:', error);
+      throw error; // Propagate the error to the caller
+    }
+  },
     closeDialog() {
       // Close the dialog
       this.dialog = false;
@@ -338,9 +348,9 @@ body {
   color: #ffffff;
   transform: translateY(-7px);
 }
+
 .my-chip {
-  width: 120px; 
+  width: 120px;
   justify-content: center;
 }
-
 </style>

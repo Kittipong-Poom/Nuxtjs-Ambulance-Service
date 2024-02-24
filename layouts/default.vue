@@ -21,7 +21,7 @@
       <v-btn color="#FFFF" icon @click.stop="clipped = !clipped">
         <v-icon>mdi-application</v-icon>
       </v-btn>
-      <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
+      <v-toolbar-title class="white--text">{{ pageTitle }}</v-toolbar-title>
 
       <v-spacer />
 
@@ -107,7 +107,29 @@ export default {
       title: 'Ambulance-Service',
 
     }
+    
   },
+  computed: {
+  pageTitle() {
+    const route = this.$route;
+    switch (route.path) {
+      case '/Dashboard':
+        return 'แดชบอร์ด';
+      case '/Patient':
+        return 'จัดการข้อมูลผู้ป่วยทั่วไป';
+      case '/Queueurgent':
+        return 'จัดการข้อมูลผู้ป่วยฉุกเฉิน';
+      case '/QueueJob':
+        return 'ตารางจัดการคิวงาน';
+      case '/Calendars':
+        return 'ปฏิทินงาน';
+      case '/Maps':
+        return 'แผนที่';
+      default:
+        return 'Ambulance-Service';
+    }
+  }
+},
   methods: {
 
   }
