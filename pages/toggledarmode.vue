@@ -1,37 +1,56 @@
 <template>
-  <div class="text-center">
-    <div>
-      <v-btn class="ma-2" color="primary">
-        Accept
-        <v-icon  >mdi-checkbox-marked-circle</v-icon>
-      </v-btn>
+  <div>
+    <v-btn @click="toggleNotification">Toggle Notification</v-btn>
+    <notifications group="success" />
+    <v-badge color="red" overlap>
+      <template v-slot:badge>
+        <v-icon @click="showNotifications = !showNotifications">mdi-bell </v-icon>
+      </template>
+      <v-btn @click="showNotifications = !showNotifications">เคสฉุกเฉิน ({{ notifications.length }})</v-btn>
+    </v-badge>
 
-      <v-btn class="ma-2" color="red">
-        Decline
-        <v-icon end icon="mdi-cancel"></v-icon>
-      </v-btn>
-
-      <v-btn class="ma-2">
-        <v-icon start icon="mdi-minus-circle"></v-icon>
-        Cancel
-      </v-btn>
-    </div>
-
-    <div>
-      <v-btn class="ma-2" color="orange-darken-2">
-        <v-icon start icon="mdi-arrow-left"></v-icon>
-        Back
-      </v-btn>
-
-      <v-btn class="ma-2" color="purple" icon="mdi-wrench"></v-btn>
-
-      <v-btn class="ma-2" color="indigo" icon="mdi-cloud-upload"></v-btn>
-    </div>
-
-    <div>
-      <v-btn class="ma-2" variant="text" icon="mdi-thumb-up" color="blue-lighten-2"></v-btn>
-
-      <v-btn class="ma-2" variant="text" icon="mdi-thumb-down" color="red-lighten-2"></v-btn>
-    </div>
+    <v-overlay :value="showNotifications" @click="showNotifications = false">
+      <v-card>
+        <v-card-title>เคสฉุกเฉิน</v-card-title>
+        <v-list>
+          <v-list-item v-for="(notification, index) in notifications" :key="index">
+            <v-list-item-title>{{ notification }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-overlay>
+    
   </div>
+  
 </template>
+
+<script>
+
+export default {
+  data() {
+    return { 
+      showNotifications: false,
+      notifications: [],
+    };
+  }, 
+  methods: {
+    toggleNotification() {
+      this.$notify({
+          'group':'success',
+          'title':'Hello notify',
+          'text':'Event'
+        })
+      if (this.showNotifications) {
+        this.showNotifications = false;
+        
+      }
+      
+      else {
+        this.notifications.push('มีเคสฉุกเฉิน กรุณารีบไปโดยด่วน:'
+          );
+      }
+    },
+    
+  },
+};
+</script>

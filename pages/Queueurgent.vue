@@ -2,7 +2,7 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1 >เคสผู้ป่วยฉุกเฉิน</h1>
+      <h1>เคสผู้ป่วยฉุกเฉิน</h1>
     </v-card-title>
     <v-card-title>
       <!-- Add new information -->
@@ -15,25 +15,28 @@
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-btn color="#4CAF50"  class="mr-2 white--text"  @click="openDialogurgent('edit', item)">
+        <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
           แก้ไข
         </v-btn>
-        <v-btn  class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+        <v-btn class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
           <v-icon>mdi-account-search-outline</v-icon>
           ดูข้อมูล
         </v-btn>
-        <v-btn  color="red" class="white--text" @click="deleteItem(item)">
+        <v-btn color="red" class="white--text" @click="deleteItem(item)">
           <v-icon>mdi-delete</v-icon>
           ลบ
         </v-btn>
+
       </template>
 
       <template v-slot:item.violence="{ item }">
-        <v-chip :color="getStatusColor(item.violence)" :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน' }" :dark="item.violence === 'ผู้ป่วยเฉินเร่งด่วน'">
-        {{ item.violence }}
-      </v-chip>
-    </template>
+        <v-chip class="my-chip" :color="getStatusColor(item.violence)"
+          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน', }"
+          :dark="item.violence === 'ผู้ป่วยเฉินเร่งด่วน'">
+          {{ item.violence }}
+        </v-chip>
+      </template>
 
     </v-data-table>
 
@@ -64,10 +67,15 @@
     <!-- Include the dialog -->
     <dialog-formurgent :dialog="dialog" :edited-item="editedItem" :dialog-title1="dialogTitle1" @save="saveItem"
       @close="closeDialog" :view-mode="viewMode" />
+    <notifications group="success" classes="custom-notification" />
+    <notifications group="fail" classes="fail-noti" />
   </v-card>
 </template>
 
 <script>
+
+import { Notify } from 'vue-notification';
+import DefaultLayout from '~/layouts/default.vue';
 import DialogForm from '~/components/DialogForm.vue';
 import DepartmentCard from '~/components/DepartmentCard.vue';
 import BarChartPatient from '~/components/BarChartPatient.vue';
@@ -76,16 +84,22 @@ import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
   components: {
+    DefaultLayout,
     DialogForm,
     DepartmentCard,
     BarChartPatient,
-    DialogFormurgent
+    DialogFormurgent,
+    Notify
   },
   data() {
     return {
       confirm: false,
       confirmItem: null,
       dialogVisible: false,
+      showNotifications: false,
+      notifications: [],
+      drawer: false,
+      darkMode: false,
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
@@ -131,7 +145,22 @@ export default {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
+  computed: {
+      formattedDesserts() {
+        return this.desserts.map(dessert => ({
+          ...dessert,
+          service_date: this.formatThaiDate(dessert.service_date)
+        }));
+      },
+      
+    },
   methods: {
+    formatThaiDate(dateString) {
+        const [year, month, day] = dateString.split('-');
+        const thaiYear = Number(year) + 543;
+        return `${day}-${month}-${thaiYear}`;
+      },
+    
     redirectToPatientDetail(item) {
 
       console.log('คลิก Row นี้:', item);
@@ -154,23 +183,38 @@ export default {
       this.dialog = true;
       this.viewMode = true;
     },
+
     async saveItem(editedItem) {
-      try {
+      try { 
         let response;
+        
         editedItem.service_date = editedItem.service_date.split('T')[0];
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
+          this.$notify({
+            'group': 'success',
+            'title': 'กรอกข้อมูลสำเร็จ',
+            'text': 'คลิกกระดิ่งเพื่อดูข้อมูลเพิ่มเติม'
+          })
           this.$store.commit('incrementPatientCount');
 
+          this.notifications = [];
+          this.showRedBadge = false;
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
             text: 'แก้ไขข้อมูลสำเร็จ',
           });
+
         } else {
           // Update existing patient
           response = await axios.put(`${this.endpointUrl}/api/caseurgents/${editedItem.caseurgent_id}`, editedItem);
+          this.$notify({
+            'group': 'success',
+            'title': 'แก้ไขข้อมูลสำเร็จ',
+            'text': 'คลิกกระดิ่งเพื่อดูข้อมูลเพิ่มเติม'
+          })
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -197,7 +241,10 @@ export default {
         this.desserts = await this.fetchDataFromServer();
       } catch (error) {
         console.error('Error saving item:', error);
-
+        this.$notify({
+          'group': 'fail',
+          'title': 'เพิ่มไม่สำเร็จ',
+        })
         // Show an error notification
         Swal.fire({
           icon: 'error',
@@ -244,6 +291,7 @@ export default {
               this.desserts = this.desserts.filter(p => p.caseurgent_id !== item.caseurgent_id);
               this.$store.commit('decrementPatientCount');
               // Show success notification
+
               Swal.fire({
                 icon: 'success',
                 title: 'ลบข้อมูลสำเร็จ',
@@ -287,14 +335,14 @@ export default {
       }
     },
     async fetchDataFromServer() {
-    try {
-      const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
-      return data;
-    } catch (error) {
-      console.error('Error fetching data from server:', error);
-      throw error; // Propagate the error to the caller
-    }
-  },
+      try {
+        const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
+        return data;
+      } catch (error) {
+        console.error('Error fetching data from server:', error);
+        throw error; // Propagate the error to the caller
+      }
+    },
     closeDialog() {
       // Close the dialog
       this.dialog = false;
@@ -307,9 +355,29 @@ export default {
 };
 </script>
 
-<style>
+<style >
 body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.custom-notification {
+  margin: 0 5px 5px;
+  padding: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  background: #68CD86;
+  border-left: 5px solid #42A85F;
+  ;
+}
+
+.fail-noti {
+
+  margin: 0 0px 5px;
+  padding: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  background: #E54D42;
+  border-left-color: #B82E24;
 }
 
 .center-container1 {
@@ -347,7 +415,12 @@ body {
 }
 
 .my-chip {
-  width: 120px;
+  width: 150px;
   justify-content: center;
+}
+
+.v-notification {
+  background-color: green;
+  color: white;
 }
 </style>

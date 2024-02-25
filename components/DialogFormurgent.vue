@@ -8,9 +8,11 @@
         <v-card-text>
 
           <!-- Your form fields go here -->
-          <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
-            <template  v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
+          <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false"
+            :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field v-model="formattedDate" label="Picker in menu" prepend-icon="mdi-calendar" readonly
+                v-bind="attrs" v-on="on"></v-text-field>
             </template>
             <v-date-picker v-model="date" no-title scrollable locale="th">
               <v-spacer></v-spacer>
@@ -24,10 +26,9 @@
           </v-menu>
 
           <v-text-field v-model="editedItem.time" label="เวลา" :readonly="viewMode"></v-text-field>
-          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']" :rules="[rules.phone]"
+          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
-          <v-text-field v-model="editedItem.age" label="อายุ" :rules="[rules.address]"
-            :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.age" label="อายุ" :readonly="viewMode"></v-text-field>
           <v-select v-model="editedItem.status" label="ประเภทผู้ป่วย"
             :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.violence" label="ความรุนเเรงของประเภทผู้ป่วย" :readonly="viewMode"
@@ -66,27 +67,37 @@ export default {
           if (!value) return "กรอกข้อมูลให้ครบ";
           return true; // Validation passed
         },
-        address: (value) => {
-          if (!value) return "กรอกที่อยู่";
-          if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";
-          return true; // Validation passed
-        },
-        age: (value) => {
-          if (!value) return "กรอกอายุ";
-          if (!/[0-5-]+/.test(value)) return "กรอกอายุให้ถูกต้อง";
-          return true; // Validation passed
-        },
       },
       viewMode: false, // Define viewMode in the data section
     };
   },
+  computed: {
+    formattedDate() {
+      // Convert the date format to Thai Buddhist era format
+      const thaiDate = new Date(this.date);
+      const thaiYear = thaiDate.getFullYear() + 543;
+      const thaiMonth = thaiDate.getMonth() + 1;
+      const thaiDay = thaiDate.getDate();
+      return `${thaiDay}-${thaiMonth}-${thaiYear}`;
+      const formattedThaiMonth = thaiMonth < 10 ? '0' + thaiMonth : thaiMonth;
+      const formattedThaiDay = thaiDay < 10 ? '0' + thaiDay : thaiDay;
+      
+      return `${formattedThaiDay}-${formattedThaiMonth}-${thaiYear}`;
+    }
+  },
   methods: {
-    save() {
-      // Save the edited item and close the dialog
-      if (!this.viewMode && this.validateForm()) {
-        this.editedItem.service_date = this.date; // Assign the selected date
-        this.$emit('save', this.editedItem);
-        this.close();
+    async save() {
+      try {
+
+        this.$emit('notificationSaved');
+        // Save the edited item and close the dialog
+        if (!this.viewMode && this.validateForm()) {
+          this.editedItem.service_date = this.date; // Assign the selected date
+          this.$emit('save', this.editedItem);
+          this.close();
+        }
+      } catch (error) {
+        console.error('Error saving item:', error);
       }
     },
     close() {

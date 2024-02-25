@@ -32,12 +32,19 @@ export default {
     { src: '~/plugins/vue-notification.js', ssr: false },
     { src: '~/plugins/vue2-google-map.js' },
     '~/plugins/vuetify.js',
-    '~/plugins/primevue.js', // Include the PrimeVue plugin here
     { src: '~/plugins/chart.js', mode: 'client' },
     
     
   ],
 
+  notification: {
+    options: {
+      style: {
+        backgroundColor: 'green', // Change this to the desired background color
+        // Add other styles as needed
+      }
+    }
+  },
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
