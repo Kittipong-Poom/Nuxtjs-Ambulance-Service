@@ -3,7 +3,7 @@
   <div>
     <v-card>
       <v-card-title justify="center" class="center-container1">
-        <h1 >ตารางข้อมูลผู้ป่วยทั่วไป</h1>
+        <h1>ตารางข้อมูลผู้ป่วยทั่วไป</h1>
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
@@ -13,33 +13,41 @@
         <v-spacer />
         <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
       </v-card-title>
-  
+
       <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
         <template v-slot:item.action="{ item }">
-          <v-btn color="#4CAF50"  class="mr-2 white--text"  @click="openDialog('edit', item)">
+          <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
             แก้ไข
           </v-btn>
-          <v-btn  class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+          <v-btn class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
             <v-icon>mdi-account-search-outline</v-icon>
             ดูข้อมูล
           </v-btn>
-          <v-btn  color="red" class="white--text" @click="deleteItem(item)">
+          <v-btn color="red" class="white--text " @click="deleteItem(item)">
             <v-icon>mdi-delete</v-icon>
             ลบ
           </v-btn>
         </template>
-   
+
         <template v-slot:item.type="{ item }">
-          <v-chip :color="getStatusColor(item.type)" class="my-chip" dark>
+          <v-chip :color="getTypeColor(item.type)" class="my-chip" dark>
             {{ item.type }}
           </v-chip>
         </template>
-  
+
+        <template v-slot:item.casestatus="{ item }">
+          <v-chip :color="getStatusColor(item.casestatus)" class="my-chip" dark
+          :class="{ 'black--text': item.casestatus === 'กำลังดำเนินงาน', }"
+          :dark="item.casestatus === 'รอรับงาน'|| item.casestatus === 'เสร็จสิ้น'">
+          {{ item.casestatus }}
+            
+          </v-chip>
+        </template>
       </v-data-table>
-      
+
       <!---ปุ่มลบ-->
-  
+
       <v-dialog v-model="confirm" max-width="350">
         <v-card>
           <v-card-title class="headline">
@@ -59,16 +67,17 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-  
+
       <!-- Include the dialog -->
-      <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem" @close="closeDialog" :view-mode="viewMode" />
+      <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
+        @close="closeDialog" :view-mode="viewMode" />
     </v-card>
   </div>
-  
-
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import Calendar from '~/components/Calendar.vue';
 import DialogForm from '~/components/DialogForm.vue';
 import DepartmentCard from '~/components/DepartmentCard.vue';
 import BarChartPatient from '~/components/BarChartPatient.vue';
@@ -76,35 +85,42 @@ import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
   components: {
+    Calendar,
     DialogForm,
     DepartmentCard,
     BarChartPatient,
   },
+
   data() {
     return {
+      newDate: "",
       confirm: false,
       confirmItem: null,
       dialogVisible: false,
+      events: [],
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN', value: 'hnnumber' },
-        { text: 'อายุ', value: 'age' },
-        { text: 'เพศ', value: 'gender' },
-        { text: 'เบอร์โทรศัพท์', value: 'numberphone' },
-        { text: 'ประเภทผู้ป่วย', value: 'type' },
+        { text: 'HN', value: 'hnnumber', align: 'center' },
+        { text: 'อายุ', value: 'age' , align: 'center'},
+        { text: 'เพศ', value: 'gender', align: 'center' },
+        { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
+        { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
-        { text: 'ที่อยู่,พิกัด', value: 'address' },
-        { text: 'วันที่นัดหมาย', value: 'date_service' },
-        { text: 'เวลานัดหมาย', value: 'time' },
-        { text: 'status', value: 'casestatus' },
-        { text: '', value: 'action', sortable: false }
+        { text: 'ที่อยู่,พิกัด', value: 'address', align: 'center' },
+        { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
+        { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
+        { text: 'สถานะ', value: 'casestatus', align: 'center' },
+        { text: '', value: 'action', sortable: false , align: 'center'}
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
       statusColorMap: {
-        'ฉุกเฉิน': 'red',
-        'ให้มารับที่พัก': 'green',
+        'งานบริการ': 'green',
+        'รอรับงาน': 'red',
+        'กำลังดำเนินงาน': 'yellow',
+        'เสร็จสิ้น': 'green',
+        'ผู้ป่วยติดเตียง':'green',
       },
       dialog: false,
       dialogTitle: '',
@@ -112,12 +128,12 @@ export default {
         hnnumber: '',
         age: '',
         gender: '',
-        trackpatient:'',
-        date_service:'',
-        casestatus:'',
+        trackpatient: '',
+        date_service: '',
+        casestatus: '',
         numberphone: '',
         address: '',
-        time:'',
+        time: '',
         coordinate: '',
         type: ''
       },
@@ -131,12 +147,51 @@ export default {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
-  methods: {
-    redirectToPatientDetail(item) {
-    
-    console.log('คลิก Row นี้:', item);
-  },
+  computed: {
+    formattedDesserts() {
+      return this.desserts.map(dessert => ({
+        ...dessert,
+        date_service: this.formatThaiDate(dessert.date_service)
+      }));
+    },
+    formatThaiDate(dateString) {
+      // Extract the date parts
+      const datePart = dateString.split('-');
+      // Rearrange the date parts to match the desired format (DD-MM-YYYY)
+      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
 
+      // Remove the time part
+      const dateWithoutTime = formattedDate.split('T')[0];
+
+      return dateWithoutTime;
+    },
+  },
+  methods: {
+    formatDate(inputDate) {
+      const date = new Date(inputDate);
+      const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    },
+    formatDateForMySQL(dateString) {
+      // Extract the date parts
+      const datePart = dateString.split('-');
+      // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
+      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
+      return formattedDate;
+    },
+    formatDateWithoutTime(dateTimeString) {
+      return dateTimeString.split('T')[0];
+    },
+    redirectToPatientDetail(item) {
+
+      console.log('คลิก Row นี้:', item);
+    },
+
+    getTypeColor(type) {
+      return this.statusColorMap[type] || 'defaultColor';
+    },
     getStatusColor(type) {
       return this.statusColorMap[type] || 'defaultColor';
     },
@@ -148,15 +203,17 @@ export default {
       this.viewMode = false;
     },
     openWatchDialog(item) {
-  this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
-  this.dialogVisible = true;
-  this.editedItem = { ...item };
-  this.dialog = true;
-  this.viewMode = true;
-},
+      this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
+      this.dialogVisible = true;
+      this.editedItem = { ...item };
+      this.dialog = true;
+      this.viewMode = true;
+    },
     async saveItem(editedItem) {
       try {
         let response;
+
+        editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
 
         if (!editedItem.patient_id) {
           // Add new patient
@@ -166,7 +223,7 @@ export default {
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
-            text: 'แก้ไขข้อมูลสำเร็จ',
+            text: 'กรอกข้อมูลสำเร็จ',
           });
         } else {
           // Update existing patient
@@ -208,7 +265,7 @@ export default {
     },
 
     async deleteItem(item) {
-      
+
 
       this.confirmItem = item;
       this.confirm = true;
@@ -278,22 +335,41 @@ export default {
     async loadData() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/patients')
-        this.desserts = data;
+        // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
+
+        const formattedData = data.map(item => {
+          // Assuming the date_service field contains the date to be formatted
+          return {
+            ...item,
+            date_service: this.formatDate(item.date_service) // Format date here
+          };
+        });
+
+        this.desserts = formattedData;
+        console.log(this.desserts);
+
       } catch (error) {
         console.error('Error loading data:', error);
       }
     },
     async fetchDataFromServer() {
-    try {
-      const { data } = await axios.get(this.endpointUrl + '/api/patients');
-      return data;
-    } catch (error) {
-      console.error('Error fetching data from server:', error);
-      throw error; // Propagate the error to the caller
-    }
-  },
+      try {
+        const { data } = await axios.get(this.endpointUrl + '/api/patients');
+        const formattedData = data.map(item => {
+          // Assuming the date_service field contains the date to be formatted
+          return {
+            ...item,
+            date_service: this.formatDate(item.date_service) // Format date here
+          };
+        });
+        return formattedData;
+      } catch (error) {
+        console.error('Error fetching data from server:', error);
+        throw error; // Propagate the error to the caller
+      }
+    },
     closeDialog() {
       // Close the dialog
       this.dialog = false;
@@ -350,10 +426,10 @@ body {
   color: #ffffff;
   transform: translateY(-7px);
 }
+
 .my-chip {
-  width: 120px; 
+  width: 120px;
   justify-content: center;
 }
-
 </style>
 

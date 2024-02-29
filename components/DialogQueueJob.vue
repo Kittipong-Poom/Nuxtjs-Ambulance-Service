@@ -50,9 +50,13 @@
 </template>
 
 <script>
+import Patient from '~/pages/Patient.vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 export default {
+    components:{
+        Patient,
+    },
     props: {
         patient: {
             type: Object,
@@ -73,6 +77,13 @@ export default {
             },
             dialogVisible: true,
             dialogTitle: '',
+            statusColorMap: {
+        'งานบริการ': 'green',
+        'รอรับงาน': 'red',
+        'กำลังดำเนินงาน': 'yellow',
+        'เสร็จสิ้น': 'green',
+        'ผู้ป่วยติดเตียง':'green',
+      },
         }
     },
 
@@ -80,15 +91,8 @@ export default {
         close() {
             this.dialogVisible = false;
         },
-        getStatusColor(type) {
-
-            if (type === 'ฉุกเฉิน') {
-                return 'red';
-            } else if (type === 'ให้มารับที่พัก') {
-                return 'green';
-            }
-
-            return '';
+        getStatusColor(casestatus) {
+            return this.statusColorMap[casestatus] || 'defaultColor';
         },
         async savejob() {
             try {

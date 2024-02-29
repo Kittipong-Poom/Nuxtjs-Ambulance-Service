@@ -51,6 +51,8 @@
 </template>
   
 <script>
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
 export default {
   props: {
     dialog: Boolean,
@@ -73,16 +75,9 @@ export default {
   },
   computed: {
     formattedDate() {
-      // Convert the date format to Thai Buddhist era format
-      const thaiDate = new Date(this.date);
-      const thaiYear = thaiDate.getFullYear() + 543;
-      const thaiMonth = thaiDate.getMonth() + 1;
-      const thaiDay = thaiDate.getDate();
-      return `${thaiDay}-${thaiMonth}-${thaiYear}`;
-      const formattedThaiMonth = thaiMonth < 10 ? '0' + thaiMonth : thaiMonth;
-      const formattedThaiDay = thaiDay < 10 ? '0' + thaiDay : thaiDay;
-      
-      return `${formattedThaiDay}-${formattedThaiMonth}-${thaiYear}`;
+      const thaiDate = dayjs(this.date).add(543, 'year'); // Add 543 years to convert to Thai calendar
+      const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
+      return thaiFormattedDate;
     }
   },
   methods: {
@@ -92,7 +87,8 @@ export default {
         this.$emit('notificationSaved');
         // Save the edited item and close the dialog
         if (!this.viewMode && this.validateForm()) {
-          this.editedItem.service_date = this.date; // Assign the selected date
+          this.editedItem.service_date = this.formattedDate;
+
           this.$emit('save', this.editedItem);
           this.close();
         }

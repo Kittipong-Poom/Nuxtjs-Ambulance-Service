@@ -13,7 +13,7 @@
       <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
     </v-card-title>
 
-    <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+    <v-data-table depressed :headers="headers"  :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
         <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -31,9 +31,9 @@
       </template>
 
       <template v-slot:item.violence="{ item }">
-        <v-chip class="my-chip" :color="getStatusColor(item.violence)"
-          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน', }"
-          :dark="item.violence === 'ผู้ป่วยเฉินเร่งด่วน'">
+        <v-chip class="my-chip2" :color="getStatusColor(item.violence)"
+          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน'|| item.violence === 'ผู้ป่วยทั่วไป', }"
+          :dark="item.violence === 'ผู้ป่วยฉุกเฉินวิฤกติ' || item.violence === 'ผู้ป่วยไม่ฉุกเฉิน'">
           {{ item.violence }}
         </v-chip>
       </template>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-
+import dayjs from 'dayjs';
 import { Notify } from 'vue-notification';
 import DefaultLayout from '~/layouts/default.vue';
 import DialogForm from '~/components/DialogForm.vue';
@@ -103,16 +103,16 @@ export default {
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'วัน/เดือน/ปี', value: 'service_date' },
-        { text: 'เวลา', value: 'time' },
-        { text: 'เพศ', value: 'gender' },
-        { text: 'อายุ', value: 'age' },
-        { text: 'ประเภทผู้ป่วย', value: 'status' },
-        { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence' },
-        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group' },
-        { text: 'จุดเกิดเหตุ', value: 'coordinate' },
-        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery' },
-        { text: '', value: 'action', sortable: false }
+        { text: 'วัน/เดือน/ปี', value: 'service_date',align: 'center'},
+        { text: 'เวลา', value: 'time', align: 'center' },
+        { text: 'เพศ', value: 'gender', align: 'center' },
+        { text: 'อายุ', value: 'age', align: 'center' },
+        { text: 'ประเภทผู้ป่วย', value: 'status', align: 'center' },
+        { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence', align: 'center' },
+        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center'  },
+        { text: 'จุดเกิดเหตุ', value: 'coordinate', align: 'center' },
+        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery', align: 'center' },
+        { text: '', value: 'action', sortable: false , align: 'center'}
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
@@ -120,7 +120,7 @@ export default {
         'ผู้ป่วยฉุกเฉินวิฤกติ': 'red',
         'ผู้ป่วยเฉินเร่งด่วน': 'yellow',
         'ผู้ป่วยไม่ฉุกเฉิน': 'green',
-
+        'ผู้ป่วยทั่วไป': 'white'
       },
       dialog: false,
       dialogTitle1: '',
@@ -146,21 +146,43 @@ export default {
     this.loadData();
   },
   computed: {
-      formattedDesserts() {
-        return this.desserts.map(dessert => ({
-          ...dessert,
-          service_date: this.formatThaiDate(dessert.service_date)
-        }));
-      },
-      
+    formattedDesserts() {
+      return this.desserts.map(dessert => ({
+        ...dessert,
+        service_date: this.formatThaiDate(dessert.service_date)
+      }));
     },
-  methods: {
     formatThaiDate(dateString) {
-        const [year, month, day] = dateString.split('-');
-        const thaiYear = Number(year) + 543;
-        return `${day}-${month}-${thaiYear}`;
-      },
-    
+      // Extract the date parts
+      const datePart = dateString.split('-');
+      // Rearrange the date parts to match the desired format (DD-MM-YYYY)
+      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
+
+      // Remove the time part
+      const dateWithoutTime = formattedDate.split('T')[0];
+
+      return dateWithoutTime;
+    },
+  },
+  methods: {
+    formatDate(inputDate) {
+      const date = new Date(inputDate);
+      const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    },
+    formatDateForMySQL(dateString) {
+      // Extract the date parts
+      const datePart = dateString.split('-');
+      // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
+      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
+      return formattedDate;
+    },
+    formatDateWithoutTime(dateTimeString) {
+      return dateTimeString.split('T')[0];
+    },
+
     redirectToPatientDetail(item) {
 
       console.log('คลิก Row นี้:', item);
@@ -185,10 +207,10 @@ export default {
     },
 
     async saveItem(editedItem) {
-      try { 
+      try {
         let response;
-        
-        editedItem.service_date = editedItem.service_date.split('T')[0];
+        editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
+
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
@@ -326,10 +348,21 @@ export default {
     async loadData() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/caseurgents')
-        this.desserts = await this.fetchDataFromServer();
-        this.desserts = data;
+        // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
+
+        const formattedData = data.map(item => {
+          // Assuming the date_service field contains the date to be formatted
+          return {
+            ...item,
+            service_date: this.formatDate(item.service_date) // Format date here
+          };
+        });
+
+        this.desserts = formattedData;
+        console.log(this.desserts);
+
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -337,7 +370,14 @@ export default {
     async fetchDataFromServer() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
-        return data;
+        const formattedData = data.map(item => {
+          // Assuming the date_service field contains the date to be formatted
+          return {
+            ...item,
+            service_date: this.formatDate(item.service_date) // Format date here
+          };
+        });
+        return formattedData;
       } catch (error) {
         console.error('Error fetching data from server:', error);
         throw error; // Propagate the error to the caller
@@ -415,7 +455,7 @@ body {
 }
 
 .my-chip {
-  width: 150px;
+  width: 130px;
   justify-content: center;
 }
 

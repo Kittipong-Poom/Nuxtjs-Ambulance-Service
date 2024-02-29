@@ -17,11 +17,29 @@
             :readonly="viewMode"></v-text-field>
           <v-text-field v-model="editedItem.address" label="ที่อยู่" :rules="[rules.address]"
             :readonly="viewMode"></v-text-field>
-          <v-text-field v-model="editedItem.time" label="เวลา" :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.time" label="เวลา" prepend-icon="mdi-clock-outline" :readonly="viewMode"></v-text-field>
           <v-select v-model="editedItem.trackpatient" label="การติดตามการนำส่งผู้ป่วย" 
             :readonly="viewMode" :items="['ส่งต่อโรงพยาบาล','ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
-            <v-text-field v-model="editedItem.date_service" label="วันที่นัดหมาย" 
-            :readonly="viewMode"></v-text-field>
+
+
+            <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false"
+            :return-value.sync="editedItem.date_service" transition="scale-transition" offset-y min-width="auto">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field v-model="formattedDate" label="Picker in menu" prepend-icon="mdi-calendar" readonly
+                v-bind="attrs" v-on="on"></v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title scrollable locale="th">
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false">
+                ยกเลิก
+              </v-btn>
+              <v-btn text color="primary" @click="$refs.menu.save(date)">
+                ตกลง
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+
+
             <v-select v-model="editedItem.casestatus" :items="['รอรับงาน','กำลังดำเนินงาน','เสร็จสิ้น']" label="สถานะ" 
             :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.type" label="เลือกประเภท"
@@ -40,6 +58,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
 export default {
   props: {
     dialog: Boolean,
@@ -49,31 +69,48 @@ export default {
   },
   data() {
     return {
+      date: new Date().toISOString().substr(0, 10),
+      menu: false,
       rules: {
         hnnumber: (value) => {
           if (!value) return "กรอกข้อมูลให้ครบ";
-          return true; // Validation passed
+          return true;
         },
         address: (value) => {
           if (!value) return "กรอกที่อยู่";
           if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";
-          return true; // Validation passed
+          return true; 
         },
         age: (value) => {
           if (!value) return "กรอกอายุ";
           if (!/[0-5-]+/.test(value)) return "กรอกอายุให้ถูกต้อง";
-          return true; // Validation passed
+          return true; 
         },
       },
-      viewMode: false, // Define viewMode in the data section
+      viewMode: false, 
     };
   },
+  computed: {
+    formattedDate() {
+      const thaiDate = dayjs(this.date).add(543, 'year'); 
+      const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
+      return thaiFormattedDate;
+    }
+  },
   methods: {
-    save() {
-      // Save the edited item and close the dialog
-      if (!this.viewMode && this.validateForm()) {
-        this.$emit('save', this.editedItem);
-        this.close();
+    async save() {
+      try {
+
+        this.$emit('notificationSaved');
+        // Save the edited item and close the dialog
+        if (!this.viewMode && this.validateForm()) {
+          this.editedItem.date_service = this.formattedDate;
+
+          this.$emit('save', this.editedItem);
+          this.close();
+        }
+      } catch (error) {
+        console.error('Error saving item:', error);
       }
     },
     close() {

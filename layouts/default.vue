@@ -42,10 +42,13 @@
       </v-btn>
     </template>
     <v-list>
-      <v-list-item v-for="(notification, index) in notifications" :key="index">
-        <v-list-item-title>{{ notification }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
+  <v-list-item v-if="patient ">
+    <v-list-item-title>HN : {{ patient.hnnumber }}</v-list-item-title>
+  </v-list-item>
+  <v-list-item v-else>
+    <v-list-item-title>No patient details available</v-list-item-title>
+  </v-list-item>
+</v-list>
   </v-menu>
       <!-- Menu Button -->
       <v-menu offset-y>
@@ -73,6 +76,8 @@
 </template>
 
 <script >
+import axios from 'axios';
+import Patient from '~/pages/Patient.vue';
 import Queueurgent from '~/pages/Queueurgent.vue';
 import DialogFormurgent from '~/components/DialogFormurgent.vue';
 export default {
@@ -80,10 +85,12 @@ export default {
   components: {
     Queueurgent,
     DialogFormurgent,
+    Patient,
   },
   data() {
-
     return {
+      desserts: [],
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       notifications: [], 
       showRedBadge: true,
       notificationsCount: 0,
@@ -91,7 +98,7 @@ export default {
       clipped: false,
       drawer: false,
       darkMode: false,
-
+      patient: null,
       items: [
 
         {
@@ -146,6 +153,14 @@ export default {
     }
 
   },
+  fetch() {
+    this.loadData()
+  },
+
+  mounted() {
+    console.log('ENV', this.endpointUrl)
+    this.loadData();
+  },
   computed: {
     pageTitle() {
       const route = this.$route;
@@ -177,7 +192,18 @@ export default {
       this.notifications = [];
       // Hide the red badge
       this.showRedBadge = false;
-    }
+    },
+    async loadData() {
+      try {
+        const { data } = await axios.get(this.endpointUrl + '/api/patients')
+        this.desserts = data;
+        this.patient = data;
+        console.log("This data", data)
+        this.$emit('data-loaded', data);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    },
   },
 }
 </script>
