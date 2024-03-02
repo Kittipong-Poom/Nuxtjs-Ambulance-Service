@@ -15,7 +15,7 @@
             <template v-slot:item.action="{ item }">
                 <v-btn class="white--text" color="green" v-if="item.type !== 'ฉุกเฉิน'" @click="toggleDialog(item)">
                     <v-icon class="ma-2 ">mdi-text-box</v-icon>
-                    เช็คข้อมูล
+                    แก้ไขข้อมูล
                 </v-btn>
             </template>
             <template v-slot:item.type="{ item }">

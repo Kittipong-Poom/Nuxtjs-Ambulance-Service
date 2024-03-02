@@ -59,10 +59,10 @@
           <v-card-actions>
             <v-spacer />
             <v-btn text @click="cancelDelete">
-              Cancel
+              ยกเลิก
             </v-btn>
             <v-btn color="green darken-1" text @click="submitDelete">
-              Confirm
+              ตกลง
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -288,8 +288,8 @@ export default {
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Confirm',
-          cancelButtonText: 'Cancel',
+          confirmButtonText: 'ตกลง',
+          cancelButtonText: 'ยกเลิก',
         });
 
         if (result.isConfirmed) {

@@ -14,7 +14,7 @@
               <v-text-field v-model="formattedDate" label="Picker in menu" prepend-icon="mdi-calendar" readonly
                 v-bind="attrs" v-on="on"></v-text-field>
             </template>
-            <v-date-picker v-model="date" no-title scrollable locale="th">
+            <v-date-picker v-model="date" no-title scrollable locale="th" :min="new Date().toISOString().substr(0, 10)">
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">
                 ยกเลิก
@@ -82,20 +82,32 @@ export default {
   },
   methods: {
     async save() {
-      try {
+  try {
+    // Validate if the selected date is not in the past
+    const selectedDate = new Date(this.date);
+    const currentDate = new Date();
+    
+    if (selectedDate < currentDate) {
+      // Show an error notification indicating that the selected date is in the past
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'ไม่สามารถเลือกวันที่ย้อนหลังได้',
+      });
+      return; // Exit the method without saving
+    }
 
-        this.$emit('notificationSaved');
-        // Save the edited item and close the dialog
-        if (!this.viewMode && this.validateForm()) {
-          this.editedItem.service_date = this.formattedDate;
+    // Proceed with saving the edited item and close the dialog if the date is valid
+    if (!this.viewMode && this.validateForm()) {
+      this.editedItem.service_date = this.formattedDate;
 
-          this.$emit('save', this.editedItem);
-          this.close();
-        }
-      } catch (error) {
-        console.error('Error saving item:', error);
-      }
-    },
+      this.$emit('save', this.editedItem);
+      this.close();
+    }
+  } catch (error) {
+    console.error('Error saving item:', error);
+  }
+},
     close() {
       // Close the dialog
       this.$emit('close');

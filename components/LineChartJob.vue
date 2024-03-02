@@ -75,25 +75,23 @@
       return {
         chartData: {
           labels: [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July'
+          "มกราคม", "กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+        "กรกฏาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคอม"
           ],
           datasets: [
             {
               label: 'การรับงาน',
-              backgroundColor: '#7BD3EA',
-              data: [40, 39, 10, 40, 39, 80, 40]
-            }
+              backgroundColor: ['#7BD3EA',"#4169E1"],
+              data: [40, 39, 10, 40, 39, 30, 40,31,23,11,20,8]
+            },
           ]
         },
         chartOptions: {
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          legend: {
+          position: 'right'
+        }
         }
       }
     }
