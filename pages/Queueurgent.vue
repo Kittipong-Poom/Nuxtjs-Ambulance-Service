@@ -1,4 +1,3 @@
-
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
@@ -13,7 +12,7 @@
       <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
     </v-card-title>
 
-    <v-data-table depressed :headers="headers"  :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+    <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
         <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -32,7 +31,7 @@
 
       <template v-slot:item.violence="{ item }">
         <v-chip class="my-chip2" :color="getStatusColor(item.violence)"
-          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน'|| item.violence === 'ผู้ป่วยทั่วไป', }"
+          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน' || item.violence === 'ผู้ป่วยทั่วไป', }"
           :dark="item.violence === 'ผู้ป่วยฉุกเฉินวิฤกติ' || item.violence === 'ผู้ป่วยไม่ฉุกเฉิน'">
           {{ item.violence }}
         </v-chip>
@@ -103,16 +102,16 @@ export default {
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'วัน/เดือน/ปี', value: 'service_date',align: 'center'},
+        { text: 'วัน/เดือน/ปี', value: 'service_date', align: 'center' },
         { text: 'เวลา', value: 'time', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
         { text: 'อายุ', value: 'age', align: 'center' },
         { text: 'ประเภทผู้ป่วย', value: 'status', align: 'center' },
         { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence', align: 'center' },
-        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center'  },
+        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center' },
         { text: 'จุดเกิดเหตุ', value: 'coordinate', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery', align: 'center' },
-        { text: '', value: 'action', sortable: false , align: 'center'}
+        { text: '', value: 'action', sortable: false, align: 'center' }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
@@ -348,6 +347,7 @@ export default {
     async loadData() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/caseurgents')
+
         // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
@@ -395,7 +395,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

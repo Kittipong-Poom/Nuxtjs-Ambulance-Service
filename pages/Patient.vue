@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <v-card>
@@ -14,7 +13,8 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
       </v-card-title>
 
-      <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+      <v-data-table depressed :headers="headers" :items="desserts" :search="search"
+        @click:row="redirectToPatientDetail">
         <template v-slot:item.action="{ item }">
           <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -22,7 +22,7 @@
           </v-btn>
           <v-btn class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
             <v-icon>mdi-account-search-outline</v-icon>
-            ดูข้อมูล
+            ข้อมูลนัดหมาย
           </v-btn>
           <v-btn color="red" class="white--text " @click="deleteItem(item)">
             <v-icon>mdi-delete</v-icon>
@@ -38,10 +38,10 @@
 
         <template v-slot:item.casestatus="{ item }">
           <v-chip :color="getStatusColor(item.casestatus)" class="my-chip" dark
-          :class="{ 'black--text': item.casestatus === 'กำลังดำเนินงาน', }"
-          :dark="item.casestatus === 'รอรับงาน'|| item.casestatus === 'เสร็จสิ้น'">
-          {{ item.casestatus }}
-            
+            :class="{ 'black--text': item.casestatus === 'กำลังดำเนินงาน', }"
+            :dark="item.casestatus === 'รอรับงาน' || item.casestatus === 'เสร็จสิ้น'">
+            {{ item.casestatus }}
+
           </v-chip>
         </template>
       </v-data-table>
@@ -70,13 +70,13 @@
 
       <!-- Include the dialog -->
       <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
-        @close="closeDialog" :view-mode="viewMode" />
+        @close="closeDialog" :view-mode="viewMode" :hide-fields="{ dateAndTime: true }" />
     </v-card>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+
 import Calendar from '~/components/Calendar.vue';
 import DialogForm from '~/components/DialogForm.vue';
 import DepartmentCard from '~/components/DepartmentCard.vue';
@@ -93,25 +93,27 @@ export default {
 
   data() {
     return {
+      
       newDate: "",
       confirm: false,
       confirmItem: null,
       dialogVisible: false,
       events: [],
       search: '',
+      action:'',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
         { text: 'HN', value: 'hnnumber', align: 'center' },
-        { text: 'อายุ', value: 'age' , align: 'center'},
+        { text: 'อายุ', value: 'age', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
         { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
         { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
         { text: 'ที่อยู่,พิกัด', value: 'address', align: 'center' },
-        { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
-        { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
-        { text: 'สถานะ', value: 'casestatus', align: 'center' },
-        { text: '', value: 'action', sortable: false , align: 'center'}
+        // { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
+        // { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
+        // { text: 'สถานะ', value: 'casestatus', align: 'center' },
+        { text: '', value: 'action', sortable: false, align: 'center' }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
@@ -120,7 +122,7 @@ export default {
         'รอรับงาน': 'red',
         'กำลังดำเนินงาน': 'yellow',
         'เสร็จสิ้น': 'green',
-        'ผู้ป่วยติดเตียง':'green',
+        'ผู้ป่วยติดเตียง': 'green',
       },
       dialog: false,
       dialogTitle: '',
@@ -151,22 +153,23 @@ export default {
     formattedDesserts() {
       return this.desserts.map(dessert => ({
         ...dessert,
-        date_service: this.formatThaiDate(dessert.date_service)
+        date_service :null
       }));
     },
-    formatThaiDate(dateString) {
-      // Extract the date parts
-      const datePart = dateString.split('-');
-      // Rearrange the date parts to match the desired format (DD-MM-YYYY)
-      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
+    // formatThaiDate(dateString) {
+    //   // Extract the date parts
+    //   const datePart = dateString.split('-');
+    //   // Rearrange the date parts to match the desired format (DD-MM-YYYY)
+    //   const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
 
-      // Remove the time part
-      const dateWithoutTime = formattedDate.split('T')[0];
+    //   // Remove the time part
+    //   const dateWithoutTime = formattedDate.split('T')[0];
 
-      return dateWithoutTime;
-    },
+    //   return dateWithoutTime;
+    // },
   },
   methods: {
+
     formatDate(inputDate) {
       const date = new Date(inputDate);
       const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
@@ -174,16 +177,16 @@ export default {
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
     },
-    formatDateForMySQL(dateString) {
-      // Extract the date parts
-      const datePart = dateString.split('-');
-      // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
-      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
-      return formattedDate;
-    },
-    formatDateWithoutTime(dateTimeString) {
-      return dateTimeString.split('T')[0];
-    },
+    // formatDateForMySQL(dateString) {
+    //   // Extract the date parts
+    //   const datePart = dateString.split('-');
+    //   // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
+    //   const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
+    //   return formattedDate;
+    // },
+    // formatDateWithoutTime(dateTimeString) {
+    //   return dateTimeString.split('T')[0];
+    // },
     redirectToPatientDetail(item) {
 
       console.log('คลิก Row นี้:', item);
@@ -213,7 +216,7 @@ export default {
       try {
         let response;
 
-        editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
+        // editedItem.date_service = '';
 
         if (!editedItem.patient_id) {
           // Add new patient
@@ -432,4 +435,3 @@ body {
   justify-content: center;
 }
 </style>
-
