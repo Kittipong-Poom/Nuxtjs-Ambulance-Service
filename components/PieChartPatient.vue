@@ -87,7 +87,7 @@
           maintainAspectRatio: false,
           plugins: {
           legend: {
-            position: 'top', // Set legend position to right
+            position: 'right', // Set legend position to right
             labels: {
               // Define labels here
               generateLabels: function (chart) {
