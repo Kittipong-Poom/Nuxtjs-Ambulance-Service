@@ -56,7 +56,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn v-if="!viewMode && (dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
-            color="blue darken-1" class="white--text" @click="save">บันทึน</v-btn>
+            color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
           <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
       </form>

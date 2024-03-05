@@ -64,11 +64,11 @@
     data() {
       return {
         chartData: {
-          labels: ['ฉุกเฉิน', 'บาดเจ็บเล็กน้อย', 'หมดสติ', 'ฉุกเฉินเร่งด่วน','มารับที่พัก'],
+          labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#DD1B16', '#668Dc0', '#2d82b5', '#DD1B16','#86B6F6'],
-              data: [40, 20,80, 10,20]
+              backgroundColor: ['#DD1B16', '#668Dc0', '#4FDEE0', '#E1DB1C',],
+              data: [40 , 20 , 80 , 10]
             }
           ]
         },
@@ -83,7 +83,7 @@
               generateLabels: function (chart) {
                 const labels = [];
                 labels.push({
-                  text: 'ฉุกเฉิน',
+                  text: 'ไตรมาส 1',
                   fillStyle: '#DD1B16',
                   strokeStyle: '#DD1B16',
                   lineWidth: 2,
@@ -91,12 +91,28 @@
                   index: 0
                 });
                 labels.push({
-                  text: 'บาดเจ็บเล็กน้อย',
+                  text: 'ไตรมาส 2',
                   fillStyle: '#668Dc0',
                   strokeStyle: '#668Dc0',
                   lineWidth: 2,
                   hidden: false,
                   index: 1
+                });
+                labels.push({
+                  text: 'ไตรมาส 3',
+                  fillStyle: '#4FDEE0',
+                  strokeStyle: '#4FDEE0',
+                  lineWidth: 2,
+                  hidden: false,
+                  index: 2
+                });
+                labels.push({
+                  text: 'ไตรมาส 4',
+                  fillStyle: '#E1DB1C',
+                  strokeStyle: '#E1DB1C',
+                  lineWidth: 2,
+                  hidden: false,
+                  index: 3
                 });
                 return labels;
               }
@@ -106,7 +122,7 @@
           title: {
             position: 'bottom',
             display: true,
-            text: 'สรุปรวมประจำปีของปี 67 ', // Text of the title
+            text: 'อัตราการเกิดเหตุประจำปี 66 ', // Text of the title
             font: {
               size: 16 // Adjust font size if needed
             }

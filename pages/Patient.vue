@@ -187,7 +187,6 @@ export default {
 
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
-
     },
     formatDate(inputDate) {
       if (!inputDate) {
