@@ -20,9 +20,9 @@
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
             แก้ไข
           </v-btn>
-          <v-btn class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
+          <v-btn class="mr-2" color="primary" @click="openAppointmentDialog(item)">
             <v-icon>mdi-account-search-outline</v-icon>
-            ข้อมูลนัดหมาย
+            นัดหมาย
           </v-btn>
           <v-btn color="red" class="white--text " @click="deleteItem(item)">
             <v-icon>mdi-delete</v-icon>
@@ -71,12 +71,16 @@
       <!-- Include the dialog -->
       <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
         @close="closeDialog" :view-mode="viewMode" :hide-fields="{ dateAndTime: true }" />
+
+      <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
+        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false"
+        :view-mode="viewMode"  />
     </v-card>
   </div>
 </template>
 
 <script>
-
+import Appointment from '~/components/DialogAppointment.vue';
 import Calendar from '~/components/Calendar.vue';
 import DialogForm from '~/components/DialogForm.vue';
 import DepartmentCard from '~/components/DepartmentCard.vue';
@@ -89,18 +93,19 @@ export default {
     DialogForm,
     DepartmentCard,
     BarChartPatient,
+    Appointment,
   },
 
   data() {
     return {
-      
       newDate: "",
       confirm: false,
       confirmItem: null,
       dialogVisible: false,
       events: [],
       search: '',
-      action:'',
+      action: '',
+      isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
         { text: 'HN', value: 'hnnumber', align: 'center' },
@@ -109,7 +114,7 @@ export default {
         { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
         { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
-        { text: 'ที่อยู่,พิกัด', value: 'address', align: 'center' },
+        { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
         // { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
         // { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
         // { text: 'สถานะ', value: 'casestatus', align: 'center' },
@@ -131,11 +136,7 @@ export default {
         age: '',
         gender: '',
         trackpatient: '',
-        date_service: '',
-        casestatus: '',
         numberphone: '',
-        address: '',
-        time: '',
         coordinate: '',
         type: ''
       },
@@ -153,7 +154,7 @@ export default {
     formattedDesserts() {
       return this.desserts.map(dessert => ({
         ...dessert,
-        date_service :null
+        date_service: null
       }));
     },
     // formatThaiDate(dateString) {
@@ -169,24 +170,45 @@ export default {
     // },
   },
   methods: {
+    closeDialog() {
+      this.dialog = false;
+      this.isAppointmentDialogOpen = false;
+      // Other logic...
+    },
+     openAppointmentDialog(item) {
+      // Close the Patient.vue dialog if it is open
+      if (this.dialog) {
+        this.dialog = false;
+      }
 
+      // Set editedItem and dialogTitle based on item data
+      this.editedItem = item;
+      this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
+
+      // Show the appointment dialog
+      this.isAppointmentDialogOpen = true;
+
+    },
     formatDate(inputDate) {
+      if (!inputDate) {
+                return ''; // Return an empty string if inputDate is null
+            }
       const date = new Date(inputDate);
       const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
       const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
     },
-    // formatDateForMySQL(dateString) {
-    //   // Extract the date parts
-    //   const datePart = dateString.split('-');
-    //   // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
-    //   const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
-    //   return formattedDate;
-    // },
-    // formatDateWithoutTime(dateTimeString) {
-    //   return dateTimeString.split('T')[0];
-    // },
+    formatDateForMySQL(dateString) {
+      // Extract the date parts
+      const datePart = dateString.split('-');
+      // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
+      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
+      return formattedDate;
+    },
+    formatDateWithoutTime(dateTimeString) {
+      return dateTimeString.split('T')[0];
+    },
     redirectToPatientDetail(item) {
 
       console.log('คลิก Row นี้:', item);
@@ -205,18 +227,19 @@ export default {
       this.viewMode = action !== 'add';
       this.viewMode = false;
     },
-    openWatchDialog(item) {
-      this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
-      this.dialogVisible = true;
-      this.editedItem = { ...item };
-      this.dialog = true;
-      this.viewMode = true;
-    },
+
+    // openWatchDialog(item) {
+    //   this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
+    //   this.dialogVisible = true;
+    //   this.editedItem = { ...item };
+    //   this.dialog = true;
+    //   this.viewMode = true;
+    // },
     async saveItem(editedItem) {
       try {
         let response;
 
-        // editedItem.date_service = '';
+        editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
 
         if (!editedItem.patient_id) {
           // Add new patient
@@ -239,10 +262,6 @@ export default {
         }
         console.log('response', response);
         const savedPatient = response.data;
-        // Update the local state or trigger a refresh from the server
-        // based on your application's architecture
-        // For simplicity, updating the local state here:
-
         this.$nextTick(() => {
           if (!editedItem.patient_id) {
             // Add new patient

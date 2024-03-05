@@ -28,7 +28,7 @@
           <v-text-field v-model="editedItem.time" label="เวลา" :readonly="viewMode"></v-text-field>
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
-          <v-text-field v-model="editedItem.age" label="อายุ" :readonly="viewMode"></v-text-field>
+            <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.status" label="ประเภทผู้ป่วย"
             :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.violence" label="ความรุนเเรงของประเภทผู้ป่วย" :readonly="viewMode"
@@ -42,8 +42,8 @@
         </v-card-text>
         <v-card-actions>
           <v-btn v-if="!viewMode && (dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
-            color="blue darken-1" class="white--text" @click="save">Save</v-btn>
-          <v-btn color="blue darken-1" class="white--text" @click="close">Cancel</v-btn>
+            color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
+          <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
       </form>
     </v-card>

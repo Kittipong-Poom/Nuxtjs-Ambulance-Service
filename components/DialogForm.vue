@@ -10,14 +10,14 @@
           <!-- Your form fields go here -->
           <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
             :rules="[rules.hnnumber]" ref="hnnumber"></v-text-field>
-          <v-text-field v-model="editedItem.age" label="อายุ*" :rules="[rules.age]" :readonly="viewMode"></v-text-field>
+          <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
           <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
             :readonly="viewMode"></v-text-field>
-          <v-text-field v-model="editedItem.address" label="ที่อยู่*" :rules="[rules.address]"
+          <v-text-field v-model="editedItem.coordinate" label="ที่อยู่/พิกัด*" :rules="[rules.address]"
             :readonly="viewMode"></v-text-field>
-          <v-text-field v-model="editedItem.coordinate" label="พิกัด" :readonly="viewMode"></v-text-field>
+          <!-- <v-text-field v-model="editedItem.coordinate" label="พิกัด" :readonly="viewMode"></v-text-field> -->
 
           <!-- Show/hide date and time fields based on hideFields prop -->
           <v-menu v-if="!hideFields.dateAndTime && !hideDatePicker" :readonly="viewMode" ref="menu" v-model="menu"
@@ -52,11 +52,12 @@
           <v-select v-model="editedItem.type" label="เลือกประเภท" :items="['งานบริการ', 'ผู้ป่วยติดเตียง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
 
+            
         </v-card-text>
         <v-card-actions>
           <v-btn v-if="!viewMode && (dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
-            color="blue darken-1" class="white--text" @click="save">Save</v-btn>
-          <v-btn color="blue darken-1" class="white--text" @click="close">Cancel</v-btn>
+            color="blue darken-1" class="white--text" @click="save">บันทึน</v-btn>
+          <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
       </form>
     </v-card>
@@ -64,7 +65,7 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2';
+
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 export default {
@@ -77,7 +78,7 @@ export default {
   },
   data() {
     return {
-      date: '',
+      date: new Date().toISOString().substr(0, 10),
       menu: false,
       hideDatePicker: false,
       rules: {
@@ -88,11 +89,6 @@ export default {
         address: (value) => {
           if (!value) return "กรอกที่อยู่";
           if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";
-          return true;
-        },
-        age: (value) => {
-          if (!value) return "กรอกอายุ";
-          if (!/[0-5-]+/.test(value)) return "กรอกอายุให้ถูกต้อง";
           return true;
         },
         phone: (value) => {
@@ -107,11 +103,11 @@ export default {
   computed: {
     formattedDate() {
       if (!this.date) {
-        return null; // Return empty string if date is null or undefined
+        return ' '; // Return empty string if date is null or undefined
       }
-      // const thaiDate = dayjs(this.date).add(543, 'year');
-      // const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
-      // return thaiFormattedDate;
+      const thaiDate = dayjs(this.date).add(543, 'year');
+      const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
+      return thaiFormattedDate;
     },
 
     readonlyHnNumber() {

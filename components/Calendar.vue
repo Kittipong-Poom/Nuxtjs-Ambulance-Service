@@ -87,10 +87,7 @@ export default {
     components:{
       Patient
     },
-    // events: {
-    //   type: Array,
-    //   default: () => [],
-    // },
+
     endpointUrl:
       process.env.NODE_ENV == "development"
         ? "http://localhost:5000"
@@ -151,19 +148,6 @@ export default {
     },
   },
   methods: {
-    // loadEventsFromPatients() {
-    //   this.desserts.forEach((patient) => {
-    //     const event = {
-    //       name: patient.hnnumber,
-    //       start: patient.date_service,
-    //       end: patient.date_service,
-    //       color: "red",
-    //       details: patient.address,
-    //     };
-
-    //     this.events.push(event);
-    //   });
-    // },
     updateMainCalendar(date) {
       this.focus = date;
       this.type = "day";
@@ -185,23 +169,23 @@ export default {
       this.$refs.calendar.next();
     },
     showEvent({ nativeEvent, event }) {
-      const open = () => {
-        this.selectedEvent = event;
-        this.selectedElement = nativeEvent.target;
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => (this.selectedOpen = true))
-        );
-      };
+  const open = () => {
+    this.selectedEvent = event;
+    this.selectedElement = nativeEvent.target;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => (this.selectedOpen = true))
+    );
+  };
 
-      if (this.selectedOpen) {
-        this.selectedOpen = false;
-        requestAnimationFrame(() => requestAnimationFrame(() => open()));
-      } else {
-        open();
-      }
+  if (this.selectedOpen) {
+    this.selectedOpen = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => open()));
+  } else {
+    open();
+  }
 
-      nativeEvent.stopPropagation();
-    },
+  nativeEvent.stopPropagation();
+},
     updateRange({ start, end }) { },
 
     async fetchDesserts() {
@@ -248,7 +232,7 @@ export default {
               start: newTimestamp,
               end: newTimestamp,
               color: this.colors[colorIndex],
-              details: `ที่อยู่ : ${patient.address}`,
+              details: `ที่อยู่ : ${patient.coordinate}`,
               time: `เวลา : ${patient.time}`,
               type: `ประเภทผู้ป่วย : ${patient.type}`,
               trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.trackpatient}`
