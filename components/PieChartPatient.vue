@@ -1,4 +1,5 @@
 <template>
+  <div>
     <Pie
       :chart-options="chartOptions"
       :chart-data="chartData"
@@ -10,6 +11,15 @@
       :width="width"
       :height="height"
     />
+    <div class="additional-text">
+      <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
+        ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีเเดง <br>
+        ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือสีฟ้า  <br>
+        ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีม่วง<br>
+        ไตรมาสที่ 4 คือ ช่วงเดือนตุลาคม - ธันวาคม คือสีเหลือง
+      </p>
+    </div>
+  </div>
   </template>
   
   <script>
@@ -67,7 +77,7 @@
           labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#DD1B16', '#668Dc0', '#4FDEE0', '#E1DB1C',],
+              backgroundColor: ['#DD1B16', '#668Dc0', '#800080', '#E1DB1C',],
               data: [40 , 20 , 80 , 10]
             }
           ]
@@ -100,8 +110,8 @@
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#4FDEE0',
-                  strokeStyle: '#4FDEE0',
+                  fillStyle: '#800080',
+                  strokeStyle: '#800080',
                   lineWidth: 2,
                   hidden: false,
                   index: 2
@@ -120,9 +130,9 @@
             
           },
           title: {
-            position: 'bottom',
+            position: 'top',
             display: true,
-            text: 'อัตราการเกิดเหตุประจำปี 66 ', // Text of the title
+            text: 'อัตราการเกิดเหตุประจำปี 2566 ',        // Text of the title
             font: {
               size: 16 // Adjust font size if needed
             }
@@ -133,4 +143,11 @@
     }
   }
   </script>
-  
+  <style>
+  .additional-text {
+    text-align: center;
+    margin-top: 20px; 
+    font-size: 14px; 
+    color: #555; 
+  }
+  </style>

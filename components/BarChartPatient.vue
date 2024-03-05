@@ -1,6 +1,15 @@
 <template>
+  <div>
   <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
     :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
+    <div class="additional-text">
+      <p>
+        กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี 2566 <br>
+        โดยมีฉุกเฉินเเทนเป็นสีเเดงที่บอกถึงการเกิดอุบัติเหตุ ในเเต่ละเดือน  <br>
+        เเละให้สีฟ้าเเทนเป็นผู้ป่วยนัดรับ ในเเต่ละเดือน
+      </p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -72,7 +81,7 @@ export default {
           "กรกฏาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคอม"],
         datasets: [
           {
-            label: "ข้อมูล ผู้ป่วย",
+            label: "ข้อมูลผู้ป่วย",
             backgroundColor: ["#DD1B16", "#4169E1",],
             data: [5, 9, 4, 6, 8, 21, 15, 13, 18, 11, 10, 12],
           },
@@ -83,7 +92,7 @@ export default {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'right', // Set legend position to right
+            position: 'top', // Set legend position to right
             labels: {
               // Define labels here
               generateLabels: function (chart) {
@@ -110,11 +119,11 @@ export default {
           },
           title: {
             display: true,
-            text: 'ข้อมูล ผู้ป่วย', // Text of the title
+            text: 'ข้อมูลผู้ป่วยประจำปี 2566', // Text of the title
             font: {
               size: 16 // Adjust font size if needed
             }
-          }
+          },
         }
       }
     };
@@ -153,3 +162,11 @@ export default {
   },
 };
 </script>
+ <style>
+  .additional-text {
+    text-align: center;
+    margin-top: 20px; 
+    font-size: 14px; 
+    color: #555; 
+  }
+  </style>
