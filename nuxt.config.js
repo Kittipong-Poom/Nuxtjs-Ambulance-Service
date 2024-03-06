@@ -30,7 +30,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/vue-notification.js', ssr: false },
-    { src: '~/plugins/vue2-google-map.js' },
+    
     '~/plugins/vuetify.js',
     { src: '~/plugins/chart.js', mode: 'client' },
     
@@ -99,7 +99,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    vendor:["vue2-google-maps"],
+    
     extend(config, ctx) {
       // Add a rule to handle .js files inside the vue-chartjs module
       config.module.rules.push({
