@@ -15,7 +15,7 @@
             :readonly="viewMode"></v-select>
           <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
             :readonly="viewMode"></v-text-field>
-          <v-text-field v-model="editedItem.coordinate" label="ที่อยู่/พิกัด*" :rules="[rules.address]"
+          <v-text-field v-model="editedItem.coordinate" label="พิกัด*" :rules="[rules.address]"
             :readonly="viewMode"></v-text-field>
 
           <v-select v-model="editedItem.trackpatient" label="การติดตามการนำส่งผู้ป่วย" :readonly="viewMode"
