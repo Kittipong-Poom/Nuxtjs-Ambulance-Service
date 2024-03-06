@@ -77,7 +77,9 @@ export default {
                 { text: 'ที่อยู่,พิกัด', value: 'coordinate', align: 'center' },
                 { text: 'วันที่นัดหมาย', value: 'date_service', align: 'center' },
                 { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
+                { text: 'เพิ่มเติม', value: 'other', align: 'center' },
                 { text: 'สถานะ', value: 'casestatus', align: 'center' },
+                
                 { text: '', value: 'action', sortable: false, align: 'center' }
             ],
             selectedPatient: null,
@@ -97,7 +99,9 @@ export default {
                 numberphone: '',
                 time: '',
                 coordinate: '',
+                other:'',
                 type: ''
+                
             },
             statusColorMap: {
                 'งานบริการ': 'green',

@@ -17,30 +17,6 @@
             :readonly="viewMode"></v-text-field>
           <v-text-field v-model="editedItem.coordinate" label="ที่อยู่/พิกัด*" :rules="[rules.address]"
             :readonly="viewMode"></v-text-field>
-          <!-- <v-text-field v-model="editedItem.coordinate" label="พิกัด" :readonly="viewMode"></v-text-field> -->
-
-          <!-- Show/hide date and time fields based on hideFields prop -->
-          <!-- <v-menu v-if="!hideFields.dateAndTime && !hideDatePicker" :readonly="viewMode" ref="menu" v-model="menu"
-            :close-on-content-click="false" :return-value.sync="editedItem.date_service" transition="scale-transition"
-            offset-y min-width="auto">
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field  v-model="formattedDate" label="วันที่นัดหมาย" prepend-icon="mdi-calendar" readonly
-                v-bind="attrs" v-on="on" clearable></v-text-field>
-            </template>
-            <v-date-picker v-model="date" no-title scrollable locale="th" :min="new Date().toISOString().substr(0, 10)">
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false">
-                ยกเลิก
-              </v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">
-                ตกลง
-              </v-btn>
-
-            </v-date-picker>
-          </v-menu> -->
-
-          <!-- <v-text-field v-if="!hideFields.dateAndTime && !viewMode" v-model="editedItem.time" label="เวลา"
-    prepend-icon="mdi-clock-outline">{{ formattedTime }}</v-text-field> -->
 
           <v-select v-model="editedItem.trackpatient" label="การติดตามการนำส่งผู้ป่วย" :readonly="viewMode"
             :items="['ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
@@ -51,6 +27,8 @@
 
           <v-select v-model="editedItem.type" label="เลือกประเภท" :items="['งานบริการ', 'ผู้ป่วยติดเตียง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
+            <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"
+            :readonly="viewMode"></v-text-field>
 
             
         </v-card-text>
@@ -94,6 +72,10 @@ export default {
         phone: (value) => {
           if (!value) return "กรอกเบอร์โทรศัพท์";
           if (value.length < 8) return "กรอกเบอร์โทรศัพท์";
+          return true;
+        },
+        other: (value) => {
+          if (!value) return "กรอกรายละเอียดเพิ่มเติม";
           return true;
         },
       },

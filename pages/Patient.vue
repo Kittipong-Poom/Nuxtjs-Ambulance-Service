@@ -41,7 +41,6 @@
             :class="{ 'black--text': item.casestatus === 'กำลังดำเนินงาน', }"
             :dark="item.casestatus === 'รอรับงาน' || item.casestatus === 'เสร็จสิ้น'">
             {{ item.casestatus }}
-
           </v-chip>
         </template>
       </v-data-table>
@@ -117,6 +116,7 @@ export default {
         // { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
         // { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
         // { text: 'สถานะ', value: 'casestatus', align: 'center' },
+        { text: 'เพิ่มเติม', value: 'other', align: 'center' },
         { text: '', value: 'action', sortable: false, align: 'center' }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
@@ -137,7 +137,8 @@ export default {
         trackpatient: '',
         numberphone: '',
         coordinate: '',
-        type: ''
+        type: '',
+        other:''
       },
     };
   },
