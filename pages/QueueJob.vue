@@ -258,29 +258,31 @@ export default {
         },
         async loadData() {
             try {
-                const { data } = await axios.get(this.endpointUrl + '/api/patients')
-                // this.desserts = data;
-                console.log("This data", data)
-                this.$emit('data-loaded', data);
+                const { data } = await axios.get(this.endpointUrl + '/api/patients');
 
-                const formattedData = data.map(item => {
+                // ตรวจสอบว่าข้อมูลใน primary key บางตัวครบทุกช่องหรือไม่
+                const completeDataKeys = ['hnnumber', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'date_service', 'time', 'casestatus'];
+                const filteredData = data.filter(item => {
+                    return completeDataKeys.every(key => item[key]);
+                });
+
+                // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
+                const formattedData = filteredData.map(item => {
                     // Assuming the date_service field contains the date to be formatted
                     return {
                         ...item,
-                        date_service: this.formatDate(item.date_service), // Format date here
-
+                        date_service: this.formatDate(item.date_service) // Format date here
                     };
                 });
 
-
                 this.desserts = formattedData;
                 console.log(this.desserts);
-
             } catch (error) {
                 console.error('Error loading data:', error);
             }
-
         },
+
+
         async fetchDataFromServer() {
             try {
                 const { data } = await axios.get(this.endpointUrl + '/api/patients');

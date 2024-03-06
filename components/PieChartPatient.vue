@@ -1,4 +1,5 @@
 <template>
+  <div>
     <Pie
       :chart-options="chartOptions"
       :chart-data="chartData"
@@ -10,6 +11,15 @@
       :width="width"
       :height="height"
     />
+    <div class="additional-text">
+      <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
+        ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีส้ม <br>
+        ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือนํ้าเงินแก่  <br>
+        ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีฟ้าอ่อน<br>
+        ไตรมาสที่ 4 คือ ช่วงเดือนตุลาคม - ธันวาคม คือสีเหลืองอ่อน
+      </p>
+    </div>
+  </div>
   </template>
   
   <script>
@@ -67,8 +77,8 @@
           labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#DD1B16', '#668Dc0', '#4FDEE0', '#E1DB1C',],
-              data: [40 , 20 , 80 , 10]
+              backgroundColor: ['#FF6962', '#668Dc0', '#AFD7F6', '#FFE8BF',],
+              data: [40 , 20 , 50 , 10]
             }
           ]
         },
@@ -84,8 +94,8 @@
                 const labels = [];
                 labels.push({
                   text: 'ไตรมาส 1',
-                  fillStyle: '#DD1B16',
-                  strokeStyle: '#DD1B16',
+                  fillStyle: '#FF6962',
+                  strokeStyle: '#FF6962',
                   lineWidth: 2,
                   hidden: false,
                   index: 0
@@ -100,16 +110,16 @@
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#4FDEE0',
-                  strokeStyle: '#4FDEE0',
+                  fillStyle: '#AFD7F6',
+                  strokeStyle: '#AFD7F6',
                   lineWidth: 2,
                   hidden: false,
                   index: 2
                 });
                 labels.push({
                   text: 'ไตรมาส 4',
-                  fillStyle: '#E1DB1C',
-                  strokeStyle: '#E1DB1C',
+                  fillStyle: '#FFE8BF',
+                  strokeStyle: '#FFE8BF',
                   lineWidth: 2,
                   hidden: false,
                   index: 3
@@ -120,9 +130,9 @@
             
           },
           title: {
-            position: 'bottom',
+            position: 'top',
             display: true,
-            text: 'อัตราการเกิดเหตุประจำปี 66 ', // Text of the title
+            text: 'อัตราการเกิดเหตุประจำปี 2566 ',        // Text of the title
             font: {
               size: 16 // Adjust font size if needed
             }
@@ -133,4 +143,11 @@
     }
   }
   </script>
-  
+  <style>
+  .additional-text {
+    text-align: center;
+    margin-top: 20px; 
+    font-size: 14px; 
+    color: #555; 
+  }
+  </style>

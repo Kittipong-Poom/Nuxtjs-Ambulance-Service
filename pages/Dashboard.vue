@@ -8,14 +8,14 @@
 
         <v-col cols="12" class="ma-2 pa-1 text-uppercase text-center" color="grey-lighten-3">
           
-            <h2 class="patient align-center head  ">ผู้ป่วย</h2>
+            <h2 class="patient align-center head ">ผู้ป่วย</h2>
           
         </v-col>
 
         <!-- BarChart -->
         <v-col cols="12" md="6">
           <v-sheet class="pa-12" color="grey-lighten-3">
-            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="450" width="500">
+            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="500">
               <BarChartPatient :tableData="desserts" />
             </v-sheet>
           </v-sheet>
@@ -24,39 +24,20 @@
         <!-- PieChart -->
         <v-col cols="12" md="6">
           <v-sheet class="pa-12" color="grey-lighten-3">
-            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="450" width="450">
+            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="450">
               <PieChartPatient />
             </v-sheet>
           </v-sheet>
         </v-col>
 
-        <v-col cols="12">
-          <v-sheet class="pa-1 text-uppercase text-center" color="grey-lighten-3">
-            <h2 class="patient align-center head  ">คนรับงาน</h2>
-          </v-sheet>
-        </v-col>
+        
 
         <!-- LineChart and PieChartJob -->
-        <v-row justify="center">
-          <!-- LineChart -->
-          <v-col cols="12" md="6">
-            <v-sheet class="pa-12" color="grey-lighten-3">
-              <v-sheet :elevation="7" class="mx-auto rounded-xl" height="450" width="500">
-                <LineChartJob />
-              </v-sheet>
-            </v-sheet>
-          </v-col>
+        
 
           <!-- PieChartJob -->
-          <v-col cols="12" md="6">
-            <v-sheet class="pa-12" color="grey-lighten-3">
-              <v-sheet :elevation="7" class="mx-auto rounded-xl" height="450" width="450">
-                <PieChartJob />
-              </v-sheet>
-            </v-sheet>
-          </v-col>
+          
         </v-row>
-      </v-row>
     </v-container>
   </div>
 </template>
@@ -86,7 +67,7 @@ export default {
 
 .head {
   font-size: 24px;
-  background-color: #4f9ac3;
+  background-color: #4169E1;
   margin: 0;
   padding: 10px;
   display: inline-block;

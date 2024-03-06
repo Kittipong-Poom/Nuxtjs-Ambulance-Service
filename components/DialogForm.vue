@@ -20,7 +20,7 @@
           <!-- <v-text-field v-model="editedItem.coordinate" label="พิกัด" :readonly="viewMode"></v-text-field> -->
 
           <!-- Show/hide date and time fields based on hideFields prop -->
-          <v-menu v-if="!hideFields.dateAndTime && !hideDatePicker" :readonly="viewMode" ref="menu" v-model="menu"
+          <!-- <v-menu v-if="!hideFields.dateAndTime && !hideDatePicker" :readonly="viewMode" ref="menu" v-model="menu"
             :close-on-content-click="false" :return-value.sync="editedItem.date_service" transition="scale-transition"
             offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
@@ -37,17 +37,17 @@
               </v-btn>
 
             </v-date-picker>
-          </v-menu>
+          </v-menu> -->
 
-          <v-text-field v-if="!hideFields.dateAndTime && !viewMode" v-model="editedItem.time" label="เวลา"
-    prepend-icon="mdi-clock-outline">{{ formattedTime }}</v-text-field>
+          <!-- <v-text-field v-if="!hideFields.dateAndTime && !viewMode" v-model="editedItem.time" label="เวลา"
+    prepend-icon="mdi-clock-outline">{{ formattedTime }}</v-text-field> -->
 
           <v-select v-model="editedItem.trackpatient" label="การติดตามการนำส่งผู้ป่วย" :readonly="viewMode"
             :items="['ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
 
           <!-- Show/hide status field based on hideFields prop -->
-          <v-select v-if="!hideFields.dateAndTime" v-model="editedItem.casestatus"
-            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น']" label="สถานะ" :readonly="viewMode"></v-select>
+          <!-- <v-select v-if="!hideFields.dateAndTime" v-model="editedItem.casestatus"
+            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น']" label="สถานะ" :readonly="viewMode"></v-select> -->
 
           <v-select v-model="editedItem.type" label="เลือกประเภท" :items="['งานบริการ', 'ผู้ป่วยติดเตียง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
@@ -78,8 +78,8 @@ export default {
   },
   data() {
     return {
-      date: new Date().toISOString().substr(0, 10),
-      menu: false,
+      // date: new Date().toISOString().substr(0, 10),
+      // menu: false,
       hideDatePicker: false,
       rules: {
         hnnumber: (value) => {
@@ -101,14 +101,14 @@ export default {
     };
   },
   computed: {
-    formattedDate() {
-      if (!this.date) {
-        return ' '; // Return empty string if date is null or undefined
-      }
-      const thaiDate = dayjs(this.date).add(543, 'year');
-      const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
-      return thaiFormattedDate;
-    },
+    // formattedDate() {
+    //   if (!this.date) {
+    //     return ' '; // Return empty string if date is null or undefined
+    //   }
+    //   const thaiDate = dayjs(this.date).add(543, 'year');
+    //   const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
+    //   return thaiFormattedDate;
+    // },
 
     readonlyHnNumber() {
       // If the dialog is in view mode or if the dialog is for editing existing patient, make HN number readonly
@@ -123,7 +123,7 @@ export default {
         this.$emit('notificationSaved');
         // Save the edited item and close the dialog
         if (!this.viewMode && this.validateForm()) {
-          this.editedItem.date_service = this.formattedDate;
+          // this.editedItem.date_service = this.formattedDate;
           this.$emit('save', this.editedItem);
           this.close();
         }
@@ -131,14 +131,14 @@ export default {
         console.error('Error saving item:', error);
       }
     },
-    clearDateInput() {
-      if (!this.date) {
-        // If date is already empty, no need to do anything
-        return;
-      }
-      this.date = null; // Clear the date input
-      this.editedItem.date_service = ''; // Set editedItem.date_service to an empty string
-    },
+    // clearDateInput() {
+    //   if (!this.date) {
+    //     // If date is already empty, no need to do anything
+    //     return;
+    //   }
+    //   this.date = null; // Clear the date input
+    //   this.editedItem.date_service = ''; // Set editedItem.date_service to an empty string
+    // },
     close() {
       // Close the dialog
       this.$emit('close');

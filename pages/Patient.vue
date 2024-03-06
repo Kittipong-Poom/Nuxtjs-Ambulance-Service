@@ -95,7 +95,6 @@ export default {
     BarChartPatient,
     Appointment,
   },
-
   data() {
     return {
       newDate: "",
@@ -187,6 +186,7 @@ export default {
 
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
+
     },
     formatDate(inputDate) {
       if (!inputDate) {
@@ -200,6 +200,9 @@ export default {
     },
     formatDateForMySQL(dateString) {
       // Extract the date parts
+      if (!dateString) {
+    return null; // Return an empty string if dateString is undefined or null
+  }
       const datePart = dateString.split('-');
       // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
