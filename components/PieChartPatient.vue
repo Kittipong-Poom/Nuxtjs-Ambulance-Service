@@ -11,15 +11,6 @@
       :width="width"
       :height="height"
     />
-    <div class="additional-text">
-      <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
-        ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีส้ม <br>
-        ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือนํ้าเงินแก่  <br>
-        ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีฟ้าอ่อน<br>
-        ไตรมาสที่ 4 คือ ช่วงเดือนตุลาคม - ธันวาคม คือสีเหลืองอ่อน
-      </p>
-    </div>
-  </div>
   </template>
   
   <script>
@@ -77,8 +68,8 @@
           labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#FF6962', '#668Dc0', '#AFD7F6', '#FFE8BF',],
-              data: [40 , 20 , 50 , 10]
+              backgroundColor: ['#DD1B16', '#668Dc0', '#4FDEE0', '#E1DB1C',],
+              data: [40 , 20 , 80 , 10]
             }
           ]
         },
@@ -87,7 +78,7 @@
           maintainAspectRatio: false,
           plugins: {
           legend: {
-            position: 'top', // Set legend position to right
+            position: 'right', // Set legend position to right
             labels: {
               // Define labels here
               generateLabels: function (chart) {
@@ -110,8 +101,8 @@
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#AFD7F6',
-                  strokeStyle: '#AFD7F6',
+                  fillStyle: '#4FDEE0',
+                  strokeStyle: '#4FDEE0',
                   lineWidth: 2,
                   hidden: false,
                   index: 2
