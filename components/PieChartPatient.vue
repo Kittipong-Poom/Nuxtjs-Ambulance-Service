@@ -11,6 +11,15 @@
       :width="width"
       :height="height"
     />
+    <div class="additional-text">
+      <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
+        ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีเเดง <br>
+        ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือสีฟ้า  <br>
+        ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีม่วง<br>
+        ไตรมาสที่ 4 คือ ช่วงเดือนตุลาคม - ธันวาคม คือสีเหลือง
+      </p>
+    </div>
+  </div>
   </template>
   
   <script>
@@ -68,7 +77,7 @@
           labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#DD1B16', '#668Dc0', '#4FDEE0', '#E1DB1C',],
+              backgroundColor: ['#DD1B16', '#668Dc0', '#800080', '#E1DB1C',],
               data: [40 , 20 , 80 , 10]
             }
           ]
@@ -78,15 +87,15 @@
           maintainAspectRatio: false,
           plugins: {
           legend: {
-            position: 'right', // Set legend position to right
+            position: 'top', // Set legend position to right
             labels: {
               // Define labels here
               generateLabels: function (chart) {
                 const labels = [];
                 labels.push({
                   text: 'ไตรมาส 1',
-                  fillStyle: '#FF6962',
-                  strokeStyle: '#FF6962',
+                  fillStyle: '#DD1B16',
+                  strokeStyle: '#DD1B16',
                   lineWidth: 2,
                   hidden: false,
                   index: 0
@@ -101,16 +110,16 @@
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#4FDEE0',
-                  strokeStyle: '#4FDEE0',
+                  fillStyle: '#800080',
+                  strokeStyle: '#800080',
                   lineWidth: 2,
                   hidden: false,
                   index: 2
                 });
                 labels.push({
                   text: 'ไตรมาส 4',
-                  fillStyle: '#FFE8BF',
-                  strokeStyle: '#FFE8BF',
+                  fillStyle: '#E1DB1C',
+                  strokeStyle: '#E1DB1C',
                   lineWidth: 2,
                   hidden: false,
                   index: 3
