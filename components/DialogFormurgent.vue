@@ -6,6 +6,7 @@
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
+
           <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false"
             :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
@@ -17,7 +18,7 @@
               <v-btn text color="primary" @click="menu = false">
                 ยกเลิก
               </v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">
+              <v-btn text color="primary" @click="$refs.menu.save(formatDateForPicker(date))">
                 ตกลง
               </v-btn>
             </v-date-picker>
@@ -47,36 +48,37 @@
 
 
             <v-select v-model="editedItem.emergency_group" 
-          :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ", 
-                   "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้", 
-                   "3.สัตว์กัด", 
-                   "4.เลือดออก (ไร้เหตุบาดเจ็บ)", 
-                   "5.หายใจยากลำบาก", 
-                   "6.หัวใจหยุดเต้น", 
-                   "7.เจ็บแน่นทรวงอก/หัวใจ", 
-                   "8.สำลักอุดทางหายใจ", 
-                   "9.เบาหวาน", 
-                   "10.ภยันตรายจากสภาพแวดล้อม", 
-                   "11.(เว้นว่าง)", 
-                   "12 ปวดศีรษะ/ลำคอ", 
-                   "13.คลุ้มคลั่ง/จิตประสาท อารมณ์", 
-                   "14.ยาเกินขนาด/ได้รับพิษ", 
-                   "15.มีครรภ์/คลอด/นรีเวช", 
-                   "16.ชัก", 
-                   "17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)", 
-                   "18. โรคหลอดเลือดสมองตีบตัน", 
-                   "19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ", 
-                   "20.เด็ก/ทารก", 
-                   "21.ถูกทำร้าย/บาดเจ็บ", 
-                   "22.บาดแผลไฟไหม้/ลวก", 
-                   "23.อุบัติเหตุทางน้ำ", 
-                   "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด", 
-                   "25.อุบัติเหตุยานยนต์", 
-                   "26.โรคอุบัติใหม่ - โควิท 19"]' 
+          :items="['1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ', 
+                   '2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้', 
+                   '3.สัตว์กัด', 
+                   '4.เลือดออก (ไร้เหตุบาดเจ็บ)', 
+                   '5.หายใจยากลำบาก', 
+                   '6.หัวใจหยุดเต้น', 
+                   '7.เจ็บแน่นทรวงอก/หัวใจ', 
+                   '8.สำลักอุดทางหายใจ', 
+                   '9.เบาหวาน', 
+                   '10.ภยันตรายจากสภาพแวดล้อม', 
+                   '11.(เว้นว่าง)', 
+                   '12 ปวดศีรษะ/ลำคอ', 
+                   '13.คลุ้มคลั่ง/จิตประสาท อารมณ์', 
+                   '14.ยาเกินขนาด/ได้รับพิษ', 
+                   '15.มีครรภ์/คลอด/นรีเวช', 
+                   '16.ชัก', 
+                   '17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)', 
+                   '18. โรคหลอดเลือดสมองตีบตัน', 
+                   '19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ', 
+                   '20.เด็ก/ทารก', 
+                   '21.ถูกทำร้าย/บาดเจ็บ', 
+                   '22.บาดแผลไฟไหม้/ลวก', 
+                   '23.อุบัติเหตุทางน้ำ', 
+                   '24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด', 
+                   '25.อุบัติเหตุยานยนต์', 
+                   '26.โรคอุบัติใหม่ - โควิท 19']"
           hint="เลือกกลุ่มอาการฉุกเฉิน" 
           label="กลุ่มอาการฉุกเฉิน" 
-          multiple 
-          persistent-hint>
+          :readonly="viewMode"
+          multiple
+           clearable>
 </v-select>
   
 
@@ -117,6 +119,7 @@ export default {
           return true; // Validation passed
         },
       },
+      
       viewMode: false,
     };
   },
@@ -147,6 +150,9 @@ export default {
         const selectedDate = new Date(this.date);
         const currentDate = new Date();
         
+        selectedDate.setHours(0, 0, 0, 0);
+        currentDate.setHours(0, 0, 0, 0);
+
         if (selectedDate < currentDate) {
           Swal.fire({
             icon: 'error',
@@ -185,6 +191,18 @@ export default {
     updateTime() {
       this.formattedTime = dayjs().format('HH:mm');
     },
+    formatDateForPicker(selectedDate) {
+    const today = new Date(selectedDate);
+    const selected = new Date(selectedDate);
+
+    // Check if the selected date is today or in the future
+    if (selected >= today) {
+      return selected;
+    } else {
+      // If selected date is in the past, return today's date
+      return today;
+    }
+  },
   },
   created() {
     // Update the time every minute

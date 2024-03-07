@@ -72,7 +72,7 @@ export default {
         },
         phone: (value) => {
      if (!value) return "กรอกเบอร์โทรศัพท์";
-     if (value.length === 10) return "กรอกเบอร์โทรศัพท์ให้เป็น 10 ตัว";
+     if (value.length !== 10) return "กรอกเบอร์โทรศัพท์ให้เป็น 10 ตัว";
      if (!/^\d+$/.test(value)) return "กรอกเบอร์โทรศัพท์เป็นตัวเลขเท่านั้น";
   return true;
 },
@@ -110,7 +110,8 @@ export default {
     const isValid = await this.validateForm();
 
     // Validate the phone number
-    const phoneField = this.$refs.editedItemRef.$refs.numberphone;
+    const phoneField = this.$refs.numberphone;
+    phoneField.validate();
 
     if (!this.viewMode && isValid && !phoneField.hasError) {
       // Check if the phone number has exactly 10 digits

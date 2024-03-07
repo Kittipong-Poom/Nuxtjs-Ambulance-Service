@@ -30,6 +30,7 @@
             </v-date-picker>
           </v-menu>
           <v-text-field v-model="editedItem.time" label="เวลา" prepend-icon="mdi-clock-outline"></v-text-field>
+          <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
           <v-select  v-model="selectedStatus" :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น']" label="สถานะ"
             @change="selectStatus" :return-value.sync="editedItem.casestatus"></v-select>
             <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"
