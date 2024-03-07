@@ -7,7 +7,7 @@
                     <v-sheet :elevation="7" class="mx-auto rounded-xl" height="70" width="225">
                         <v-sheet class="my-box rounded-xl pa-2 d-flex justify-space-between align-center">
                             <div>
-                                <div class="font-weight-black">ผู้ป่วย</div>
+                                <div class="font-weight-black">ผู้ป่วยฉุกเฉิน</div>
                                 <div class="text-lg-h6 update">{{ $store.state.patientCount }}</div>
                             </div>
                             <v-icon color="#129" size="x-large">mdi-doctor</v-icon>

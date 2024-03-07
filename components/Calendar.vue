@@ -66,6 +66,7 @@
               <br><strong><span v-html="selectedEvent.time"></span></strong>
               <br><span v-html="selectedEvent.type"></span>
               <br><strong><span v-html="selectedEvent.trackpatient"></span></strong>
+              <br><strong><span v-html="selectedEvent.other"></span></strong>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">
@@ -235,7 +236,8 @@ export default {
               details: `ที่อยู่ : ${patient.coordinate}`,
               time: `เวลา : ${patient.time}`,
               type: `ประเภทผู้ป่วย : ${patient.type}`,
-              trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.trackpatient}`
+              trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.trackpatient}`,
+              other: `เพิ่มเติม : ${patient.other}`, 
             };
             this.events.push(event);
           });
@@ -247,3 +249,9 @@ export default {
   }
 };
 </script>
+
+
+<style>
+
+
+</style>

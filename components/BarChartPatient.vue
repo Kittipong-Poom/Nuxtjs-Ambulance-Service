@@ -81,12 +81,12 @@ export default {
           "กรกฏาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
         datasets: [
           {
-            label: "ฉุกเฉิน",
+            label: "ผู้ป่วยฉุกเฉิน",
             backgroundColor: "#DD1B16",
             data: [5, 9, 4, 6, 8, 21, 15, 13, 18, 11, 10, 12],
           },
           {
-            label: "นัดรับ",
+            label: "ผู้ป่วยนัดรับ",
             backgroundColor: "#4169E1",
             data: [8, 14, 7, 9, 12, 18, 13, 15, 10, 8, 7, 9],
           },
@@ -102,7 +102,7 @@ export default {
               generateLabels: function (chart) {
                 const labels = [];
                 labels.push({
-                  text: 'ฉุกเฉิน',
+                  text: 'ผู้ป่วยฉุกเฉิน',
                   fillStyle: '#DD1B16',
                   strokeStyle: '#DD1B16',
                   lineWidth: 2,
@@ -110,7 +110,7 @@ export default {
                   index: 0
                 });
                 labels.push({
-                  text: 'นัดรับ',
+                  text: 'ผู้ป่วยนัดรับ',
                   fillStyle: '#4169E1',
                   strokeStyle: '#4169E1',
                   lineWidth: 2,
