@@ -2,12 +2,10 @@
   <v-dialog v-model="dialog" max-width="650">
     <v-card>
       <v-card-title class="text-center d-flex justify-center align-center">
-        <span class="headline  ">{{ dialogTitle1 }}</span>
+        <span class="headline">{{ dialogTitle1 }}</span>
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
-
-          <!-- Your form fields go here -->
           <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false"
             :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
@@ -25,20 +23,66 @@
             </v-date-picker>
           </v-menu>
 
-          <v-text-field v-model="editedItem.time" label="เวลา" :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="formattedTime" label="เวลา" readonly></v-text-field>
+
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
-            <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
+          <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.status" label="ประเภทผู้ป่วย"
             :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
-          <v-select v-model="editedItem.violence" label="ความรุนเเรงของประเภทผู้ป่วย" :readonly="viewMode"
-            :items="['ผู้ป่วยฉุกเฉินวิฤกติ', 'ผู้ป่วยเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']"></v-select>
-          <v-text-field v-model="editedItem.emergency_group" label="กลุ่มอาการฉุกเฉิน"
-            :readonly="viewMode"></v-text-field>
+
+            <v-select v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
+    :items="['ผู้ป่วยฉุกเฉินวิฤกติ', 'ผู้ป่วยเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
+    <template #item="{ item, on }">
+      <v-list-item v-on="on">
+        <v-list-item-content>
+          <v-chip :color="getChipColor(item)" >
+            {{ item }}
+          </v-chip>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+  </v-select>
+
+
+
+            <v-select v-model="editedItem.emergency_group" 
+          :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ", 
+                   "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้", 
+                   "3.สัตว์กัด", 
+                   "4.เลือดออก (ไร้เหตุบาดเจ็บ)", 
+                   "5.หายใจยากลำบาก", 
+                   "6.หัวใจหยุดเต้น", 
+                   "7.เจ็บแน่นทรวงอก/หัวใจ", 
+                   "8.สำลักอุดทางหายใจ", 
+                   "9.เบาหวาน", 
+                   "10.ภยันตรายจากสภาพแวดล้อม", 
+                   "11.(เว้นว่าง)", 
+                   "12 ปวดศีรษะ/ลำคอ", 
+                   "13.คลุ้มคลั่ง/จิตประสาท อารมณ์", 
+                   "14.ยาเกินขนาด/ได้รับพิษ", 
+                   "15.มีครรภ์/คลอด/นรีเวช", 
+                   "16.ชัก", 
+                   "17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)", 
+                   "18. โรคหลอดเลือดสมองตีบตัน", 
+                   "19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ", 
+                   "20.เด็ก/ทารก", 
+                   "21.ถูกทำร้าย/บาดเจ็บ", 
+                   "22.บาดแผลไฟไหม้/ลวก", 
+                   "23.อุบัติเหตุทางน้ำ", 
+                   "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด", 
+                   "25.อุบัติเหตุยานยนต์", 
+                   "26.โรคอุบัติใหม่ - โควิท 19"]' 
+          hint="เลือกกลุ่มอาการฉุกเฉิน" 
+          label="กลุ่มอาการฉุกเฉิน" 
+          multiple 
+          persistent-hint>
+</v-select>
+  
+
           <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
           <v-select v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
             :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" :readonly="viewMode"></v-select>
-
         </v-card-text>
         <v-card-actions>
           <v-btn v-if="!viewMode && (dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
@@ -49,10 +93,11 @@
     </v-card>
   </v-dialog>
 </template>
-  
+
 <script>
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
+
 export default {
   props: {
     dialog: Boolean,
@@ -62,54 +107,66 @@ export default {
   },
   data() {
     return {
+      
       date: new Date().toISOString().substr(0, 10),
       menu: false,
+      formattedTime: dayjs().format('HH:mm'),
       rules: {
         hnnumber: (value) => {
           if (!value) return "กรอกข้อมูลให้ครบ";
           return true; // Validation passed
         },
       },
-      viewMode: false, // Define viewMode in the data section
+      viewMode: false,
     };
   },
   computed: {
     formattedDate() {
-      const thaiDate = dayjs(this.date).add(543, 'year'); // Add 543 years to convert to Thai calendar
+      const thaiDate = dayjs(this.date).add(543, 'year');
       const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
       return thaiFormattedDate;
     }
   },
   methods: {
+    getChipColor(item) {
+      switch (item) {
+        case 'ผู้ป่วยเฉินเร่งด่วน':
+          return 'yellow';
+        case 'ผู้ป่วยไม่ฉุกเฉิน':
+          return 'green';
+        case 'ผู้ป่วยฉุกเฉินวิฤกติ':
+          return 'red';
+        case 'ผู้ป่วยทั่วไป':
+          return 'grey'; // or any other color you prefer
+        default:
+          return 'default-color'; // set a default color if needed
+      }
+    },
     async save() {
-  try {
-    // Validate if the selected date is not in the past
-    const selectedDate = new Date(this.date);
-    const currentDate = new Date();
-    
-    if (selectedDate < currentDate) {
-      // Show an error notification indicating that the selected date is in the past
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'ไม่สามารถเลือกวันที่ย้อนหลังได้',
-      });
-      return; // Exit the method without saving
-    }
+      try {
+        const selectedDate = new Date(this.date);
+        const currentDate = new Date();
+        
+        if (selectedDate < currentDate) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'ไม่สามารถเลือกวันที่ย้อนหลังได้',
+          });
+          return;
+        }
 
-    // Proceed with saving the edited item and close the dialog if the date is valid
-    if (!this.viewMode && this.validateForm()) {
-      this.editedItem.service_date = this.formattedDate;
-
-      this.$emit('save', this.editedItem);
-      this.close();
-    }
-  } catch (error) {
-    console.error('Error saving item:', error);
-  }
-},
+        if (!this.viewMode && this.validateForm()) {
+          this.editedItem.service_date = this.formattedDate;
+          this.editedItem.time = this.formattedTime; // Set the time to the formatted time
+          this.$emit('save', this.editedItem);
+          this.close();
+        }
+      } catch (error) {
+        console.error('Error saving item:', error);
+      }
+    },
     close() {
-      // Close the dialog
       this.$emit('close');
     },
     validateForm() {
@@ -124,9 +181,18 @@ export default {
         }
       }
       return true;
-    }
-  }
+    },
+    updateTime() {
+      this.formattedTime = dayjs().format('HH:mm');
+    },
+  },
+  created() {
+    // Update the time every minute
+    setInterval(this.updateTime, 60000);
+    // Initial update
+    this.updateTime();
+  },
 };
 </script>
-  
+
 <style></style>

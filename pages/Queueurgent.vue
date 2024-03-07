@@ -18,10 +18,6 @@
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
           แก้ไข
         </v-btn>
-        <v-btn class="mr-2" color="primary" :readonly="viewMode" @click="openWatchDialog(item)">
-          <v-icon>mdi-account-search-outline</v-icon>
-          ดูข้อมูล
-        </v-btn>
         <v-btn color="red" class="white--text" @click="deleteItem(item)">
           <v-icon>mdi-delete</v-icon>
           ลบ
