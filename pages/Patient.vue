@@ -73,7 +73,7 @@
 
       <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
         :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false"
-        :view-mode="viewMode"  />
+        :view-mode="viewMode" />
     </v-card>
   </div>
 </template>
@@ -138,7 +138,7 @@ export default {
         numberphone: '',
         coordinate: '',
         type: '',
-        other:''
+        other: ''
       },
     };
   },
@@ -175,7 +175,7 @@ export default {
       this.isAppointmentDialogOpen = false;
       // Other logic...
     },
-     openAppointmentDialog(item) {
+    openAppointmentDialog(item) {
       // Close the Patient.vue dialog if it is open
       if (this.dialog) {
         this.dialog = false;
@@ -191,8 +191,8 @@ export default {
     },
     formatDate(inputDate) {
       if (!inputDate) {
-                return ''; // Return an empty string if inputDate is null
-            }
+        return ''; // Return an empty string if inputDate is null
+      }
       const date = new Date(inputDate);
       const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
       const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
@@ -202,8 +202,8 @@ export default {
     formatDateForMySQL(dateString) {
       // Extract the date parts
       if (!dateString) {
-    return null; // Return an empty string if dateString is undefined or null
-  }
+        return null; // Return an empty string if dateString is undefined or null
+      }
       const datePart = dateString.split('-');
       // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;

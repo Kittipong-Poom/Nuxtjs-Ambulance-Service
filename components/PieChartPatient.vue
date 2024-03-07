@@ -13,9 +13,9 @@
     />
     <div class="additional-text">
       <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
-        ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีเเดง <br>
+        ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีเหลือง <br>
         ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือสีฟ้า  <br>
-        ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีม่วง<br>
+        ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีส้มอ่อน<br>
         ไตรมาสที่ 4 คือ ช่วงเดือนตุลาคม - ธันวาคม คือสีเหลือง
       </p>
     </div>
@@ -77,8 +77,8 @@
           labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#DD1B16', '#668Dc0', '#800080', '#E1DB1C',],
-              data: [40 , 20 , 80 , 10]
+              backgroundColor: ['#FEFFB5', '#668Dc0', '#EFA375', '#FFCAC9',],
+              data: [40 , 20 , 50 , 20]
             }
           ]
         },
@@ -94,8 +94,8 @@
                 const labels = [];
                 labels.push({
                   text: 'ไตรมาส 1',
-                  fillStyle: '#DD1B16',
-                  strokeStyle: '#DD1B16',
+                  fillStyle: '#FEFFB5',
+                  strokeStyle: '#FEFFB5',
                   lineWidth: 2,
                   hidden: false,
                   index: 0
@@ -110,16 +110,16 @@
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#800080',
-                  strokeStyle: '#800080',
+                  fillStyle: '#EFA375',
+                  strokeStyle: '#EFA375',
                   lineWidth: 2,
                   hidden: false,
                   index: 2
                 });
                 labels.push({
                   text: 'ไตรมาส 4',
-                  fillStyle: '#E1DB1C',
-                  strokeStyle: '#E1DB1C',
+                  fillStyle: '#FFCAC9',
+                  strokeStyle: '#FFCAC9',
                   lineWidth: 2,
                   hidden: false,
                   index: 3
