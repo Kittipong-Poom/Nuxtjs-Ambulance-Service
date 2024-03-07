@@ -4,7 +4,8 @@
       <v-card-title class="text-center d-flex justify-center align-center">
         <span class="headline  ">{{ dialogTitle }}</span>
       </v-card-title>
-      <form @submit.prevent="save">
+      <form ref="editedItemRef" @submit.prevent="save">
+
         <v-card-text>
 
           <!-- Your form fields go here -->
@@ -13,10 +14,10 @@
           <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
-          <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
-            :readonly="viewMode"></v-text-field>
+            <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
+            :readonly="viewMode" ref="numberphone"></v-text-field>
           <v-text-field v-model="editedItem.coordinate" label="พิกัด*" :rules="[rules.address]"
-            :readonly="viewMode"></v-text-field>
+            :readonly="viewMode" ref="coordinate"></v-text-field>
 
           <v-select v-model="editedItem.trackpatient" label="การติดตามการนำส่งผู้ป่วย" :readonly="viewMode"
             :items="['ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
@@ -34,7 +35,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn v-if="!viewMode && (dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
-            color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
+          color="blue darken-1" class="white--text" @click.prevent="save">บันทึก</v-btn>
           <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
       </form>
@@ -70,10 +71,11 @@ export default {
           return true;
         },
         phone: (value) => {
-          if (!value) return "กรอกเบอร์โทรศัพท์";
-          if (value.length < 8) return "กรอกเบอร์โทรศัพท์";
-          return true;
-        },
+     if (!value) return "กรอกเบอร์โทรศัพท์";
+     if (value.length !== 10) return "กรอกเบอร์โทรศัพท์ให้เป็น 10 ตัว";
+     if (!/^\d+$/.test(value)) return "กรอกเบอร์โทรศัพท์เป็นตัวเลขเท่านั้น";
+  return true;
+},
         other: (value) => {
           if (!value) return "กรอกรายละเอียดเพิ่มเติม";
           return true;
@@ -101,18 +103,30 @@ export default {
   },
   methods: {
     async save() {
-      try {
-        this.$emit('notificationSaved');
+  try {
+    this.$emit('notificationSaved');
+
+    // Validate the form fields
+    const isValid = await this.validateForm();
+
+    // Validate the phone number
+    const phoneField = this.$refs.numberphone;
+    phoneField.validate();
+
+    if (!this.viewMode && isValid && !phoneField.hasError) {
+      // Check if the phone number has exactly 10 digits
+      if (this.editedItem.numberphone.length === 10) {
         // Save the edited item and close the dialog
-        if (!this.viewMode && this.validateForm()) {
-          // this.editedItem.date_service = this.formattedDate;
-          this.$emit('save', this.editedItem);
-          this.close();
-        }
-      } catch (error) {
-        console.error('Error saving item:', error);
+        this.$emit('save', this.editedItem);
+        this.close();
+      } else {
+        this.$emit('error', 'กรอกเบอร์โทรศัพท์ให้เป็น 10 ตัว');
       }
-    },
+    }
+  } catch (error) {
+    console.error('Error saving item:', error);
+  }
+},
     // clearDateInput() {
     //   if (!this.date) {
     //     // If date is already empty, no need to do anything

@@ -115,7 +115,7 @@ export default {
         'ผู้ป่วยฉุกเฉินวิฤกติ': 'red',
         'ผู้ป่วยเฉินเร่งด่วน': 'yellow',
         'ผู้ป่วยไม่ฉุกเฉิน': 'green',
-        'ผู้ป่วยทั่วไป': 'white'
+        'ผู้ป่วยทั่วไป': 'smoke'
       },
       dialog: false,
       dialogTitle1: '',
@@ -193,13 +193,7 @@ export default {
       this.viewMode = action !== 'add';
       this.viewMode = false;
     },
-    openWatchDialog(item) {
-      this.dialogTitle1 = 'ดูข้อมูลผู้ป่วยฉุกเฉิน';
-      this.dialogVisible = true;
-      this.editedItem = { ...item };
-      this.dialog = true;
-      this.viewMode = true;
-    },
+    
 
     async saveItem(editedItem) {
       try {

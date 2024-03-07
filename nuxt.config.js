@@ -5,8 +5,8 @@ export default {
   ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - MynuxtP',
-    title: 'MynuxtP',
+    titleTemplate: '',
+    title: 'MyAmbulance',
     htmlAttrs: {
       lang: 'en'
     },
