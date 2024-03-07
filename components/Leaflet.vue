@@ -1,74 +1,74 @@
 <template>
-  <div>
-    <div id="map"></div>
-    <v-btn class="mt-2" @click="getCurrentLocation" style="position: absolute; bottom: 20%; ">ตำแหน่งของรถฉุกเฉิน</v-btn>
-  </div>
-</template>
-
-<script>
-import L from 'leaflet';
-
-export default {
-  mounted() {
-    // Create Leaflet map
-    this.map = L.map('map').setView([20.04489742406062, 99.89451960806792], 13); // Initial position at [0, 0] and map size 13
-
-    // Add OSM base map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-  },
-  data() {
+    <div>
+      <div id="map" style="height: 500px;"></div>
+      
+    </div>
+  </template>
+  
+  <script>
+  import L from 'leaflet';
+  
+  export default {
+    mounted() {
+      // สร้างแผนที่ Leaflet
+      this.map = L.map('map').setView([20.04489742406062, 99.89451960806792], 13); // ตำแหน่งเริ่มต้นที่ [0, 0] และขนาดของแผนที่ 13
+  
+      // เพิ่มแผนที่ฐาน OSM
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(this.updateCurrentLocation, this.handleLocationError);
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+    }
+    },
+    data() {
     return {
       currentLocationMarker: null
     };
-  },
-  methods: {
-    getCurrentLocation() {
-      // Get user's current position
-      navigator.geolocation.getCurrentPosition(position => {
+    },
+    methods: {
+    updateCurrentLocation(position) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
 
-        // Add current location marker
-        var redIcon = L.icon({
-          iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-          iconSize: [32, 32],
-          iconAnchor: [16, 32],
-          popupAnchor: [0, -32]
-        });
+        if (!this.currentLocationMarker) {
+            var redIcon = L.icon({
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
 
-        // Add marker using custom icon
-        if (this.currentLocationMarker) {
-          this.map.removeLayer(this.currentLocationMarker);
+            this.currentLocationMarker = L.marker([latitude, longitude], { icon: redIcon }).addTo(this.map)
+                .bindPopup('ตำแหน่งล่าสุด')
+                .openPopup();
+        } else {
+            this.currentLocationMarker.setLatLng([latitude, longitude]);
         }
-
-        // Add new current location marker
-        this.currentLocationMarker = L.marker([latitude, longitude], { icon: redIcon }).addTo(this.map)
-          .bindPopup('ตำแหน่งล่าสุดของคุณ')
-          .openPopup();
-
-        // Move map view to current position
-        this.map.setView([latitude, longitude], 13);
-      }, error => {
-        // If there's an error getting the location
+             // ตรวจสอบว่าผู้ใช้กำลังมองแผนที่หรือไม่
+        if (this.map.getBounds().contains([latitude, longitude])) {
+            // อัปเดตตำแหน่งแต่ไม่ซูมเอ้าท์
+            this.map.setView([latitude, longitude], this.map.getZoom());
+        } else {
+            // ซูมเข้าเฉพาะเมื่อผู้ใช้ไม่ได้มองแผนที่
+            this.map.setView([latitude, longitude], 13);
+        }
+    },
+    handleLocationError(error) {
         console.error('Error getting location:', error);
-      });
     }
+}
+
   }
-}
-</script>
+  </script>
+  
+  <style>
+  /* เพิ่มสไตล์เพื่อความสวยงาม (ไม่จำเป็น) */
+  #map {
+    width: 100%;
 
-<style>
-/* Additional styles for aesthetics (optional) */
-
-#map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 75%;
-}
-</style>
+  }
+  </style>
+  

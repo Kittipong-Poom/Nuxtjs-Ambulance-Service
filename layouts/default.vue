@@ -133,6 +133,11 @@ export default {
           title: 'แผนที่',
           to: '/Maps'
         },
+        {
+          icon: 'mdi-map',
+          title: 'แผนที่สถิติ',
+          to: '/MapsStatic'
+        },
 
 
         // {
@@ -177,6 +182,8 @@ export default {
           return 'ปฏิทินงาน';
         case '/Maps':
           return 'แผนที่';
+        case '/MapsStatic':
+          return 'แผนที่สถิติ';
         default:
           return 'Ambulance-Service';
       }
