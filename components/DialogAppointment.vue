@@ -78,7 +78,7 @@ export default {
   computed: {
     formattedDate() {
       if (!this.date) {
-        return ' ';
+        return '';
       }
       const thaiDate = dayjs(this.date).add(543, 'year');
       const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
