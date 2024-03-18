@@ -199,7 +199,7 @@ export default {
       try {
         let response;
         editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
-
+        editedItem.emergency_group = JSON.stringify(editedItem.emergency_group);
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);

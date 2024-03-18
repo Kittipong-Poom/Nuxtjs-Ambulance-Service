@@ -187,7 +187,9 @@ export default {
 
   nativeEvent.stopPropagation();
 },
-    updateRange({ start, end }) { },
+    updateRange({ start, end }) {
+      
+     },
 
     async fetchDesserts() {
       try {
@@ -195,27 +197,7 @@ export default {
         const patients = response.data;
         console.log("patient", patients);
 
-        // console.log("my data event", this.events);
-
-        // for (var i = 0; i < patients.length; i++) {
-        //   const year = parseInt(patients[i].date_service.slice(0, 4), 10) - 543;
-        //   const month = parseInt(patients[i].date_service.slice(5, 7), 10);
-        //   const day = parseInt(patients[i].date_service.slice(8, 10), 10);
-        //   const newTimestamp = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        //   dataevent = {
-        //     name: patients[i].hnnumber,
-        //     start: newTimestamp,
-        //     end: newTimestamp,
-        //     color: "red",
-        //     details: patients[i].address,
-        //   }
-        //   console.log("Data event pushed:", dataevent);
-
-
-        //   this.events.push(dataevent);
-        // }
-        // console.log("Final number of events:", this.events.length);
-        // console.log(this.events);
+    
         if (Array.isArray(patients)) {
           // Clear existing events
           this.events = [];

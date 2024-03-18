@@ -28,59 +28,56 @@
 
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
-          <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
+          <v-select v-model="editedItem.age" label="อายุ*"
+            :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
+            :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.status" label="ประเภทผู้ป่วย"
             :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
 
-            <v-select v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
-    :items="['ผู้ป่วยฉุกเฉินวิฤกติ', 'ผู้ป่วยเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
-    <template #item="{ item, on }">
-      <v-list-item v-on="on">
-        <v-list-item-content>
-          <v-chip :color="getChipColor(item)" >
-            {{ item }}
-          </v-chip>
-        </v-list-item-content>
-      </v-list-item>
-    </template>
-  </v-select>
+          <v-select v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
+            :items="['ผู้ป่วยฉุกเฉินวิฤกติ', 'ผู้ป่วยเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
+            <template #item="{ item, on }">
+              <v-list-item v-on="on">
+                <v-list-item-content>
+                  <v-chip :color="getChipColor(item)">
+                    {{ item }}
+                  </v-chip>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
 
 
 
-            <v-select v-model="editedItem.emergency_group" 
-          :items="['1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ', 
-                   '2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้', 
-                   '3.สัตว์กัด', 
-                   '4.เลือดออก (ไร้เหตุบาดเจ็บ)', 
-                   '5.หายใจยากลำบาก', 
-                   '6.หัวใจหยุดเต้น', 
-                   '7.เจ็บแน่นทรวงอก/หัวใจ', 
-                   '8.สำลักอุดทางหายใจ', 
-                   '9.เบาหวาน', 
-                   '10.ภยันตรายจากสภาพแวดล้อม', 
-                   '11.(เว้นว่าง)', 
-                   '12 ปวดศีรษะ/ลำคอ', 
-                   '13.คลุ้มคลั่ง/จิตประสาท อารมณ์', 
-                   '14.ยาเกินขนาด/ได้รับพิษ', 
-                   '15.มีครรภ์/คลอด/นรีเวช', 
-                   '16.ชัก', 
-                   '17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)', 
-                   '18. โรคหลอดเลือดสมองตีบตัน', 
-                   '19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ', 
-                   '20.เด็ก/ทารก', 
-                   '21.ถูกทำร้าย/บาดเจ็บ', 
-                   '22.บาดแผลไฟไหม้/ลวก', 
-                   '23.อุบัติเหตุทางน้ำ', 
-                   '24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด', 
-                   '25.อุบัติเหตุยานยนต์', 
-                   '26.โรคอุบัติใหม่ - โควิท 19']"
-          hint="เลือกกลุ่มอาการฉุกเฉิน" 
-          label="กลุ่มอาการฉุกเฉิน" 
-          :readonly="viewMode"
-          multiple
-           clearable>
-</v-select>
-  
+          <v-select v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
+    "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
+    "3.สัตว์กัด",
+    "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
+    "5.หายใจยากลำบาก",
+    "6.หัวใจหยุดเต้น",
+    "7.เจ็บแน่นทรวงอก/หัวใจ",
+    "8.สำลักอุดทางหายใจ",
+    "9.เบาหวาน",
+    "10.ภยันตรายจากสภาพแวดล้อม",
+    "11.(เว้นว่าง)",
+    "12 ปวดศีรษะ/ลำคอ",
+    "13.คลุ้มคลั่ง/จิตประสาท อารมณ์",
+    "14.ยาเกินขนาด/ได้รับพิษ",
+    "15.มีครรภ์/คลอด/นรีเวช",
+    "16.ชัก",
+    "17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)",
+    "18. โรคหลอดเลือดสมองตีบตัน",
+    "19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ",
+    "20.เด็ก/ทารก",
+    "21.ถูกทำร้าย/บาดเจ็บ",
+    "22.บาดแผลไฟไหม้/ลวก",
+    "23.อุบัติเหตุทางน้ำ",
+    "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
+    "25.อุบัติเหตุยานยนต์",
+    "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน"
+            :readonly="viewMode" multiple clearable>
+          </v-select>
+
 
           <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
           <v-select v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
@@ -109,7 +106,7 @@ export default {
   },
   data() {
     return {
-      
+
       date: new Date().toISOString().substr(0, 10),
       menu: false,
       formattedTime: dayjs().format('HH:mm'),
@@ -119,7 +116,7 @@ export default {
           return true; // Validation passed
         },
       },
-      
+
       viewMode: false,
     };
   },
@@ -149,7 +146,7 @@ export default {
       try {
         const selectedDate = new Date(this.date);
         const currentDate = new Date();
-        
+
         selectedDate.setHours(0, 0, 0, 0);
         currentDate.setHours(0, 0, 0, 0);
 
@@ -192,17 +189,17 @@ export default {
       this.formattedTime = dayjs().format('HH:mm');
     },
     formatDateForPicker(selectedDate) {
-    const today = new Date(selectedDate);
-    const selected = new Date(selectedDate);
+      const today = new Date(selectedDate);
+      const selected = new Date(selectedDate);
 
-    // Check if the selected date is today or in the future
-    if (selected >= today) {
-      return selected;
-    } else {
-      // If selected date is in the past, return today's date
-      return today;
-    }
-  },
+      // Check if the selected date is today or in the future
+      if (selected >= today) {
+        return selected;
+      } else {
+        // If selected date is in the past, return today's date
+        return today;
+      }
+    },
   },
   created() {
     // Update the time every minute
