@@ -6,8 +6,8 @@
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
-          <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
-             ref="hnnumber"></v-text-field>
+          <v-text-field v-model="editedItem.patient_id" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
+             ref="patient_id"></v-text-field>
              <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="readonlyAge"></v-select>
              <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
                :readonly="readonlyGender"></v-select>

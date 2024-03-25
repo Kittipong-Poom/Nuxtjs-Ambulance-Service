@@ -35,7 +35,7 @@
             :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
 
           <v-select v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
-            :items="['ผู้ป่วยฉุกเฉินวิฤกติ', 'ผู้ป่วยเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
+            :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
             <template #item="{ item, on }">
               <v-list-item v-on="on">
                 <v-list-item-content>
@@ -130,11 +130,11 @@ export default {
   methods: {
     getChipColor(item) {
       switch (item) {
-        case 'ผู้ป่วยเฉินเร่งด่วน':
+        case 'ผู้ป่วยฉุกเฉินเร่งด่วน':
           return 'yellow';
         case 'ผู้ป่วยไม่ฉุกเฉิน':
           return 'green';
-        case 'ผู้ป่วยฉุกเฉินวิฤกติ':
+        case 'ผู้ป่วยฉุกเฉินวิกฤติ':
           return 'red';
         case 'ผู้ป่วยทั่วไป':
           return 'grey'; // or any other color you prefer

@@ -9,8 +9,8 @@
         <v-card-text>
 
           <!-- Your form fields go here -->
-          <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
-            :rules="[rules.hnnumber]" ref="hnnumber"></v-text-field>
+          <!-- <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
+            :rules="[rules.hnnumber]" ref="hnnumber"></v-text-field> -->
           <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
@@ -61,10 +61,10 @@ export default {
       // menu: false,
       hideDatePicker: false,
       rules: {
-        hnnumber: (value) => {
-          if (!value) return "กรอกข้อมูลให้ครบ";
-          return true;
-        },
+        // hnnumber: (value) => {
+        //   if (!value) return "กรอกข้อมูลให้ครบ";
+        //   return true;
+        // },
         address: (value) => {
           if (!value) return "กรอกที่อยู่";
           if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";

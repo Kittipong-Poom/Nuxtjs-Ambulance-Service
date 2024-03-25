@@ -27,8 +27,8 @@
 
       <template v-slot:item.violence="{ item }">
         <v-chip class="my-chip2" :color="getStatusColor(item.violence)"
-          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน' || item.violence === 'ผู้ป่วยทั่วไป', }"
-          :dark="item.violence === 'ผู้ป่วยฉุกเฉินวิฤกติ' || item.violence === 'ผู้ป่วยไม่ฉุกเฉิน'">
+          :class="{ 'black--text': item.violence === 'ผู้ป่วยฉุกเฉินเร่งด่วน' || item.violence === 'ผู้ป่วยทั่วไป', }"
+          :dark="item.violence === 'ผู้ป่วยฉุกเฉินวิกฤติ' || item.violence === 'ผู้ป่วยไม่ฉุกเฉิน'">
           {{ item.violence }}
         </v-chip>
       </template>
@@ -112,8 +112,8 @@ export default {
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
       statusColorMap: {
-        'ผู้ป่วยฉุกเฉินวิฤกติ': 'red',
-        'ผู้ป่วยเฉินเร่งด่วน': 'yellow',
+        'ผู้ป่วยฉุกเฉินวิกฤติ': 'red',
+        'ผู้ป่วยฉุกเฉินเร่งด่วน': 'yellow',
         'ผู้ป่วยไม่ฉุกเฉิน': 'green',
         'ผู้ป่วยทั่วไป': 'smoke'
       },
@@ -203,15 +203,17 @@ export default {
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
+          this.$store.commit('incrementJobsCount');
           this.$notify({
             'group': 'success',
             'title': 'กรอกข้อมูลสำเร็จ',
             'text': 'คลิกกระดิ่งเพื่อดูข้อมูลเพิ่มเติม'
           })
-          this.$store.commit('incrementPatientCount');
+          
 
           this.notifications = [];
           this.showRedBadge = false;
+          
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -300,7 +302,7 @@ export default {
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.caseurgent_id !== item.caseurgent_id);
-              this.$store.commit('decrementPatientCount');
+              this.$store.commit('decrementJobsCount');
               // Show success notification
 
               Swal.fire({

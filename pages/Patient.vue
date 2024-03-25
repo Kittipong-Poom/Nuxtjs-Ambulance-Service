@@ -106,7 +106,7 @@ export default {
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN', value: 'hnnumber', align: 'center' },
+        { text: 'HN', value: 'patient_id', align: 'center' },
         { text: 'อายุ', value: 'age', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
         { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
@@ -123,15 +123,11 @@ export default {
       desserts: [],
       statusColorMap: {
         'งานบริการ': 'green',
-        'รอรับงาน': 'red',
-        'กำลังดำเนินงาน': 'yellow',
-        'เสร็จสิ้น': 'green',
         'ผู้ป่วยติดเตียง': 'green',
       },
       dialog: false,
       dialogTitle: '',
       editedItem: {
-        hnnumber: '',
         age: '',
         gender: '',
         trackpatient: '',
@@ -157,19 +153,9 @@ export default {
         date_service: null
       }));
     },
-    // formatThaiDate(dateString) {
-    //   // Extract the date parts
-    //   const datePart = dateString.split('-');
-    //   // Rearrange the date parts to match the desired format (DD-MM-YYYY)
-    //   const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
-
-    //   // Remove the time part
-    //   const dateWithoutTime = formattedDate.split('T')[0];
-
-    //   return dateWithoutTime;
-    // },
   },
   methods: {
+    
     closeDialog() {
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
@@ -238,6 +224,7 @@ export default {
     //   this.dialog = true;
     //   this.viewMode = true;
     // },
+    
     async saveItem(editedItem) {
       try {
         let response;

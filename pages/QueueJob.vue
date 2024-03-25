@@ -68,7 +68,7 @@ export default {
             isAppointmentDialogOpen: false,
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
             headers: [
-                { text: 'HN', value: 'hnnumber', align: 'center' },
+                { text: 'HN', value: 'patient_id', align: 'center' },
                 { text: 'อายุ', value: 'age', align: 'center' },
                 { text: 'เพศ', value: 'gender', align: 'center' },
                 { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
@@ -90,7 +90,7 @@ export default {
             desserts: [],
             search: '',
             editedItem: {
-                hnnumber: '',
+                patient_id: '',
                 age: '',
                 gender: '',
                 trackpatient: '',
@@ -117,7 +117,7 @@ export default {
         filteredDesserts() {
             return this.desserts.filter(patient => {
                 // Check if any of the fields in the patient data is filled
-                return patient.hnnumber || patient.age || patient.gender || patient.numberphone || patient.address || patient.time || patient.coordinate || patient.type;
+                return patient.patient_id || patient.age || patient.gender || patient.numberphone || patient.address || patient.time || patient.coordinate || patient.type;
             });
         },
 
@@ -265,7 +265,7 @@ export default {
                 const { data } = await axios.get(this.endpointUrl + '/api/patients');
 
                 // ตรวจสอบว่าข้อมูลใน primary key บางตัวครบทุกช่องหรือไม่
-                const completeDataKeys = ['hnnumber', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'date_service', 'time', 'casestatus'];
+                const completeDataKeys = ['patient_id', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'date_service', 'time', 'casestatus'];
                 const filteredData = data.filter(item => {
                     return completeDataKeys.every(key => item[key]);
                 });
