@@ -6,12 +6,12 @@
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
-          <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
+          <v-text-field v-model="editedItem.hn_id" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
              ref="hnnumber"></v-text-field>
-             <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="readonlyAge"></v-select>
+             <v-select v-model="editedItem.age_name" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="readonlyAge"></v-select>
              <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
                :readonly="readonlyGender"></v-select>
-             <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="editedItem.date_service"
+             <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="editedItem.service_date"
             transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field  v-model="formattedDate"
@@ -32,7 +32,7 @@
           <v-text-field v-model="editedItem.time" label="เวลา" prepend-icon="mdi-clock-outline"></v-text-field>
           <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
           <v-select  v-model="selectedStatus" :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น']" label="สถานะ"
-            @change="selectStatus" :return-value.sync="editedItem.casestatus"></v-select>
+            @change="selectStatus" :return-value.sync="editedItem.casestatus_name"></v-select>
             <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"
             :readonly="viewMode"></v-text-field>
         </v-card-text>
@@ -104,13 +104,13 @@ export default {
       try {
         this.$emit('notificationSaved');
         if (!this.viewMode && this.validateForm()) {
-          if (!this.editedItem.casestatus) {
+          if (!this.editedItem.casestatus_name) {
             // Display an error message if casestatus is not selected
             this.$emit('error', 'Please select a status.');
             return; // Exit early if casestatus is not selected
           }
 
-          this.editedItem.date_service = this.formattedDate;
+          this.editedItem.service_date = this.formattedDate;
           this.$emit('save', this.editedItem);
           this.closeDialog();
         }
@@ -120,7 +120,7 @@ export default {
     },
     selectStatus() {
       // Method to update selectedStatus when v-select value changes
-      this.editedItem.casestatus = this.selectedStatus;
+      this.editedItem.casestatus_name = this.selectedStatus;
     },
     closeDialog() {
       if (this.dialog) {

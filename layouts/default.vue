@@ -202,7 +202,7 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients')
+        const { data } = await axios.get(this.endpointUrl + '/api/patients/normal')
         this.desserts = data;
         this.patient = data;
         console.log("This data", data)

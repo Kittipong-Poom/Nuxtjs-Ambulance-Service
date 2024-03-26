@@ -106,16 +106,15 @@ export default {
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN', value: 'hnnumber', align: 'center' },
-        { text: 'อายุ', value: 'age', align: 'center' },
+        { text: 'HN', value: 'hn_id', align: 'center' },
+        { text: 'อายุ', value: 'age_name', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
-        { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
-        { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
-        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
+        { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
+        { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
+        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name' },
         { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
         // { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
         // { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
-        // { text: 'สถานะ', value: 'casestatus', align: 'center' },
         { text: 'เพิ่มเติม', value: 'other', align: 'center' },
         { text: '', value: 'action', sortable: false, align: 'center' }
       ],
@@ -131,13 +130,12 @@ export default {
       dialog: false,
       dialogTitle: '',
       editedItem: {
-        hnnumber: '',
-        age: '',
+        age_name: '',
         gender: '',
-        trackpatient: '',
-        numberphone: '',
+        tracking_name: '',
+        number: '',
         coordinate: '',
-        type: '',
+        type_patient_name: '',
         other: ''
       },
     };
@@ -154,7 +152,7 @@ export default {
     formattedDesserts() {
       return this.desserts.map(dessert => ({
         ...dessert,
-        date_service: null
+        service_date: null
       }));
     },
     // formatThaiDate(dateString) {
@@ -242,11 +240,11 @@ export default {
       try {
         let response;
 
-        editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
+        editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
 
         if (!editedItem.patient_id) {
           // Add new patient
-          response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
+          response = await axios.post(`${this.endpointUrl}/api/patients/post`, editedItem);
           this.$store.commit('incrementPatientCount');
 
           Swal.fire({
@@ -359,7 +357,7 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients')
+        const { data } = await axios.get(this.endpointUrl + '/api/patients/normal')
         // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
@@ -368,7 +366,7 @@ export default {
           // Assuming the date_service field contains the date to be formatted
           return {
             ...item,
-            date_service: this.formatDate(item.date_service) // Format date here
+            service_date: this.formatDate(item.service_date) // Format date here
           };
         });
 
@@ -381,12 +379,12 @@ export default {
     },
     async fetchDataFromServer() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients');
+        const { data } = await axios.get(this.endpointUrl + '/api/patients/normal');
         const formattedData = data.map(item => {
           // Assuming the date_service field contains the date to be formatted
           return {
             ...item,
-            date_service: this.formatDate(item.date_service) // Format date here
+            service_date: this.formatDate(item.service_date) // Format date here
           };
         });
         return formattedData;

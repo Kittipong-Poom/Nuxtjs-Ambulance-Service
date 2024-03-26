@@ -9,24 +9,23 @@
         <v-card-text>
 
           <!-- Your form fields go here -->
-          <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
-            :rules="[rules.hnnumber]" ref="hnnumber"></v-text-field>
-          <v-select v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
+ 
+          <v-select v-model="editedItem.age_name" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-select>
           <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
-            <v-text-field v-model="editedItem.numberphone" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
+            <v-text-field v-model="editedItem.number" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
             :readonly="viewMode" ref="numberphone"></v-text-field>
           <v-text-field v-model="editedItem.coordinate" label="พิกัด*" :rules="[rules.address]"
             :readonly="viewMode" ref="coordinate"></v-text-field>
 
-          <v-select v-model="editedItem.trackpatient" label="การติดตามการนำส่งผู้ป่วย" :readonly="viewMode"
+          <v-select v-model="editedItem.tracking_name" label="การติดตามการนำส่งผู้ป่วย" :readonly="viewMode"
             :items="['ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
 
           <!-- Show/hide status field based on hideFields prop -->
           <!-- <v-select v-if="!hideFields.dateAndTime" v-model="editedItem.casestatus"
             :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น']" label="สถานะ" :readonly="viewMode"></v-select> -->
 
-          <v-select v-model="editedItem.type" label="เลือกประเภท" :items="['งานบริการ', 'ผู้ป่วยติดเตียง', 'อื่นๆ']"
+          <v-select v-model="editedItem.type_patient_name" label="เลือกประเภท" :items="['งานบริการ', 'ผู้ป่วยติดเตียง', 'อื่นๆ']"
             :readonly="viewMode"></v-select>
             <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"
             :readonly="viewMode"></v-text-field>
@@ -61,10 +60,6 @@ export default {
       // menu: false,
       hideDatePicker: false,
       rules: {
-        hnnumber: (value) => {
-          if (!value) return "กรอกข้อมูลให้ครบ";
-          return true;
-        },
         address: (value) => {
           if (!value) return "กรอกที่อยู่";
           if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";
@@ -110,12 +105,12 @@ export default {
     const isValid = await this.validateForm();
 
     // Validate the phone number
-    const phoneField = this.$refs.numberphone;
+    const phoneField = this.$refs.numberphone; // Change here
     phoneField.validate();
 
     if (!this.viewMode && isValid && !phoneField.hasError) {
       // Check if the phone number has exactly 10 digits
-      if (this.editedItem.numberphone.length === 10) {
+      if (this.editedItem.number.length === 10) {
         // Save the edited item and close the dialog
         this.$emit('save', this.editedItem);
         this.close();
@@ -140,17 +135,18 @@ export default {
       this.$emit('close');
     },
     validateForm() {
-      for (const key in this.editedItem) {
-        const fieldRef = this.$refs[key];
-        if (fieldRef && fieldRef.validate) {
-          fieldRef.validate();
-          if (fieldRef.hasError) {
-            return false;
-          }
-        }
+  for (const key in this.editedItem) {
+    const fieldRef = this.$refs[key];
+    console.log('Field Reference:', key, fieldRef);
+    if (fieldRef && fieldRef.validate) {
+      fieldRef.validate();
+      if (fieldRef.hasError) {
+        return false;
       }
-      return true;
     }
+  }
+  return true;
+}
   }
 };
 </script>
