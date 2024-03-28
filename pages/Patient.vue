@@ -106,14 +106,14 @@ export default {
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN', value: 'patient_id', align: 'center' },
-        { text: 'อายุ', value: 'age', align: 'center' },
+        { text: 'HN', value: 'hn_id', align: 'center' },
+        { text: 'อายุ', value: 'age_name', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
-        { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
-        { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
-        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient' },
+        { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
+        { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
+        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
         { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
-        // { text: 'วันที่นัดหมาย', value: `date_service`, align: 'center' },
+        // { text: 'วันที่นัดหมาย', value: `service_date`, align: 'center' },
         // { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
         // { text: 'สถานะ', value: 'casestatus', align: 'center' },
         { text: 'เพิ่มเติม', value: 'other', align: 'center' },
@@ -121,6 +121,7 @@ export default {
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
+      items_status: [],
       statusColorMap: {
         'งานบริการ': 'green',
         'ผู้ป่วยติดเตียง': 'green',
@@ -128,13 +129,16 @@ export default {
       dialog: false,
       dialogTitle: '',
       editedItem: {
-        age: '',
+        ages_id: '',
         gender: '',
-        trackpatient: '',
-        numberphone: '',
+        number: '',
+        tracking_patient_id: '',
         coordinate: '',
-        type: '',
-        other: ''
+        type_patient_id: '',
+        other: '',
+        status_case_id: null,
+        service_date: '',
+        time: ''
       },
     };
   },
@@ -146,16 +150,16 @@ export default {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
-  computed: {
-    formattedDesserts() {
-      return this.desserts.map(dessert => ({
-        ...dessert,
-        date_service: null
-      }));
-    },
-  },
+  // computed: {
+  //   formattedDesserts() {
+  //     return this.desserts.map(dessert => ({
+  //       ...dessert,
+  //       service_date: null
+  //     }));
+  //   },
+  // },
   methods: {
-    
+
     closeDialog() {
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
@@ -166,25 +170,30 @@ export default {
       if (this.dialog) {
         this.dialog = false;
       }
-
+      const { data } = axios.get(this.endpointUrl + '/api/status');
+      this.items_status = data;
       // Set editedItem and dialogTitle based on item data
+
       this.editedItem = item;
+      console.log(item);
+      console.log(this.editedItem.age_name);
+
       this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
 
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
 
     },
-    formatDate(inputDate) {
-      if (!inputDate) {
-        return ''; // Return an empty string if inputDate is null
-      }
-      const date = new Date(inputDate);
-      const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-      const year = date.getFullYear();
-      return `${day}-${month}-${year}`;
-    },
+    // formatDate(inputDate) {
+    //   if (!inputDate) {
+    //     return ''; // Return an empty string if inputDate is null
+    //   }
+    //   const date = new Date(inputDate);
+    //   const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
+    //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    //   const year = date.getFullYear();
+    //   return `${day}-${month}-${year}`;
+    // },
     formatDateForMySQL(dateString) {
       // Extract the date parts
       if (!dateString) {
@@ -195,9 +204,9 @@ export default {
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
     },
-    formatDateWithoutTime(dateTimeString) {
-      return dateTimeString.split('T')[0];
-    },
+    // formatDateWithoutTime(dateTimeString) {
+    //   return dateTimeString.split('T')[0];
+    // },
     redirectToPatientDetail(item) {
 
       console.log('คลิก Row นี้:', item);
@@ -224,16 +233,28 @@ export default {
     //   this.dialog = true;
     //   this.viewMode = true;
     // },
-    
+
     async saveItem(editedItem) {
       try {
         let response;
 
-        editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
+        editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
 
-        if (!editedItem.patient_id) {
+        if (!editedItem.hn_id) {
           // Add new patient
-          response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
+          response = await axios.post(`${this.endpointUrl}/api/patients`, {
+            ages_id: editedItem.ages_id.age_id,
+            gender: editedItem.gender,
+            number: editedItem.number,
+            tracking_patient_id: editedItem.tracking_patient_id,
+            coordinate: editedItem.coordinate,
+            type_patient_id: editedItem.type_patient_id,
+            other: editedItem.other,
+            status_case_id: null,
+            service_date: null,
+            time: null
+          });
+          console.log(editedItem);
           this.$store.commit('incrementPatientCount');
 
           Swal.fire({
@@ -243,7 +264,12 @@ export default {
           });
         } else {
           // Update existing patient
-          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.patient_id}`, editedItem);
+          console.log('put', editedItem.time);
+          response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
+            status_case_id: editedItem.status_case_id,
+            service_date: editedItem.service_date,
+            time: editedItem.time
+          });
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -307,10 +333,10 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.patient_id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn_id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
-              this.desserts = this.desserts.filter(p => p.patient_id !== item.patient_id);
+              this.desserts = this.desserts.filter(p => p.hn_id !== item.hn_id);
               this.$store.commit('decrementPatientCount');
               // Show success notification
               Swal.fire({
@@ -351,15 +377,15 @@ export default {
         console.log("This data", data)
         this.$emit('data-loaded', data);
 
-        const formattedData = data.map(item => {
-          // Assuming the date_service field contains the date to be formatted
-          return {
-            ...item,
-            date_service: this.formatDate(item.date_service) // Format date here
-          };
-        });
+        // const formattedData = data.map(item => {
+        //   // Assuming the service_date field contains the date to be formatted
+        //   return {
+        //     ...item,
+        //     service_date: this.formatDate(item.service_date) // Format date here
+        //   };
+        // });
 
-        this.desserts = formattedData;
+        this.desserts = data;
         console.log(this.desserts);
 
       } catch (error) {
@@ -369,14 +395,14 @@ export default {
     async fetchDataFromServer() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/patients');
-        const formattedData = data.map(item => {
-          // Assuming the date_service field contains the date to be formatted
-          return {
-            ...item,
-            date_service: this.formatDate(item.date_service) // Format date here
-          };
-        });
-        return formattedData;
+        // const formattedData = data.map(item => {
+        //   // Assuming the service_date field contains the date to be formatted
+        //   return {
+        //     ...item,
+        //     service_date: this.formatDate(item.service_date) // Format date here
+        //   };
+        // });
+        return data;
       } catch (error) {
         console.error('Error fetching data from server:', error);
         throw error; // Propagate the error to the caller

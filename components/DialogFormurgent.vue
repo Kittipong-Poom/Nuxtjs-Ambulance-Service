@@ -26,30 +26,30 @@
 
           <v-text-field v-model="formattedTime" label="เวลา" readonly></v-text-field>
 
-          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
-            :readonly="viewMode"></v-select>
-          <v-select v-model="editedItem.age" label="อายุ*"
+          <v-combobox v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
+            :readonly="viewMode"></v-combobox>
+          <v-combobox v-model="editedItem.age" label="อายุ*"
             :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
-            :readonly="viewMode"></v-select>
-          <v-select v-model="editedItem.status" label="ประเภทผู้ป่วย"
-            :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
+            :readonly="viewMode"></v-combobox>
+          <v-combobox v-model="editedItem.status" label="ประเภทผู้ป่วย"
+            :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-combobox>
 
-          <v-select v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
+          <v-combobox v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
             :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
             <template #item="{ item, on }">
               <v-list-item v-on="on">
                 <v-list-item-content>
-                  <v-chip :color="getChipColor(item)">
+                  <v-chip :color="getChipColor(item)" >
                     {{ item }}
                   </v-chip>
                 </v-list-item-content>
               </v-list-item>
             </template>
-          </v-select>
+          </v-combobox>
 
 
 
-          <v-select v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
+          <v-combobox v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
     "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
     "3.สัตว์กัด",
     "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
@@ -74,14 +74,15 @@
     "23.อุบัติเหตุทางน้ำ",
     "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
     "25.อุบัติเหตุยานยนต์",
-    "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน"
-            :readonly="viewMode" multiple clearable>
-          </v-select>
+    "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน" :readonly="viewMode"
+            multiple clearable chips >
+ 
+          </v-combobox>
 
 
           <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
-          <v-select v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
-            :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" :readonly="viewMode"></v-select>
+          <v-combobox v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
+            :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" :readonly="viewMode"></v-combobox>
         </v-card-text>
         <v-card-actions>
           <v-btn v-if="!viewMode && (dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"

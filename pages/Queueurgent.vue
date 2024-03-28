@@ -345,7 +345,7 @@ export default {
         this.$emit('data-loaded', data);
 
         const formattedData = data.map(item => {
-          // Assuming the date_service field contains the date to be formatted
+          // Assuming the service_date field contains the date to be formatted
           return {
             ...item,
             service_date: this.formatDate(item.service_date) // Format date here
@@ -363,7 +363,7 @@ export default {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
         const formattedData = data.map(item => {
-          // Assuming the date_service field contains the date to be formatted
+          // Assuming the service_date field contains the date to be formatted
           return {
             ...item,
             service_date: this.formatDate(item.service_date) // Format date here

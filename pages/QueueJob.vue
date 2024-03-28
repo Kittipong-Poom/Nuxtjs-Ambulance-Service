@@ -31,11 +31,11 @@
                 </v-chip>
             </template>
 
-            <template v-slot:item.casestatus="{ item }">
-                <v-chip :color="getStatusColor(item.casestatus)" class="my-chip" dark
-                    :class="{ 'black--text': item.casestatus === 'กำลังดำเนินงาน', }"
-                    :dark="item.casestatus === 'รอรับงาน' || item.casestatus === 'เสร็จสิ้น'">
-                    {{ item.casestatus }}
+            <template v-slot:item.casestatus_name="{ item }">
+                <v-chip :color="getStatusColor(item.casestatus_name)" class="my-chip" dark
+                    :class="{ 'black--text': item.casestatus_name === 'กำลังดำเนินงาน', }"
+                    :dark="item.casestatus_name === 'รอรับงาน' || item.casestatus_name === 'เสร็จสิ้น'">
+                    {{ item.casestatus_name }}
 
                 </v-chip>
             </template>
@@ -68,18 +68,18 @@ export default {
             isAppointmentDialogOpen: false,
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
             headers: [
-                { text: 'HN', value: 'patient_id', align: 'center' },
-                { text: 'อายุ', value: 'age', align: 'center' },
+                { text: 'HN', value: 'hn_id', align: 'center' },
+                { text: 'อายุ', value: 'age_name', align: 'center' },
                 { text: 'เพศ', value: 'gender', align: 'center' },
-                { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
-                { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
-                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient', align: 'center' },
-                { text: 'ที่อยู่,พิกัด', value: 'coordinate', align: 'center' },
-                { text: 'วันที่นัดหมาย', value: 'date_service', align: 'center' },
+                { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
+                { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
+                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
+                { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
+                { text: 'วันที่นัดหมาย', value: 'service_date', align: 'center' },
                 { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
                 { text: 'เพิ่มเติม', value: 'other', align: 'center' },
-                { text: 'สถานะ', value: 'casestatus', align: 'center' },
-                
+                { text: 'สถานะ', value: 'casestatus_name', align: 'center' },
+
                 { text: '', value: 'action', sortable: false, align: 'center' }
             ],
             selectedPatient: null,
@@ -94,14 +94,14 @@ export default {
                 age: '',
                 gender: '',
                 trackpatient: '',
-                date_service: '',
+                service_date: new Date(),
                 casestatus: '',
                 numberphone: '',
                 time: '',
                 coordinate: '',
-                other:'',
+                other: '',
                 type: ''
-                
+
             },
             statusColorMap: {
                 'งานบริการ': 'green',
@@ -130,7 +130,7 @@ export default {
             }
 
             // Set editedItem and dialogTitle based on item data
-            this.editedItem = { ...item, date_service: null, casestatus: '' }; // Initialize casestatus as an empty string
+            this.editedItem = { ...item, service_date: null, casestatus: '' }; // Initialize casestatus as an empty string
             this.dialogTitle = 'แก้ไขนัดหมายผู้ป่วย'; // Set your dialog title here
 
             // Show the appointment dialog
@@ -197,7 +197,7 @@ export default {
                 }
                 let response;
 
-                editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
+                editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
 
                 if (!editedItem.patient_id) {
                     // Add new patient
@@ -262,20 +262,21 @@ export default {
         },
         async loadData() {
             try {
-                const { data } = await axios.get(this.endpointUrl + '/api/patients');
+                const { data } = await axios.get(this.endpointUrl + '/api/patients/time');
 
+                console.log('data', data);
                 // ตรวจสอบว่าข้อมูลใน primary key บางตัวครบทุกช่องหรือไม่
-                const completeDataKeys = ['patient_id', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'date_service', 'time', 'casestatus'];
-                const filteredData = data.filter(item => {
-                    return completeDataKeys.every(key => item[key]);
-                });
+                // const completeDataKeys = ['patient_id', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'service_date', 'time', 'casestatus'];
+                // const filteredData = data.filter(item => {
+                //     return completeDataKeys.every(key => item[key]);
+                // });
 
-                // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
-                const formattedData = filteredData.map(item => {
-                    // Assuming the date_service field contains the date to be formatted
+                // // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
+                const formattedData = data.map(item => {
+                    // Assuming the service_date field contains the date to be formatted
                     return {
                         ...item,
-                        date_service: this.formatDate(item.date_service) // Format date here
+                        service_date: this.formatDate(item.service_date) // Format date here
                     };
                 });
 
@@ -291,10 +292,10 @@ export default {
             try {
                 const { data } = await axios.get(this.endpointUrl + '/api/patients');
                 const formattedData = data.map(item => {
-                    // Assuming the date_service field contains the date to be formatted
+                    // Assuming the service_date field contains the date to be formatted
                     return {
                         ...item,
-                        date_service: this.formatDate(item.date_service) // Format date here
+                        service_date: this.formatDate(item.service_date) // Format date here
                     };
                 });
                 return formattedData;
