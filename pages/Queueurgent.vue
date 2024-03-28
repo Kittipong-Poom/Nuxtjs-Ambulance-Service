@@ -105,7 +105,8 @@ export default {
         { text: 'ประเภทผู้ป่วย', value: 'status', align: 'center' },
         { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence', align: 'center' },
         { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center' },
-        { text: 'จุดเกิดเหตุ', value: 'coordinate', align: 'center' },
+        { text: 'Latitude', value: 'lati', align: 'center' },
+        { text: 'Longitude', value: 'longi', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery', align: 'center' },
         { text: '', value: 'action', sortable: false, align: 'center' }
       ],
@@ -127,7 +128,8 @@ export default {
         status: '',
         violence: '',
         emergency_group: '',
-        coordinate: '',
+        lati: '',
+        longi: '',
         patient_delivery: ''
       },
     };

@@ -80,7 +80,8 @@
           </v-combobox>
 
 
-          <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.lati" label="Latitude" :readonly="viewMode"></v-text-field>
+          <v-text-field v-model="editedItem.longi" label="Longitude" :readonly="viewMode"></v-text-field>
           <v-combobox v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
             :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" :readonly="viewMode"></v-combobox>
         </v-card-text>
