@@ -108,7 +108,7 @@ export default {
         if (!editedItem.id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/jobs`, editedItem);
-          this.$store.commit('incrementJobsCount');
+         
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -187,7 +187,7 @@ export default {
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.id !== item.id);
-              this.$store.commit('decrementJobsCount');
+             
               // Show success notification
               Swal.fire({
                 icon: 'success',

@@ -6,38 +6,84 @@
 
 <script>
 import L from 'leaflet';
+import axios from 'axios';
 
 export default {
+  data() {
+    return {
+      map: null,
+      markers: []
+    };
+  },
   mounted() {
-    // สร้างแผนที่ Leaflet
-    this.map = L.map('map').setView([20.04489742406062, 99.89451960806792], 13); // ตำแหน่งเริ่มต้นที่ [0, 0] และขนาดของแผนที่ 13
+    this.initMap(); // Call map initialization method
+    this.fetchMarkers(); // Fetch and display markers
+  },
+  methods: {
+    async initMap() {
+      // Initialize map code here
+      this.map = L.map("map").setView([0, 0], 13);
 
-    // เพิ่มแผนที่ฐาน OSM
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(this.map);
 
-    // ปรับแต่ง icon เป็นสีแดง
-    const redIcon = new L.Icon({
-      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
+      // Lock pin to the current location
+      this.map.locate({
+        setView: true,
+        watch: false
+      });
+      this.map.on("locationfound", async (e) => {
+        const { lat, lng } = e.latlng;
+        this.map.setView([lat, lng], 15);
+      });
+    },
 
-    // เพิ่มจุด Marker ในแผนที่
-    L.marker([20.047451052798706, 99.89189808040975], { icon: redIcon }).addTo(this.map)
-      .bindPopup('This is your marker!');
+    async fetchMarkers() {
+  try {
+    const response = await axios.get(`http://localhost:5000/api/latlong`);
+    console.log(response.data); // Log API response
+    this.createMarkers(response.data); // Pass the correct data format
+  } catch (error) {
+    console.error('Error fetching markers:', error);
+  }
 },
 
+createMarkers(markerDataArray) {
+  console.log(markerDataArray); // Log marker data array
+  // Clear existing markers from the map
+  this.markers.forEach(marker => {
+    marker.remove();
+  });
+  this.markers = [];
 
+  markerDataArray.forEach(markerData => {
+    const lat = parseFloat(markerData.lati);
+    const lng = parseFloat(markerData.longi);
+    var redIcon = L.icon({
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            })
+    let markerInstance = L.marker([lat, lng], {icon: redIcon}).addTo(this.map); // Add marker to map
+    this.markers.push(markerInstance); // Add marker instance to the array
+  });
+
+  // Fit the map bounds to include all markers
+  if (this.markers.length > 0) {
+    let group = new L.featureGroup(this.markers);
+    this.map.fitBounds(group.getBounds());
+  }
+}
+
+  }
 }
 </script>
 
+
 <style>
-/* เพิ่มสไตล์เพื่อความสวยงาม (ไม่จำเป็น) */
+/* Add styles for aesthetics (optional) */
 #map {
   width: 100%;
 }

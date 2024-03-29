@@ -85,7 +85,7 @@ import Patient from "~/pages/Patient.vue";
 import axios from "axios";
 export default {
   data: () => ({
-    components:{
+    components: {
       Patient
     },
 
@@ -170,56 +170,68 @@ export default {
       this.$refs.calendar.next();
     },
     showEvent({ nativeEvent, event }) {
-  const open = () => {
-    this.selectedEvent = event;
-    this.selectedElement = nativeEvent.target;
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => (this.selectedOpen = true))
-    );
-  };
+      const open = () => {
+        this.selectedEvent = event;
+        this.selectedElement = nativeEvent.target;
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => (this.selectedOpen = true))
+        );
+      };
 
-  if (this.selectedOpen) {
-    this.selectedOpen = false;
-    requestAnimationFrame(() => requestAnimationFrame(() => open()));
-  } else {
-    open();
-  }
+      if (this.selectedOpen) {
+        this.selectedOpen = false;
+        requestAnimationFrame(() => requestAnimationFrame(() => open()));
+      } else {
+        open();
+      }
 
-  nativeEvent.stopPropagation();
-},
+      nativeEvent.stopPropagation();
+    },
     updateRange({ start, end }) {
-      
-     },
+
+    },
 
     async fetchDesserts() {
       try {
-        const response = await axios.get(`${this.endpointUrl}/api/patients`);
+        const response = await axios.get(`${this.endpointUrl}/api/patients/time`);
         const patients = response.data;
         console.log("patient", patients);
 
-    
+
         if (Array.isArray(patients)) {
           // Clear existing events
           this.events = [];
 
-          patients.forEach((patient,index) => {
+          patients.forEach((patient, index) => {
             console.log();
-            const date = new Date(patient.date_service);
-            const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-            const year = date.getFullYear() - 543;
-            const newTimestamp = `${year}-${month}-${day}`;
+            // const date = new Date(patient.service_date);
+            // const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
+            // const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+            // const year = date.getFullYear() - 543;
+            // const newTimestamp = `${year}-${month}-${day}`;
+
+            // Extract the year, month, and day components from the date string
+            const year = new Date(patient.service_date).getFullYear();
+            const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
+            const day = new Date(patient.service_date).getUTCDate() + 1;
+
+            // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
+            const newyear = year - 543;
+
+            // Format the components into the standard date format: YYYY-MM-DD
+            const newTimestamp = `${newyear}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
             const colorIndex = index % this.colors.length;
             const event = {
-              name: `HN ${patient.hnnumber}`,
+              name: `HN ${patient.hn_id}`,
               start: newTimestamp,
               end: newTimestamp,
               color: this.colors[colorIndex],
               details: `ที่อยู่ : ${patient.coordinate}`,
               time: `เวลา : ${patient.time}`,
-              type: `ประเภทผู้ป่วย : ${patient.type}`,
-              trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.trackpatient}`,
-              other: `เพิ่มเติม : ${patient.other}`, 
+              type: `ประเภทผู้ป่วย : ${patient.type_patient_name}`,
+              trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name}`,
+              other: `เพิ่มเติม : ${patient.other}`,
             };
             this.events.push(event);
           });
@@ -233,7 +245,4 @@ export default {
 </script>
 
 
-<style>
-
-
-</style>
+<style></style>

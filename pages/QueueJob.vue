@@ -25,28 +25,28 @@
             </template>
 
 
-            <template v-slot:item.type="{ item }">
-                <v-chip :color="getTypeColor(item.type)" class="my-chip" dark>
-                    {{ item.type }}
+            <template v-slot:item.type_patient_name="{ item }">
+                <v-chip :color="getTypeColor(item.type_patient_name)" class="my-chip" dark
+                    :class="{ 'black--text': item.type_patient_name === 'ผู้ป่วยติดเตียง', }">
+                    {{ item.type_patient_name }}
                 </v-chip>
             </template>
 
-            <template v-slot:item.casestatus="{ item }">
-                <v-chip :color="getStatusColor(item.casestatus)" class="my-chip" dark
-                    :class="{ 'black--text': item.casestatus === 'กำลังดำเนินงาน', }"
-                    :dark="item.casestatus === 'รอรับงาน' || item.casestatus === 'เสร็จสิ้น'">
-                    {{ item.casestatus }}
+            <template v-slot:item.casestatus_name="{ item }">
+                <v-chip :color="getStatusColor(item.casestatus_name)" class="my-chip" dark
+                    :class="{ 'black--text': item.casestatus_name === 'กำลังดำเนินงาน', }"
+                    :dark="item.casestatus_name === 'รอรับงาน' || item.casestatus_name === 'เสร็จสิ้น'">
+                    {{ item.casestatus_name }}
 
                 </v-chip>
             </template>
 
         </v-data-table>
         <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
-            @close="closeDialog" :view-mode="viewMode" :hide-fields="{ actions: true }" />
+            @close="closeDialog" :hide-fields="{ actions: true }" />
 
         <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
-            :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false"
-            :view-mode="viewMode" />
+            :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false" />
     </v-card>
 </template>
 
@@ -68,18 +68,18 @@ export default {
             isAppointmentDialogOpen: false,
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
             headers: [
-                { text: 'HN', value: 'hnnumber', align: 'center' },
-                { text: 'อายุ', value: 'age', align: 'center' },
+                { text: 'HN', value: 'hn_id', align: 'center' },
+                { text: 'อายุ', value: 'age_name', align: 'center' },
                 { text: 'เพศ', value: 'gender', align: 'center' },
-                { text: 'เบอร์โทรศัพท์', value: 'numberphone', align: 'center' },
-                { text: 'ประเภทผู้ป่วย', value: 'type', align: 'center' },
-                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'trackpatient', align: 'center' },
-                { text: 'ที่อยู่,พิกัด', value: 'coordinate', align: 'center' },
-                { text: 'วันที่นัดหมาย', value: 'date_service', align: 'center' },
+                { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
+                { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
+                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
+                { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
+                { text: 'วันที่นัดหมาย', value: 'service_date', align: 'center' },
                 { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
                 { text: 'เพิ่มเติม', value: 'other', align: 'center' },
-                { text: 'สถานะ', value: 'casestatus', align: 'center' },
-                
+                { text: 'สถานะ', value: 'casestatus_name', align: 'center' },
+
                 { text: '', value: 'action', sortable: false, align: 'center' }
             ],
             selectedPatient: null,
@@ -90,25 +90,25 @@ export default {
             desserts: [],
             search: '',
             editedItem: {
-                hnnumber: '',
-                age: '',
+                hn_id: '',
+                age_name: '',
                 gender: '',
-                trackpatient: '',
-                date_service: '',
-                casestatus: '',
-                numberphone: '',
+                tracking_name: '',
+                service_date: new Date(),
+                casestatus_name: '',
+                number: '',
                 time: '',
                 coordinate: '',
-                other:'',
-                type: ''
-                
+                other: '',
+                type_patient_name: ''
             },
             statusColorMap: {
                 'งานบริการ': 'green',
                 'รอรับงาน': 'red',
                 'กำลังดำเนินงาน': 'yellow',
                 'เสร็จสิ้น': 'green',
-                'ผู้ป่วยติดเตียง': 'green',
+                'ผู้ป่วยติดเตียง': 'yellow',
+                'อื่นๆ': 'blue',
             },
         }
     },
@@ -117,7 +117,8 @@ export default {
         filteredDesserts() {
             return this.desserts.filter(patient => {
                 // Check if any of the fields in the patient data is filled
-                return patient.hnnumber || patient.age || patient.gender || patient.numberphone || patient.address || patient.time || patient.coordinate || patient.type;
+                return patient.hn_id || patient.age_name || patient.gender || patient.number || patient.time || patient.coordinate
+                    || patient.type_patient_name || patient.service_date || patient.tracking_name || patient.other || patient.casestatus_name
             });
         },
 
@@ -130,7 +131,7 @@ export default {
             }
 
             // Set editedItem and dialogTitle based on item data
-            this.editedItem = { ...item, date_service: null, casestatus: '' }; // Initialize casestatus as an empty string
+            this.editedItem = { ...item, service_date: new Date(), }; // Initialize casestatus as an empty string
             this.dialogTitle = 'แก้ไขนัดหมายผู้ป่วย'; // Set your dialog title here
 
             // Show the appointment dialog
@@ -190,45 +191,38 @@ export default {
         },
         async saveItem(editedItem) {
             try {
-                if (!editedItem.casestatus) {
+                if (!editedItem.casestatus_name) {
                     // Display an error message if casestatus is not selected
                     this.$emit('error', 'โปรดเลือกสถานะ');
                     return; // Exit early if casestatus is not selected
                 }
                 let response;
 
-                editedItem.date_service = this.formatDateForMySQL(editedItem.date_service);
+                editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
 
-                if (!editedItem.patient_id) {
-                    // Add new patient
-                    response = await axios.post(`${this.endpointUrl}/api/patients`, editedItem);
-                    this.$store.commit('incrementPatientCount');
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'สำเร็จ',
-                        text: 'กรอกข้อมูลสำเร็จ',
-                    });
-                } else {
-                    // Update existing patient
-                    response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.patient_id}`, editedItem);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'สำเร็จ',
-                        text: 'แก้ไขข้อมูลสำเร็จ',
-                    });
-                }
+                // Update existing patient
+                console.log('แก้ไขข้อมูลนัดหมาย');
+                response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
+                    status_case_id: editedItem.status_case_id,
+                    service_date: editedItem.service_date,
+                    time: editedItem.time
+                });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'สำเร็จ',
+                    text: 'แก้ไขข้อมูลสำเร็จ',
+                });
                 console.log('response', response);
                 const savedPatient = response.data;
 
                 this.$nextTick(() => {
-                    if (!editedItem.patient_id) {
+                    if (!editedItem.hn_id) {
                         // Add new patient
                         this.desserts.push(savedPatient);
                     } else {
                         // Update existing patient
-                        const index = this.desserts.findIndex(item => item.patient_id === savedPatient.patient_id);
-                        this.$set(this.desserts, index, savedPatient.patient_id);
+                        const index = this.desserts.findIndex(item => item.hn_id === savedPatient.hn_id);
+                        this.$set(this.desserts, index, savedPatient.hn_id);
                     }
                     this.closeDialog();
                 });
@@ -262,20 +256,21 @@ export default {
         },
         async loadData() {
             try {
-                const { data } = await axios.get(this.endpointUrl + '/api/patients');
+                const { data } = await axios.get(this.endpointUrl + '/api/patients/time');
 
+                console.log('data', data);
                 // ตรวจสอบว่าข้อมูลใน primary key บางตัวครบทุกช่องหรือไม่
-                const completeDataKeys = ['hnnumber', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'date_service', 'time', 'casestatus'];
-                const filteredData = data.filter(item => {
-                    return completeDataKeys.every(key => item[key]);
-                });
+                // const completeDataKeys = ['patient_id', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'service_date', 'time', 'casestatus'];
+                // const filteredData = data.filter(item => {
+                //     return completeDataKeys.every(key => item[key]);
+                // });
 
-                // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
-                const formattedData = filteredData.map(item => {
-                    // Assuming the date_service field contains the date to be formatted
+                // // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
+                const formattedData = data.map(item => {
+                    // Assuming the service_date field contains the date to be formatted
                     return {
                         ...item,
-                        date_service: this.formatDate(item.date_service) // Format date here
+                        service_date: this.formatDate(item.service_date) // Format date here
                     };
                 });
 
@@ -289,12 +284,12 @@ export default {
 
         async fetchDataFromServer() {
             try {
-                const { data } = await axios.get(this.endpointUrl + '/api/patients');
+                const { data } = await axios.get(this.endpointUrl + '/api/patients/time');
                 const formattedData = data.map(item => {
-                    // Assuming the date_service field contains the date to be formatted
+                    // Assuming the service_date field contains the date to be formatted
                     return {
                         ...item,
-                        date_service: this.formatDate(item.date_service) // Format date here
+                        service_date: this.formatDate(item.service_date) // Format date here
                     };
                 });
                 return formattedData;

@@ -8,7 +8,7 @@
 
         <v-col cols="12" class="ma-2 pa-1 text-uppercase text-center" color="grey-lighten-3">
           
-            <h2 class="patient align-center head ">ผู้ป่วย</h2>
+            <h2 class="patient align-center head ">สถิติผู้ป่วย</h2>
           
         </v-col>
 

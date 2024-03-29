@@ -7,7 +7,7 @@
       <form @submit.prevent="save">
         <v-card-text>
 
-          <v-menu :readonly="viewMode" ref="menu" v-model="menu" :close-on-content-click="false"
+          <v-menu  ref="menu" v-model="menu" :close-on-content-click="false"
             :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field v-model="formattedDate" label="Picker in menu" prepend-icon="mdi-calendar" readonly
@@ -24,32 +24,32 @@
             </v-date-picker>
           </v-menu>
 
-          <v-text-field v-model="formattedTime" label="เวลา" readonly></v-text-field>
+          <v-text-field v-model="formattedTime" label="เวลา" readonly prepend-icon="mdi-clock-outline"></v-text-field>
 
-          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
-            :readonly="viewMode"></v-select>
-          <v-select v-model="editedItem.age" label="อายุ*"
+          <v-combobox v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
+            ></v-combobox>
+          <v-combobox v-model="editedItem.age" label="อายุ*"
             :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
-            :readonly="viewMode"></v-select>
-          <v-select v-model="editedItem.status" label="ประเภทผู้ป่วย"
-            :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" :readonly="viewMode"></v-select>
+            ></v-combobox>
+          <v-combobox v-model="editedItem.status" label="ประเภทผู้ป่วย"
+            :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" ></v-combobox>
 
-          <v-select v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :readonly="viewMode"
-            :items="['ผู้ป่วยฉุกเฉินวิฤกติ', 'ผู้ป่วยเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
+          <v-combobox v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" 
+            :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
             <template #item="{ item, on }">
               <v-list-item v-on="on">
                 <v-list-item-content>
-                  <v-chip :color="getChipColor(item)">
+                  <v-chip :color="getChipColor(item)" >
                     {{ item }}
                   </v-chip>
                 </v-list-item-content>
               </v-list-item>
             </template>
-          </v-select>
+          </v-combobox>
 
 
 
-          <v-select v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
+          <v-combobox v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
     "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
     "3.สัตว์กัด",
     "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
@@ -74,17 +74,19 @@
     "23.อุบัติเหตุทางน้ำ",
     "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
     "25.อุบัติเหตุยานยนต์",
-    "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน"
-            :readonly="viewMode" multiple clearable>
-          </v-select>
+    "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน" 
+            multiple clearable chips >
+ 
+          </v-combobox>
 
 
-          <v-text-field v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด" :readonly="viewMode"></v-text-field>
-          <v-select v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
-            :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" :readonly="viewMode"></v-select>
+          <v-text-field v-model="editedItem.lati" label="Latitude" prepend-icon="mdi-map-marker" ></v-text-field>
+          <v-text-field v-model="editedItem.longi" label="Longitude" prepend-icon="mdi-map-marker" ></v-text-field>
+          <v-combobox v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
+            :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" ></v-combobox>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-if="!viewMode && (dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
+          <v-btn v-if="(dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
             color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
           <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
@@ -102,7 +104,6 @@ export default {
     dialog: Boolean,
     editedItem: Object,
     dialogTitle1: String,
-    viewMode: Boolean,
   },
   data() {
     return {
@@ -116,8 +117,6 @@ export default {
           return true; // Validation passed
         },
       },
-
-      viewMode: false,
     };
   },
   computed: {
@@ -130,11 +129,11 @@ export default {
   methods: {
     getChipColor(item) {
       switch (item) {
-        case 'ผู้ป่วยเฉินเร่งด่วน':
+        case 'ผู้ป่วยฉุกเฉินเร่งด่วน':
           return 'yellow';
         case 'ผู้ป่วยไม่ฉุกเฉิน':
           return 'green';
-        case 'ผู้ป่วยฉุกเฉินวิฤกติ':
+        case 'ผู้ป่วยฉุกเฉินวิกฤติ':
           return 'red';
         case 'ผู้ป่วยทั่วไป':
           return 'grey'; // or any other color you prefer
@@ -159,7 +158,7 @@ export default {
           return;
         }
 
-        if (!this.viewMode && this.validateForm()) {
+        if (this.validateForm()) {
           this.editedItem.service_date = this.formattedDate;
           this.editedItem.time = this.formattedTime; // Set the time to the formatted time
           this.$emit('save', this.editedItem);

@@ -27,8 +27,8 @@
 
       <template v-slot:item.violence="{ item }">
         <v-chip class="my-chip2" :color="getStatusColor(item.violence)"
-          :class="{ 'black--text': item.violence === 'ผู้ป่วยเฉินเร่งด่วน' || item.violence === 'ผู้ป่วยทั่วไป', }"
-          :dark="item.violence === 'ผู้ป่วยฉุกเฉินวิฤกติ' || item.violence === 'ผู้ป่วยไม่ฉุกเฉิน'">
+          :class="{ 'black--text': item.violence === 'ผู้ป่วยฉุกเฉินเร่งด่วน' || item.violence === 'ผู้ป่วยทั่วไป', }"
+          :dark="item.violence === 'ผู้ป่วยฉุกเฉินวิกฤติ' || item.violence === 'ผู้ป่วยไม่ฉุกเฉิน'">
           {{ item.violence }}
         </v-chip>
       </template>
@@ -61,7 +61,7 @@
 
     <!-- Include the dialog -->
     <dialog-formurgent :dialog="dialog" :edited-item="editedItem" :dialog-title1="dialogTitle1" @save="saveItem"
-      @close="closeDialog" :view-mode="viewMode" />
+      @close="closeDialog" />
     <notifications group="success" classes="custom-notification" />
     <notifications group="fail" classes="fail-noti" />
   </v-card>
@@ -105,15 +105,16 @@ export default {
         { text: 'ประเภทผู้ป่วย', value: 'status', align: 'center' },
         { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence', align: 'center' },
         { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center' },
-        { text: 'จุดเกิดเหตุ', value: 'coordinate', align: 'center' },
+        { text: 'Latitude', value: 'lati', align: 'center' },
+        { text: 'Longitude', value: 'longi', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery', align: 'center' },
         { text: '', value: 'action', sortable: false, align: 'center' }
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
       desserts: [],
       statusColorMap: {
-        'ผู้ป่วยฉุกเฉินวิฤกติ': 'red',
-        'ผู้ป่วยเฉินเร่งด่วน': 'yellow',
+        'ผู้ป่วยฉุกเฉินวิกฤติ': 'red',
+        'ผู้ป่วยฉุกเฉินเร่งด่วน': 'yellow',
         'ผู้ป่วยไม่ฉุกเฉิน': 'green',
         'ผู้ป่วยทั่วไป': 'smoke'
       },
@@ -127,7 +128,8 @@ export default {
         status: '',
         violence: '',
         emergency_group: '',
-        coordinate: '',
+        lati: '',
+        longi: '',
         patient_delivery: ''
       },
     };
@@ -190,8 +192,7 @@ export default {
       this.dialogTitle1 = action === 'add' ? 'จัดการผู้ป่วยใหม่เคสฉุกเฉิน' : 'แก้ไขข้อมูลผู้ป่วยฉุกเฉิน';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
-      this.viewMode = action !== 'add';
-      this.viewMode = false;
+
     },
     
 
@@ -203,15 +204,17 @@ export default {
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
+          this.$store.commit('incrementJobsCount');
           this.$notify({
             'group': 'success',
             'title': 'กรอกข้อมูลสำเร็จ',
             'text': 'คลิกกระดิ่งเพื่อดูข้อมูลเพิ่มเติม'
           })
-          this.$store.commit('incrementPatientCount');
+          
 
           this.notifications = [];
           this.showRedBadge = false;
+          
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -300,7 +303,7 @@ export default {
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.caseurgent_id !== item.caseurgent_id);
-              this.$store.commit('decrementPatientCount');
+              this.$store.commit('decrementJobsCount');
               // Show success notification
 
               Swal.fire({
@@ -343,7 +346,7 @@ export default {
         this.$emit('data-loaded', data);
 
         const formattedData = data.map(item => {
-          // Assuming the date_service field contains the date to be formatted
+          // Assuming the service_date field contains the date to be formatted
           return {
             ...item,
             service_date: this.formatDate(item.service_date) // Format date here
@@ -361,7 +364,7 @@ export default {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
         const formattedData = data.map(item => {
-          // Assuming the date_service field contains the date to be formatted
+          // Assuming the service_date field contains the date to be formatted
           return {
             ...item,
             service_date: this.formatDate(item.service_date) // Format date here
