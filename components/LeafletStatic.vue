@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" style="height: 500px;"></div>
+    <div id="map" style="height: 100vh; width: 100%;"></div>
   </div>
 </template>
 
@@ -29,10 +29,7 @@ export default {
       }).addTo(this.map);
 
       // Lock pin to the current location
-      this.map.locate({
-        setView: true,
-        watch: false
-      });
+      
       this.map.on("locationfound", async (e) => {
         const { lat, lng } = e.latlng;
         this.map.setView([lat, lng], 15);
