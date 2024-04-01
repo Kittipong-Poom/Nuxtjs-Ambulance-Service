@@ -203,13 +203,12 @@ export default {
           this.events = [];
 
           patients.forEach((patient, index) => {
-            console.log();
+            console.log('My Detail :');
             // const date = new Date(patient.service_date);
             // const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
             // const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
             // const year = date.getFullYear() - 543;
             // const newTimestamp = `${year}-${month}-${day}`;
-
             // Extract the year, month, and day components from the date string
             const year = new Date(patient.service_date).getFullYear();
             const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
@@ -221,6 +220,11 @@ export default {
             // Format the components into the standard date format: YYYY-MM-DD
             const newTimestamp = `${newyear}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
+            const timeComponents = patient.time.split(':');
+            const hours = parseInt(timeComponents[0], 10).toString().padStart(2, '0');
+            const minutes = parseInt(timeComponents[1], 10).toString().padStart(2, '0');
+            const formattedTime = `${hours}:${minutes}`;
+
             const colorIndex = index % this.colors.length;
             const event = {
               name: `HN ${patient.hn_id}`,
@@ -228,7 +232,7 @@ export default {
               end: newTimestamp,
               color: this.colors[colorIndex],
               details: `ที่อยู่ : ${patient.coordinate}`,
-              time: `เวลา : ${patient.time}`,
+              time: `เวลา : ${formattedTime}`,
               type: `ประเภทผู้ป่วย : ${patient.type_patient_name}`,
               trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name}`,
               other: `เพิ่มเติม : ${patient.other}`,

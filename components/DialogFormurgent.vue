@@ -7,6 +7,8 @@
       <form @submit.prevent="save">
         <v-card-text>
 
+          <v-row>
+            <v-col cols="12" md="6">
           <v-menu  ref="menu" v-model="menu" :close-on-content-click="false"
             :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
@@ -23,17 +25,30 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
+        </v-col>
 
-          <v-text-field v-model="formattedTime" label="เวลา" readonly prepend-icon="mdi-clock-outline"></v-text-field>
-
-          <v-combobox v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"
-            ></v-combobox>
+        <v-col cols="12" md="6">
+         <v-text-field v-model="formattedTime" label="เวลา" prepend-icon="mdi-clock-outline"></v-text-field>
+        </v-col>
+      </v-row>
+      
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-combobox v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-combobox>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-combobox v-model="editedItem.age" label="อายุ*"
-            :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
-            ></v-combobox>
+            :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"></v-combobox>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="6">
           <v-combobox v-model="editedItem.status" label="ประเภทผู้ป่วย"
             :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']" ></v-combobox>
+          </v-col>
 
+          <v-col cols="12" md="6">
           <v-combobox v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" 
             :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
             <template #item="{ item, on }">
@@ -46,7 +61,8 @@
               </v-list-item>
             </template>
           </v-combobox>
-
+        </v-col>
+        </v-row>
 
 
           <v-combobox v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
@@ -79,9 +95,14 @@
  
           </v-combobox>
 
-
+          <v-row>
+            <v-col cols="12" md="6">
           <v-text-field v-model="editedItem.lati" label="Latitude" prepend-icon="mdi-map-marker" ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="editedItem.longi" label="Longitude" prepend-icon="mdi-map-marker" ></v-text-field>
+        </v-col>
+        </v-row>
           <v-combobox v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย"
             :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" ></v-combobox>
         </v-card-text>

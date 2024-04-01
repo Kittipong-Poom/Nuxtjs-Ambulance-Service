@@ -267,11 +267,21 @@ export default {
 
                 // // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
                 const formattedData = data.map(item => {
-                    // Assuming the service_date field contains the date to be formatted
-                    return {
-                        ...item,
-                        service_date: this.formatDate(item.service_date) // Format date here
-                    };
+                    // Check if the time is not null and is a valid string
+                    if (item.time && typeof item.time === 'string') {
+                        // Split the time string to get hours and minutes
+                        const [hours, minutes] = item.time.split(':');
+                        // Assuming the service_date field contains the date to be formatted
+                        return {
+                            ...item,
+                            service_date: this.formatDate(item.service_date), // Format date here
+                            time: `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`
+                        };
+                    } else {
+                        // Handle if time is not in the expected format
+                        console.error('Invalid time format:', item.time);
+                        return item; // Return item as it is
+                    }
                 });
 
                 this.desserts = formattedData;

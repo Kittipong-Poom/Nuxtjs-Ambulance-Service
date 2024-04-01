@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="head-text">แดชบอร์ด</h1>
+    <h1 class="head-text">Dashboard</h1>
     <v-container class="bg-surface-variant">
       <v-row justify="center" align="center">
         <!-- Patient Card 1 -->
@@ -8,7 +8,18 @@
 
         <v-col cols="12" class="ma-2 pa-1 text-uppercase text-center" color="grey-lighten-3">
           
-            <h2 class="patient align-center head ">สถิติผู้ป่วย</h2>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          
+        <h2 class="patient align-center head">สถิติผู้ป่วย</h2>
           
         </v-col>
 
@@ -45,7 +56,6 @@
 <script>
 import BarChartPatient from '../components/BarChartPatient.vue'
 import PieChartPatient from '../components/PieChartPatient.vue'
-import PieChartJob from '../components/PieChartJob.vue'
 import LineChartJob from '../components/LineChartJob.vue'
 import Patient from './Patient.vue'
 export default {

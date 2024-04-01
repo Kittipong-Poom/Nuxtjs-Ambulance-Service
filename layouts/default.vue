@@ -76,7 +76,7 @@
 </template>
 
 <script >
-import axios from 'axios';
+
 import Patient from '~/pages/Patient.vue';
 import Queueurgent from '~/pages/Queueurgent.vue';
 import DialogFormurgent from '~/components/DialogFormurgent.vue';
@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       desserts: [],
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+ 
       notifications: [], 
       showRedBadge: true,
       notificationsCount: 0,
@@ -158,14 +158,7 @@ export default {
     }
 
   },
-  fetch() {
-    this.loadData()
-  },
 
-  mounted() {
-    console.log('ENV', this.endpointUrl)
-    this.loadData();
-  },
   computed: {
     pageTitle() {
       const route = this.$route;
@@ -200,17 +193,7 @@ export default {
       // Hide the red badge
       this.showRedBadge = false;
     },
-    async loadData() {
-      try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients/normal')
-        this.desserts = data;
-        this.patient = data;
-        console.log("This data", data)
-        this.$emit('data-loaded', data);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    },
+
   },
 }
 </script>

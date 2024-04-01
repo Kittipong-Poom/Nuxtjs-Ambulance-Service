@@ -22,7 +22,7 @@
                         <v-sheet class="my-box rounded-xl pa-2 d-flex justify-space-between align-center">
                             <div>
                                 <div class="font-weight-black">ผู้ป่วยนัดรับ</div>
-                                <div class="all">รวม {{ this.patientsCount }} คน</div>
+                                <div class="all">รวม {{ this.AllserviceCount }} คน</div>
                             </div>
                             <v-icon color="green" size="x-large">mdi-hospital</v-icon>
                         </v-sheet>
@@ -30,29 +30,47 @@
                 </v-sheet>
             </v-row>
         </v-container>
+        
 
 
         <v-row justify="center">
             <!-- emergencymonth -->
             <v-sheet class="pa-12" color="grey-lighten-3">
-                <v-sheet :elevation="7" class="mx-auto rounded-xl" height="250" width="225">
-                    <div class="emergencymonth">
+                <v-sheet :elevation="2" class="mx-auto rounded-xl" height="50" width="225">
+                    <div class="emergencymonth" >
 
                         <v-card-subtitle>
                             <b>ผู้ป่วยฉุกเฉินของเดือนนี้</b>
                         </v-card-subtitle>
-                        <div class="emergencyred">สีเเดง {{ this.redCount }} คน
-                            <v-icon color="red" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
-                        </div>
-                        <div class="emergencyyellow">สีเหลือง {{ this.yellowCount }} คน
-                            <v-icon color="yellow" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
-                        </div>
-                        <div class="emergencygreen">สีเขียว {{ this.greenCount }} คน
-                            <v-icon color="green" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
-                        </div>
-                        <div class="emergencywhite">สีขาว {{ this.whiteCount }} คน
-                            <v-icon color="smoke" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
-                        </div>
+
+                        <v-sheet class="mx-auto rounded-xl" :elevation="3"  height="50" width="225" color ="#DC143C">
+                            <v-card-subtitle>
+                                <b class="white--text"> สีเเดง {{ this.redCount }} คน </b>
+                        <v-icon color="red" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
+                            </v-card-subtitle>
+                        </v-sheet>
+                        
+                        <v-sheet class="mx-auto rounded-xl" :elevation="3"  height="50" width="225" color ="#32CD32">
+                            <v-card-subtitle>
+                                <b class="white--text"> สีเขียว {{ this.greenCount }} คน <v-icon color="red" size="small" 
+                                    style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
+                        <v-sheet class="mx-auto rounded-xl" :elevation="3"  height="50" width="225" color ="#FFFF00">
+                            <v-card-subtitle>
+                                <b > สีเหลือง {{ this.yellowCount }} คน <v-icon color="red" size="small" 
+                                    style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
+                        <v-sheet class ="mx-auto rounded-xl" :elevation="2"  height="50" width="225" color ="#F5F5F5">
+                            <v-card-subtitle>
+                                <b> สีขาว {{ this.whiteCount }} คน <v-icon color="red" size="small" 
+                                    style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
                     </div>
                 </v-sheet>
             </v-sheet>
@@ -60,26 +78,43 @@
             <!-- patientmonth -->
 
             <v-sheet class="pa-12" color="grey-lighten-3">
-                <v-sheet :elevation="7" class="mx-auto rounded-xl" height="250" width="225">
+                <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                     <div class="patientmonth">
+
                         <v-card-subtitle>
                             <b>ผู้ป่วยนัดรับของเดือนนี้</b>
                         </v-card-subtitle>
-                        <div class="patient1">ผู้ป่วยติดเตียง {{ this.bedCount }} คน
-                            <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed</v-icon>
-                        </div>
-                        <div class="patient2">ผู้ป่วยบริการ {{ this.serviceCount }} คน
-                            <v-icon color="green" size="small" style="margin-left: 5px;">mdi-home</v-icon>
-                        </div>
-                        <div class="mt-5 ">อื่นๆ {{ this.serviceCountOther }} คน
-                            <v-icon color="green" size="small" style="margin-left: 5px;">mdi-home</v-icon>
-                        </div>
+                        
+
+                        <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
+                            <v-card-subtitle>
+                                <b> ผู้ป่วยติดเตียง {{ this.serviceBedCount }} คน
+                                    <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed
+                                </v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
+                        <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
+                            <v-card-subtitle>
+                                <b> ผู้ป่วยบริการ {{ this.serviceCount }} คน
+                                    <v-icon color="green" size="small" style="margin-left: 5px;">mdi-home
+                                </v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
+                        <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
+                            <v-card-subtitle>
+                                <b> อื่นๆ {{ this.serviceCountOther }} คน
+                                    <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed
+                                </v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
                     </div>
                 </v-sheet>
             </v-sheet>
         </v-row>
     </div>
-
 </template>
 
 <script>
@@ -99,6 +134,8 @@ export default {
             bedCount: '',
             serviceCount: '',
             serviceCountOther:'',
+            serviceBedCount:'',
+            AllserviceCount:'',
             redCount: '',
             yellowCount: '',
             greenCount: '',
@@ -132,6 +169,7 @@ export default {
                 console.error('Error:', error);
             }
         },
+
         async getemergency() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/caseurgents`);
@@ -156,7 +194,7 @@ export default {
         },
         async getservicepatient() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/gettype/service`);
+                const response = await axios.get(`${this.endpointUrl}/api/serviceCount`);
                 console.log(this.endpointUrl);
                 console.log('getData:', response.data);
                 this.serviceCount = response.data.length;
@@ -165,6 +203,7 @@ export default {
                 console.error('Error:', error);
             }
         },
+
         async getservicepatientOther() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/gettype/service/other`);
@@ -176,6 +215,32 @@ export default {
                 console.error('Error:', error);
             }
         },
+
+        async getservicepatientBed() {
+            try {
+                const response = await axios.get(`${this.endpointUrl}/api/bedCount`);
+                console.log(this.endpointUrl);
+                console.log('getData:', response.data);
+                this.serviceBedCount = response.data.length;
+                console.log('Data count:', this.serviceBedCount);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        },
+
+
+        async getAllservicepatient() {
+            try {
+                const response = await axios.get(`${this.endpointUrl}/api/patients/time`);
+                console.log(this.endpointUrl);
+                console.log('getData:', response.data);
+                this.AllserviceCount = response.data.length;
+                console.log('Data count:', this.AllserviceCount);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        },
+
         async getredemergency() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/getviolence`);
@@ -234,6 +299,8 @@ export default {
         this.getemergency();
         this.getpatient();
         this.getservicepatientOther();
+        this.getAllservicepatient();
+        this.getservicepatientBed();
     },
 };
 </script>
@@ -242,6 +309,7 @@ export default {
 .patientmonth,
 .emergencymonth {
     text-align: center;
+    margin-top: -40px;
 }
 
 .all {
@@ -260,16 +328,9 @@ export default {
     width: 70%;
 }
 
-.emergencyred,
-.patient1 {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+.mx-auto {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-
-.emergencygreen,
-.emergencywhite,
-.emergencyyellow {
-    margin-bottom: 1.5rem;
-}
 </style>

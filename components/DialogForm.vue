@@ -2,34 +2,53 @@
   <v-dialog v-model="dialog" max-width="650">
     <v-card>
       <v-card-title class="text-center d-flex justify-center align-center">
-        <span class="headline  ">{{ dialogTitle }}</span>
+        <span class="headline">{{ dialogTitle }}</span>
       </v-card-title>
       <form ref="editedItemRef" @submit.prevent="save">
-
         <v-card-text>
-
-          <!-- Your form fields go here -->
-          <!-- <v-text-field v-model="editedItem.hnnumber" label="HN (Hospital Number)*" :readonly="readonlyHnNumber"
-            :rules="[rules.hnnumber]" ref="hnnumber"></v-text-field> -->
-          <!-- <v-combobox v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี','1 - 12 ปี','13 - 19 ปี','20 - 39 ปี','40 - 59 ปี','60 ปีขึ้นไป']"  :readonly="viewMode"></v-combobox> -->
-          <v-select v-model="editedItem.ages_id" label="อายุ" :items="items_ages" item-text="age_name" item-value="age_id" return-object></v-select>
-          <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
-
-          <v-text-field v-model="editedItem.number" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"
-             ref="number"></v-text-field>
-          <v-text-field v-model="editedItem.coordinate" label="พิกัด*" :rules="[rules.address]" 
-            ref="coordinate"></v-text-field>
-
-          <v-select v-model="editedItem.tracking_patient_id" label="การติดตามการนำส่งผู้ป่วย" 
-            :items="items_tracking" item-text="tracking_name" item-value="tracking_id"></v-select>
-          <v-select v-model="editedItem.type_patient_id" label="เลือกประเภท" :items="items_type" item-text="type_patient_name" item-value="type_patient_id"></v-select>
-          <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"></v-text-field>
-
-
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="6">
+                <div class="input-container">
+                <!-- อายุ -->
+                <v-select v-model="editedItem.ages_id" label="อายุ" :items="items_ages" item-text="age_name" item-value="age_id"  return-object></v-select>
+              </div>
+              </v-col>
+              <v-col cols="12" md="6">
+                <!-- เพศ -->
+                <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="6">
+                <!-- เบอร์โทรศัพท์ -->
+                <v-text-field v-model="editedItem.number" prepend-icon="mdi-phone-outline" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"  ref="number"></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <!-- พิกัด -->
+                <v-text-field v-model="editedItem.coordinate" prepend-icon="mdi-map-marker" label="พิกัด*" :rules="[rules.address]"  ref="coordinate"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="6">
+                <!-- การติดตามการนำส่งผู้ป่วย -->
+                <v-select v-model="editedItem.tracking_patient_id" label="การติดตามการนำส่งผู้ป่วย" :items="items_tracking" item-text="tracking_name" item-value="tracking_id"></v-select>
+              </v-col>
+              <v-col cols="12" md="6">
+                <!-- เลือกประเภท -->
+                <v-select v-model="editedItem.type_patient_id" label="เลือกประเภท" :items="items_type" item-text="type_patient_name" item-value="type_patient_id"></v-select>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12">
+                <!-- เพิ่มเติม -->
+                <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-if=" (dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
-            color="blue darken-1" class="white--text" @click.prevent="save">บันทึก</v-btn>
+          <v-btn v-if="(dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))" color="blue darken-1" class="white--text" @click.prevent="save">บันทึก</v-btn>
           <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
       </form>
@@ -166,4 +185,5 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+</style>

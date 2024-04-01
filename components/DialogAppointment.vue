@@ -1,16 +1,29 @@
 <template>
-  <v-dialog v-model="dialog" max-width="1500">
+  <v-dialog v-model="dialog" max-width="800">
     <v-card>
       <v-card-title class="text-center d-flex justify-center align-center">
         <span class="headline">{{ dialogTitle }}</span>
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
+          <v-row>
+            <v-col cols="12" md="6">
           <v-text-field disabled v-model="editedItem.hn_id" label="HN (Hospital Number)*"></v-text-field>
-          <v-text-field readonly v-model="editedItem.age_name" label="อายุ"></v-text-field>
-          <v-text-field readonly v-model="editedItem.gender" label="เพศ"></v-text-field>
-          <v-text-field readonly v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด"></v-text-field>
-          <v-text-field readonly v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field disabled v-model="editedItem.age_name" label="อายุ"></v-text-field>
+        </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12" md="6">
+          <v-text-field disabled v-model="editedItem.gender" label="เพศ"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+          <v-text-field disabled v-model="editedItem.coordinate" label="จุดเกิดเหตุ/พิกัด"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-text-field disabled v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"></v-text-field>
 
           <!-- Date -->
           <!-- <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="editedItem.service_date"
@@ -30,14 +43,15 @@
   </v-btn>
 </v-date-picker>
 </v-menu> -->
+          <v-row>
+            <v-col cols="12" md="6">
           <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="editedItem.service_date"
             transition="scale-transition" offset-y min-width="auto">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field v-model="formattedDate" label="วันที่นัดหมาย" prepend-icon="mdi-calendar" readonly
                 v-bind="attrs" v-on="on" clearable></v-text-field>
             </template>
-
-            <v-date-picker v-model="dateString"  no-title scrollable locale="th" :min="new Date().toISOString()">
+           <v-date-picker v-model="dateString"  no-title scrollable locale="th" :min="new Date().toISOString()">
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">
                 ยกเลิก
@@ -47,12 +61,13 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
+        </v-col>
 
-
-
-
-          <!-- Time -->
+        <!-- Time -->
+        <v-col cols="12" md="6">
           <v-text-field v-model="editedItem.time" label="เวลา" prepend-icon="mdi-clock-outline"></v-text-field>
+        </v-col>
+        </v-row>
           <!-- Status -->
           <v-select v-model="editedItem.status_case_id" label="สถานะ" :items="items_status" item-text="casestatus_name"
             item-value="casestatus_id"></v-select>
@@ -98,33 +113,14 @@ export default {
     };
   },
   computed: {
-    // formattedDate() {
-    //   console.log('date',this.date);
-    //   if (!this.date) {
-    //     return '';
-    //   }
-    //   const thaiDate = dayjs(this.date).add(543, 'year');
-    //   const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
-    //   return thaiFormattedDate;
-    // },
     formattedDate() {
-
       console.log(this.editedItem.service_date);
-      // if (this.editedItem.service_date) {
-      //   const thaiLocale = 'th-TH';
-      //   return this.editedItem.service_date.toLocaleDateString(thaiLocale);
-      // } else {
-      //   return '';
-      // }
       if (!this.editedItem.service_date) {
         return '';
       }
       const thaiDate = dayjs(this.editedItem.service_date).add(543, 'year');
       return thaiDate.format('DD-MM-YYYY')
     },
-
-
-
   },
   async created() {
     console.log(this.editedItem);
@@ -132,6 +128,8 @@ export default {
     this.items_status = data;
     console.log(this.items_status);
   },
+
+  
   methods: {
 
     async save() {
@@ -152,10 +150,7 @@ export default {
         console.error('Error saving item:', error);
       }
     },
-    // selectStatus() {
-    //   // Method to update selectedStatus when v-select value changes
-    //   this.editedItem.casestatus = this.selectedStatus;
-    // },
+
     closeDialog() {
       if (this.dialog) {
         this.dialog = false;
