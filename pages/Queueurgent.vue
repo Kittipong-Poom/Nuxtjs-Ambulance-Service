@@ -14,11 +14,11 @@
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-btn color="#4CAF50" class="mr-2 mb-2 white--text" @click="openDialogurgent('edit', item)">
+        <v-btn color="#4CAF50" class="mr-2 mb-2 mt-2 white--text" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
           แก้ไข
         </v-btn>
-        <v-btn color="red" class="white--text" @click="deleteItem(item)">
+        <v-btn color="red" class="white--text mb-2" @click="deleteItem(item)">
           <v-icon>mdi-delete</v-icon>
           ลบ
         </v-btn>
