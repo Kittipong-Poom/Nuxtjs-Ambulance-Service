@@ -216,7 +216,7 @@ export default {
           fieldRef.validate();
           if (fieldRef.hasError) {
             return false;
-          }
+          } 
         }
       }
       return true;
