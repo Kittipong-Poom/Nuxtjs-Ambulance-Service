@@ -11,7 +11,7 @@
               <v-col cols="12" md="6">
                 <div class="input-container">
                 <!-- อายุ -->
-                <v-select v-model="editedItem.ages_id" label="อายุ" :items="items_ages" outlined item-text="age_name" item-value="age_id" prepend-icon="mdi-gender-male-female"  return-object></v-select>
+                <v-select v-model="editedItem.ages_id" label="อายุ" :items="items_ages" outlined item-text="age_name" item-value="age_id" prepend-inner-icon="mdi-gender-male-female"  return-object></v-select>
               </div>
               </v-col>
               <v-col cols="12" md="6">
@@ -22,11 +22,11 @@
             <v-row>
               <v-col cols="12" md="6">
                 <!-- เบอร์โทรศัพท์ -->
-                <v-text-field v-model="editedItem.number" prepend-icon="mdi-phone-outline" label="เบอร์โทรศัพท์*" outlined :rules="[rules.phone]"  ref="number"></v-text-field>
+                <v-text-field v-model="editedItem.number" prepend-inner-icon="mdi-phone-outline" label="เบอร์โทรศัพท์*" outlined :rules="[rules.phone]"  ref="number"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- พิกัด -->
-                <v-text-field v-model="editedItem.coordinate" prepend-icon="mdi-map-marker"  label="พิกัด*"  outlined :rules="[rules.address]"  ref="coordinate"></v-text-field>
+                <v-text-field v-model="editedItem.coordinate" prepend-inner-icon="mdi-map-marker"  label="พิกัด*"  outlined :rules="[rules.address]"  ref="coordinate"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
@@ -64,23 +64,17 @@ export default {
     dialog: Boolean,
     editedItem: Object,
     dialogTitle: String,
-
     hideFields: Object,
   },
   data() {
     return {
-      // date: new Date().toISOString().substr(0, 10),
-      // menu: false,
+
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       items_ages: [],
       items_tracking:[],
       items_type:[],
       hideDatePicker: false,
       rules: {
-        // hnnumber: (value) => {
-        //   if (!value) return "กรอกข้อมูลให้ครบ";
-        //   return true;
-        // },
         address: (value) => {
           if (!value) return "กรอกที่อยู่";
           if (value.length < 2) return "ที่อยู่ต้องกรอกให้ชัดเจน";
@@ -100,20 +94,6 @@ export default {
  
     };
   },
-  computed: {
-    // formattedDate() {
-    //   if (!this.date) {
-    //     return ' '; // Return empty string if date is null or undefined
-    //   }
-    //   const thaiDate = dayjs(this.date).add(543, 'year');
-    //   const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
-    //   return thaiFormattedDate;
-    // },
-
-
-
-
-  },
   created() {
     this.loaddata();
     this.loaddatatraking();
@@ -123,14 +103,11 @@ export default {
     async save() {
       try {
         this.$emit('notificationSaved');
-
         // Validate the form fields
         const isValid = await this.validateForm();
-
         // Validate the phone number
         const phoneField = this.$refs.number;
         phoneField.validate();
-
         if ( isValid && !phoneField.hasError) {
           // Check if the phone number has exactly 10 digits
           if (this.editedItem.number.length === 10) {
@@ -145,14 +122,6 @@ export default {
         console.error('Error saving item:', error);
       }
     },
-    // clearDateInput() {
-    //   if (!this.date) {
-    //     // If date is already empty, no need to do anything
-    //     return;
-    //   }
-    //   this.date = null; // Clear the date input
-    //   this.editedItem.service_date = ''; // Set editedItem.service_date to an empty string
-    // },
     close() {
       // Close the dialog
       this.$emit('close');

@@ -163,21 +163,11 @@ export default {
   fetch() {
     this.loadData()
   },
-
   mounted() {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
-  // computed: {
-  //   formattedDesserts() {
-  //     return this.desserts.map(dessert => ({
-  //       ...dessert,
-  //       service_date: null
-  //     }));
-  //   },
-  // },
   methods: {
-
     selectAllItems() {
       if (this.selectAll) {
         // Select all items for deletion
@@ -223,7 +213,13 @@ export default {
         }
       }
     },
-
+    closeDialog() {
+      // Close the dialog
+      this.dialog = false;
+      this.dialogTitle = '';
+      this.editedItem = {};
+      this.dialogVisible = false;
+    },
     closeDialog() {
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
@@ -237,27 +233,15 @@ export default {
       const { data } = axios.get(this.endpointUrl + '/api/status');
       this.items_status = data;
       // Set editedItem and dialogTitle based on item data
-
       this.editedItem = item;
       console.log(item);
       console.log(this.editedItem.age_name);
-
       this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
-
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
 
     },
-    // formatDate(inputDate) {
-    //   if (!inputDate) {
-    //     return ''; // Return an empty string if inputDate is null
-    //   }
-    //   const date = new Date(inputDate);
-    //   const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-    //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-    //   const year = date.getFullYear();
-    //   return `${day}-${month}-${year}`;
-    // },
+ 
     formatDateForMySQL(dateString) {
       // Extract the date parts
       if (!dateString) {
@@ -268,11 +252,7 @@ export default {
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
     },
-    // formatDateWithoutTime(dateTimeString) {
-    //   return dateTimeString.split('T')[0];
-    // },
     redirectToPatientDetail(item) {
-
       console.log('คลิก Row นี้:', item);
     },
 
@@ -287,15 +267,6 @@ export default {
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
-
-    // openWatchDialog(item) {
-    //   this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
-    //   this.dialogVisible = true;
-    //   this.editedItem = { ...item };
-    //   this.dialog = true;
-    //   this.viewMode = true;
-    // },
-
     async saveItem(editedItem) {
       try {
         let response;
@@ -317,7 +288,6 @@ export default {
             time: null
           });
           console.log(editedItem);
-          this.$store.commit('incrementPatientCount');
 
           Swal.fire({
             icon: 'success',
@@ -356,8 +326,6 @@ export default {
           title: 'สำเร็จ',
           text: 'แก้ไขข้อมูลสำเร็จ',
         });
-
-
         console.log('response', response);
         const savedPatient = response.data;
         this.$nextTick(() => {
@@ -385,8 +353,6 @@ export default {
     },
 
     async deleteItem(item) {
-
-
       this.confirmItem = item;
       this.confirm = true;
     },
@@ -458,15 +424,6 @@ export default {
         // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
-
-        // const formattedData = data.map(item => {
-        //   // Assuming the service_date field contains the date to be formatted
-        //   return {
-        //     ...item,
-        //     service_date: this.formatDate(item.service_date) // Format date here
-        //   };
-        // });
-
         this.desserts = data;
         console.log(this.desserts);
 
@@ -477,27 +434,13 @@ export default {
     async fetchDataFromServer() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/patients');
-        // const formattedData = data.map(item => {
-        //   // Assuming the service_date field contains the date to be formatted
-        //   return {
-        //     ...item,
-        //     service_date: this.formatDate(item.service_date) // Format date here
-        //   };
-        // });
+
         return data;
       } catch (error) {
         console.error('Error fetching data from server:', error);
         throw error; // Propagate the error to the caller
       }
     },
-    closeDialog() {
-      // Close the dialog
-      this.dialog = false;
-      this.dialogTitle = '';
-      this.editedItem = {};
-      this.dialogVisible = false;
-    },
-
   }
 };
 </script>

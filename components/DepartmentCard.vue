@@ -30,44 +30,44 @@
                 </v-sheet>
             </v-row>
         </v-container>
-        
+
 
 
         <v-row justify="center">
             <!-- emergencymonth -->
             <v-sheet class="pa-12" color="grey-lighten-3">
-                <v-sheet :elevation="2" class="mx-auto rounded-xl" height="50" width="225">
-                    <div class="emergencymonth" >
+                <v-sheet :elevation="8" class="mx-auto rounded-xl" height="50" width="225">
+                    <div class="emergencymonth">
 
                         <v-card-subtitle>
                             <b>ผู้ป่วยฉุกเฉินของเดือนนี้</b>
                         </v-card-subtitle>
 
-                        <v-sheet class="mx-auto rounded-xl" :elevation="3"  height="50" width="225" color ="#DC143C">
+                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#DC143C">
                             <v-card-subtitle>
                                 <b class="white--text"> สีเเดง {{ this.redCount }} คน </b>
-                        <v-icon color="red" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
-                            </v-card-subtitle>
-                        </v-sheet>
-                        
-                        <v-sheet class="mx-auto rounded-xl" :elevation="3"  height="50" width="225" color ="#32CD32">
-                            <v-card-subtitle>
-                                <b class="white--text"> สีเขียว {{ this.greenCount }} คน <v-icon color="red" size="small" 
-                                    style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                                <v-icon color="red" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
                             </v-card-subtitle>
                         </v-sheet>
 
-                        <v-sheet class="mx-auto rounded-xl" :elevation="3"  height="50" width="225" color ="#FFFF00">
+                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#32CD32">
                             <v-card-subtitle>
-                                <b > สีเหลือง {{ this.yellowCount }} คน <v-icon color="red" size="small" 
-                                    style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                                <b class="white--text"> สีเขียว {{ this.greenCount }} คน <v-icon color="red"
+                                        size="small" style="margin-left: 5px;">mdi-doctor</v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
-                        <v-sheet class ="mx-auto rounded-xl" :elevation="2"  height="50" width="225" color ="#F5F5F5">
+                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#FFFF00">
                             <v-card-subtitle>
-                                <b> สีขาว {{ this.whiteCount }} คน <v-icon color="red" size="small" 
-                                    style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                                <b> สีเหลือง {{ this.yellowCount }} คน <v-icon color="red" size="small"
+                                        style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
+                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#F5F5F5">
+                            <v-card-subtitle>
+                                <b> สีขาว {{ this.whiteCount }} คน <v-icon color="red" size="small"
+                                        style="margin-left: 5px;">mdi-doctor</v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
@@ -84,13 +84,13 @@
                         <v-card-subtitle>
                             <b>ผู้ป่วยนัดรับของเดือนนี้</b>
                         </v-card-subtitle>
-                        
+
 
                         <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                             <v-card-subtitle>
                                 <b> ผู้ป่วยติดเตียง {{ this.serviceBedCount }} คน
                                     <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed
-                                </v-icon></b>
+                                    </v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
@@ -98,7 +98,7 @@
                             <v-card-subtitle>
                                 <b> ผู้ป่วยบริการ {{ this.serviceCount }} คน
                                     <v-icon color="green" size="small" style="margin-left: 5px;">mdi-home
-                                </v-icon></b>
+                                    </v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
@@ -106,7 +106,7 @@
                             <v-card-subtitle>
                                 <b> อื่นๆ {{ this.serviceCountOther }} คน
                                     <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed
-                                </v-icon></b>
+                                    </v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
@@ -120,22 +120,20 @@
 <script>
 import BarChartPatient from '../components/BarChartPatient.vue'
 import PieChartPatient from '../components/PieChartPatient.vue'
-import LineChartJob from '../components/LineChartJob.vue'
 import axios from 'axios';
 
 export default {
     components: {
         BarChartPatient,
         PieChartPatient,
-        LineChartJob,
     },
     data() {
         return {
             bedCount: '',
             serviceCount: '',
-            serviceCountOther:'',
-            serviceBedCount:'',
-            AllserviceCount:'',
+            serviceCountOther: '',
+            serviceBedCount: '',
+            AllserviceCount: '',
             redCount: '',
             yellowCount: '',
             greenCount: '',
@@ -145,14 +143,7 @@ export default {
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
         }
     },
-    computed: {
-        patientCount() {
-            return this.$store.state.patientCount;
-        },
-        jobsCountCount() {
-            return this.$store.state.jobsCount;
-        },
-    },
+
     methods: {
         async getpatient() {
             try {
@@ -289,7 +280,6 @@ export default {
 
     created() {
         console.log('ENV', this.endpointUrl)
-
         this.getbedpatient();
         this.getservicepatient();
         this.getredemergency();
@@ -332,5 +322,4 @@ export default {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
 </style>

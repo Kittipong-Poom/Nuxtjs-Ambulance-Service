@@ -204,12 +204,7 @@ export default {
 
           patients.forEach((patient, index) => {
             console.log('My Detail :');
-            // const date = new Date(patient.service_date);
-            // const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-            // const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-            // const year = date.getFullYear() - 543;
-            // const newTimestamp = `${year}-${month}-${day}`;
-            // Extract the year, month, and day components from the date string
+
             const year = new Date(patient.service_date).getFullYear();
             const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
             const day = new Date(patient.service_date).getUTCDate() + 1;

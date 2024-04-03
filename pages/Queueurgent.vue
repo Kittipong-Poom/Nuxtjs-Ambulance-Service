@@ -14,11 +14,11 @@
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-btn color="#4CAF50" class="mr-2 mb-2 white--text" @click="openDialogurgent('edit', item)">
+        <v-btn color="#4CAF50" class="mr-2 mb-2 white--text mt-2" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
           แก้ไข
         </v-btn>
-        <v-btn color="red" class="white--text" @click="deleteItem(item)">
+        <v-btn color="red" class="white--text mb-2" @click="deleteItem(item)">
           <v-icon>mdi-delete</v-icon>
           ลบ
         </v-btn>
@@ -204,7 +204,6 @@ export default {
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
-          this.$store.commit('incrementJobsCount');
           this.$notify({
             'group': 'success',
             'title': 'กรอกข้อมูลสำเร็จ',
