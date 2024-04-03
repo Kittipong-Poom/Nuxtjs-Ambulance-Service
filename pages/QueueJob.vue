@@ -53,13 +53,11 @@
 <script>
 import Swal from 'sweetalert2';
 import Appointment from '~/components/DialogAppointment.vue';
-import DialogQueueJob from '../components/DialogQueueJob.vue';
 import Patient from './Patient.vue';
 import axios from 'axios';
 export default {
     components: {
         Patient,
-        DialogQueueJob,
         Appointment,
     },
     data() {
