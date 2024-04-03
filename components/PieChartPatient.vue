@@ -77,7 +77,7 @@
           labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
           datasets: [
             {
-              backgroundColor: ['#FEFFB5', '#FF8986', '#EFA375', '#FFCAC9',],
+              backgroundColor: ['#8481DD', '#8BC1F7', '#B2B0EA', '#FFCAC9',],
               data: [40 , 20 , 50 , 20]
             }
           ]
@@ -94,24 +94,24 @@
                 const labels = [];
                 labels.push({
                   text: 'ไตรมาส 1',
-                  fillStyle: '#FEFFB5',
-                  strokeStyle: '#FEFFB5',
+                  fillStyle: '#8481DD',
+                  strokeStyle: '#8481DD',
                   lineWidth: 2,
                   hidden: false,
                   index: 0
                 });
                 labels.push({
                   text: 'ไตรมาส 2',
-                  fillStyle: '#FF8986',
-                  strokeStyle: '#FF8986',
+                  fillStyle: '#8BC1F7',
+                  strokeStyle: '#8BC1F7',
                   lineWidth: 2,
                   hidden: false,
                   index: 1
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#EFA375',
-                  strokeStyle: '#EFA375',
+                  fillStyle: '#B2B0EA',
+                  strokeStyle: '#B2B0EA',
                   lineWidth: 2,
                   hidden: false,
                   index: 2

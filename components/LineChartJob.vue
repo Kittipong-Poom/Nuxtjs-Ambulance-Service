@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <LineChartGenerator
       :chart-options="chartOptions"
       :chart-data="chartData"
@@ -97,4 +97,4 @@
     }
   }
   </script>
-  
+   -->

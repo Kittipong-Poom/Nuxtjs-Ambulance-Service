@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   
   <Pie
     :chart-options="chartOptions"
@@ -64,4 +64,4 @@ margin-top: 10px; /* Adjust the margin as needed */
 font-size: 14px; /* Adjust the font size as needed */
 color: #555; /* Adjust the color as needed */
 }
-</style>
+</style> -->
