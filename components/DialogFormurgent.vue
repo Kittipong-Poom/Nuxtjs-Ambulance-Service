@@ -6,22 +6,44 @@
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
-          <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
-            :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="formattedDate" label="Picker in menu" prepend-icon="mdi-calendar" readonly
-                v-bind="attrs" v-on="on"></v-text-field>
-            </template>
-            <v-date-picker v-model="date" no-title scrollable locale="th" :min="new Date().toISOString().substr(0, 10)">
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false">
-                ยกเลิก
-              </v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(formatDateForPicker(date))">
-                ตกลง
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
+                  :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field v-model="formattedDate" label="วันที่เกิดเหตุ" outlined prepend-icon="mdi-calendar"
+                      readonly v-bind="attrs" v-on="on"></v-text-field>
+                  </template>
+                  <v-date-picker v-model="date" no-title scrollable locale="th"
+                    :min="new Date().toISOString().substr(0, 10)">
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menu = false">
+                      ยกเลิก
+                    </v-btn>
+                    <v-btn text color="primary" @click="$refs.menu.save(formatDateForPicker(date))">
+                      ตกลง
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field v-model="formattedTime" outlined label="เวลา" readonly
+                  prepend-icon="mdi-clock-outline"></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- เพิ่มปุ่ม Current Location -->
+
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-select v-model="editedItem.gender" outlined label="เพศ" prepend-icon="mdi-gender-male-female"
+                  :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-select v-model="editedItem.age" outlined label="อายุ*"
+                  :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"></v-select>
+              </v-col>
+            </v-row>
 
             <v-row>
               <v-col cols="12" md="6">
@@ -30,29 +52,21 @@
               </v-col>
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.violence" outlined label="ความรุนแรงของประเภทผู้ป่วย"
-                  :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']"></v-select>
-                </v-col>
-                </v-row>
-          <!-- เพิ่มปุ่ม Current Location -->
-          
+                  :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
 
-          <v-combobox v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-combobox>
-          <v-combobox v-model="editedItem.age" label="อายุ*" :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"></v-combobox>
-          <v-combobox v-model="editedItem.status" label="ประเภทผู้ป่วย" :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'อุบัติเหตุฉุกเฉิน']"></v-combobox>
-
-          <v-combobox v-model="editedItem.violence" label="ความรุนแรงของประเภทผู้ป่วย" :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']">
-            <template #item="{ item, on }">
-              <v-list-item v-on="on">
-                <v-list-item-content>
-                  <v-chip :color="getChipColor(item)">
-                    {{ item }}
-                  </v-chip>
-                </v-list-item-content>
-              </v-list-item>
-            </template>
-          </v-combobox>
-
-          <v-combobox v-model="editedItem.emergency_group" :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
+                  <template #item="{ item, on }">
+                    <v-list-item v-on="on">
+                      <v-list-item-content>
+                        <v-chip :color="getChipColor(item)">
+                          {{ item }}
+                        </v-chip>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
+              </v-col>
+            </v-row>
+            <v-combobox v-model="editedItem.emergency_group" prepend-icon="mdi-select-group" outlined :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
     "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
     "3.สัตว์กัด",
     "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
@@ -78,16 +92,33 @@
     "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
     "25.อุบัติเหตุยานยนต์",
     "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน" multiple clearable chips>
-          </v-combobox>
+            </v-combobox>
 
-          <!-- ส่วนของการกรอก Latitude และ Longitude -->
-          <v-text-field v-model="editedItem.lati" label="Latitude" prepend-icon="mdi-map-marker"></v-text-field>
-          <v-text-field v-model="editedItem.longi" label="Longitude" prepend-icon="mdi-map-marker"></v-text-field>
-          <v-btn color="primary" @click="getCurrentLocation">ตำแหน่งล่าสุดของคุณ</v-btn>
-          <v-combobox v-model="editedItem.patient_delivery" label="การติดตามการนำส่งผู้ป่วย" :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-combobox>
+            <!-- ส่วนของการกรอก Latitude และ Longitude -->
+
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-text-field v-model="editedItem.lati" label="Latitude" outlined
+                  prepend-icon="mdi-map-marker"></v-text-field>
+                  <v-btn color="green" class="mb-5 ml-4"  @click="getCurrentLocation" text :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
+              </v-col>
+              <v-col cols="6" md="6">
+                <v-text-field v-model="editedItem.longi" label="Longitude" outlined
+                  prepend-icon="mdi-map-marker"></v-text-field>
+
+              </v-col>
+            </v-row>
+
+
+
+            <v-select v-model="editedItem.patient_delivery" prepend-icon="mdi-truck-plus" outlined
+              label="การติดตามการนำส่งผู้ป่วย"
+              :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"></v-select>
+          </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-if="(dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))" color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
+          <v-btn v-if="(dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
+            color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
           <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
         </v-card-actions>
       </form>
@@ -206,8 +237,11 @@ export default {
       }
     },
     async getCurrentLocation() {
+      this.loading = true
+
       try {
-    
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
         // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
         const position = await this.askForLocationPermission();
         // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
@@ -217,10 +251,24 @@ export default {
         this.editedItem.lati = latitude;
         this.editedItem.longi = longitude;
         this.$forceUpdate();
+
+        this.snackbar = {
+          show: true,
+          color: 'success',
+          message: 'ดึงตำแหน่งปัจจุบันเสร็จสิ้น'
+        };
       } catch (error) {
         console.error('Error getting current location:', error);
+        // Update snackbar to show error message
+        this.snackbar = {
+          show: true,
+          color: 'error',
+          message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
+        };
+      } finally {
+        // Reset loading state
+        this.loading = false;
       }
-      
     },
     askForLocationPermission() {
       return new Promise((resolve, reject) => {
@@ -232,7 +280,7 @@ export default {
       });
     }
   },
- 
+
 
   created() {
     // Update the time every minute
