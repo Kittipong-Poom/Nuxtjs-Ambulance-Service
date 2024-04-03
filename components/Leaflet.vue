@@ -1,43 +1,6 @@
 <template>
-<<<<<<< HEAD
   <div>
     <div id="map" style="height: 100vh; width: 100%;"></div>
-=======
-    <div>
-      <div id="map" style="height: 100vh; width: 100%;"></div>
-
-      
-    </div>
-  </template>
-  
-  <script>
-  import L from 'leaflet';
-  
-  export default {
-    mounted() {
-      // สร้างแผนที่ Leaflet
-      this.map = L.map('map').setView([20.04489742406062, 99.89451960806792], 13); // ตำแหน่งเริ่มต้นที่ [0, 0] และขนาดของแผนที่ 13
-  
-      // เพิ่มแผนที่ฐาน OSM
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(this.map);
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(this.updateCurrentLocation, this.handleLocationError);
-    } else {
-        console.error("Geolocation is not supported by this browser.");
-    }
-    },
-    data() {
-    return {
-      currentLocationMarker: null
-    };
-    },
-    methods: {
-    updateCurrentLocation(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
->>>>>>> ea289a9d583e22fe59b214f489ad83331a0b7b94
 
     
   </div>
