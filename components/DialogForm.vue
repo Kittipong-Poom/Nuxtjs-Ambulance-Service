@@ -11,38 +11,38 @@
               <v-col cols="12" md="6">
                 <div class="input-container">
                 <!-- อายุ -->
-                <v-select v-model="editedItem.ages_id" label="อายุ" :items="items_ages" item-text="age_name" item-value="age_id"  return-object></v-select>
+                <v-select v-model="editedItem.ages_id" label="อายุ" :items="items_ages" outlined item-text="age_name" item-value="age_id" prepend-icon="mdi-gender-male-female"  return-object></v-select>
               </div>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- เพศ -->
-                <v-select v-model="editedItem.gender" label="เพศ" :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
+                <v-select v-model="editedItem.gender" label="เพศ" outlined :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12" md="6">
                 <!-- เบอร์โทรศัพท์ -->
-                <v-text-field v-model="editedItem.number" prepend-icon="mdi-phone-outline" label="เบอร์โทรศัพท์*" :rules="[rules.phone]"  ref="number"></v-text-field>
+                <v-text-field v-model="editedItem.number" prepend-icon="mdi-phone-outline" label="เบอร์โทรศัพท์*" outlined :rules="[rules.phone]"  ref="number"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- พิกัด -->
-                <v-text-field v-model="editedItem.coordinate" prepend-icon="mdi-map-marker" label="พิกัด*" :rules="[rules.address]"  ref="coordinate"></v-text-field>
+                <v-text-field v-model="editedItem.coordinate" prepend-icon="mdi-map-marker"  label="พิกัด*"  outlined :rules="[rules.address]"  ref="coordinate"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12" md="6">
                 <!-- การติดตามการนำส่งผู้ป่วย -->
-                <v-select v-model="editedItem.tracking_patient_id" label="การติดตามการนำส่งผู้ป่วย" :items="items_tracking" item-text="tracking_name" item-value="tracking_id"></v-select>
+                <v-select v-model="editedItem.tracking_patient_id" label="การติดตามการนำส่งผู้ป่วย" outlined :items="items_tracking" item-text="tracking_name" item-value="tracking_id"></v-select>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- เลือกประเภท -->
-                <v-select v-model="editedItem.type_patient_id" label="เลือกประเภท" :items="items_type" item-text="type_patient_name" item-value="type_patient_id"></v-select>
+                <v-select v-model="editedItem.type_patient_id" label="เลือกประเภท" :items="items_type" outlined item-text="type_patient_name" item-value="type_patient_id"></v-select>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12">
                 <!-- เพิ่มเติม -->
-                <v-text-field v-model="editedItem.other" label="เพิ่มเติม" :rules="[rules.other]"></v-text-field>
+                <v-text-field v-model="editedItem.other" label="เพิ่มเติม" outlined :rules="[rules.other]"></v-text-field>
               </v-col>
             </v-row>
           </v-container>

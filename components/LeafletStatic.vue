@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" style="height: 500px;"></div>
+    <div id="map" style="height: 100vh; width: 100%;"></div>
   </div>
 </template>
 
@@ -29,10 +29,7 @@ export default {
       }).addTo(this.map);
 
       // Lock pin to the current location
-      this.map.locate({
-        setView: true,
-        watch: false
-      });
+      
       this.map.on("locationfound", async (e) => {
         const { lat, lng } = e.latlng;
         this.map.setView([lat, lng], 15);
@@ -60,13 +57,16 @@ createMarkers(markerDataArray) {
   markerDataArray.forEach(markerData => {
     const lat = parseFloat(markerData.lati);
     const lng = parseFloat(markerData.longi);
+    const stat = markerData.status;
     var redIcon = L.icon({
-                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
-            })
-    let markerInstance = L.marker([lat, lng], {icon: redIcon}).addTo(this.map); // Add marker to map
+      iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+    let markerInstance = L.marker([lat, lng], { icon: redIcon }).addTo(this.map); // Add marker to map
+    // Add popup to each marker to display status
+    markerInstance.bindPopup(` ${stat}`);
     this.markers.push(markerInstance); // Add marker instance to the array
   });
 
@@ -76,6 +76,7 @@ createMarkers(markerDataArray) {
     this.map.fitBounds(group.getBounds());
   }
 }
+
 
   }
 }

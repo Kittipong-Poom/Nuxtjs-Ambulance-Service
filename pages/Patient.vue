@@ -10,12 +10,23 @@
           จัดการผู้ป่วยใหม่
         </v-btn>
         <v-spacer />
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
+        <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
       </v-card-title>
 
-      <v-data-table depressed :headers="headers" :items="desserts" :search="search"
+      <v-data-table v-model="selected" show-select depressed :headers="headers" :items="desserts" :search="search"
         @click:row="redirectToPatientDetail">
+
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Select All</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-checkbox v-model="selectAll" @change="selectAllItems"></v-checkbox>
+            <v-btn color="red" dark @click="deleteSelectedItems">Delete Selected</v-btn>
+          </v-toolbar>
+        </template>
+
         <template v-slot:item.action="{ item }">
+          
           <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
             แก้ไข
@@ -29,6 +40,7 @@
             ลบ
           </v-btn>
         </template>
+
 
         <template v-slot:item.type_patient_name="{ item }">
           <v-chip :color="getTypeColor(item.type_patient_name)" class="my-chip" dark
@@ -45,6 +57,7 @@
           </v-chip>
         </template>
       </v-data-table>
+
 
       <!---ปุ่มลบ-->
 
@@ -101,7 +114,10 @@ export default {
       confirm: false,
       confirmItem: null,
       dialogVisible: false,
+      selectAll: false,
       events: [],
+      selected: [],
+      selectedForDeletion:[],
       search: '',
       action: '',
       isAppointmentDialogOpen: false,
@@ -161,6 +177,52 @@ export default {
   //   },
   // },
   methods: {
+
+    selectAllItems() {
+      if (this.selectAll) {
+        // Select all items for deletion
+        this.selectedForDeletion = this.desserts.map(item => item.hn_id);
+      } else {
+        // Deselect all items for deletion
+        this.selectedForDeletion = [];
+      }
+    },
+    async deleteSelectedItems() {
+      if (this.selectedForDeletion.length === 0) {
+        return; // No items selected, do nothing
+      }
+
+      const result = await Swal.fire({
+        title: 'Confirm Deletion',
+        text: 'Are you sure you want to delete selected items?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete them!'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await Promise.all(this.selectedForDeletion.map(async hn_id => {
+            await axios.delete(`${this.endpointUrl}/api/patients/${hn_id}`);
+          }));
+
+          // Remove deleted items from local state
+          this.desserts = this.desserts.filter(item => !this.selectedForDeletion.includes(item.hn_id));
+          
+          // Clear selected items for deletion
+          this.selectedForDeletion = [];
+
+          // Show success notification
+          Swal.fire('Deleted!', 'Selected items have been deleted.', 'success');
+        } catch (error) {
+          console.error('Error deleting items:', error);
+          // Show error notification
+          Swal.fire('Error', 'Failed to delete selected items.', 'error');
+        }
+      }
+    },
 
     closeDialog() {
       this.dialog = false;

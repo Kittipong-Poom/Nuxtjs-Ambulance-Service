@@ -228,8 +228,8 @@ export default {
             const colorIndex = index % this.colors.length;
             const event = {
               name: `HN ${patient.hn_id}`,
-              start: newTimestamp,
-              end: newTimestamp,
+              start:`${newTimestamp}T${formattedTime}`,
+              // end: `${newTimestamp}T${formattedTime}`,
               color: this.colors[colorIndex],
               details: `ที่อยู่ : ${patient.coordinate}`,
               time: `เวลา : ${formattedTime}`,

@@ -9,12 +9,12 @@
         เพิ่มเคสผู้ป่วยฉุกเฉิน
       </v-btn>
       <v-spacer />
-      <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
+      <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
     </v-card-title>
 
     <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
       <template v-slot:item.action="{ item }">
-        <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialogurgent('edit', item)">
+        <v-btn color="#4CAF50" class="mr-2 mb-2 white--text" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
           แก้ไข
         </v-btn>
@@ -456,4 +456,5 @@ body {
   background-color: green;
   color: white;
 }
+
 </style>
