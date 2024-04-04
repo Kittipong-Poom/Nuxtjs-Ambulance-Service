@@ -7,12 +7,18 @@
 <script>
 import L from 'leaflet';
 import axios from 'axios';
+import { data } from 'jquery';
 
 export default {
   data() {
     return {
+      endpointUrl:
+      process.env.NODE_ENV == "development"
+        ? "http://localhost:5000"
+        : "https://ambulance-fbf9.onrender.com",
       map: null,
-      markers: []
+      markers: [],
+      markerData: [],
     };
   },
   mounted() {
@@ -36,9 +42,11 @@ export default {
       });
     },
 
+    
     async fetchMarkers() {
   try {
-    const response = await axios.get(`http://localhost:5000/api/latlong`);
+    const response = await axios.get(this.endpointUrl + '/api/latlong');
+    this.markerData = response.data;
     console.log(response.data); // Log API response
     this.createMarkers(response.data); // Pass the correct data format
   } catch (error) {
@@ -57,7 +65,11 @@ createMarkers(markerDataArray) {
   markerDataArray.forEach(markerData => {
     const lat = parseFloat(markerData.lati);
     const lng = parseFloat(markerData.longi);
-    const stat = markerData.status;
+    let stat = markerData.status; // Ensure stat is initialized
+    // Check if status is undefined or missing, assign a default value if needed
+    if (typeof stat === 'undefined' || stat === null) {
+      stat = "Unknown"; // Assign a default status if status is undefined or missing
+    }
     var redIcon = L.icon({
       iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
       iconSize: [32, 32],
@@ -66,7 +78,7 @@ createMarkers(markerDataArray) {
     });
     let markerInstance = L.marker([lat, lng], { icon: redIcon }).addTo(this.map); // Add marker to map
     // Add popup to each marker to display status
-    markerInstance.bindPopup(` ${stat}`);
+    markerInstance.bindPopup(`lati: ${markerData.lati},\nlongi: ${markerData.longi}`);
     this.markers.push(markerInstance); // Add marker instance to the array
   });
 

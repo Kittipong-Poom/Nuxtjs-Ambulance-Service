@@ -149,7 +149,6 @@ export default {
   fetch() {
     this.loadData()
   },
-
   mounted() {
     console.log('ENV', this.endpointUrl)
     this.loadData();
@@ -174,56 +173,6 @@ export default {
     },
   },
   methods: {
-    handleSelectedItemsChangeurgents(selectedItems) {
-      // Update selectedForDeletion array when items are selected/unselected
-      this.selectedurgent = selectedItems;
-    },
-
-    async deleteSelectedItemsurgents() {
-      if (this.selectedurgent.length === 0) {
-        // Show warning message if no item is selected
-        Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
-        return; // Exit the function if no item is selected
-      }
-
-      // Perform deletion confirmation
-      const result = await Swal.fire({
-        title: 'ยืนยันการลบ',
-        text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'แน่นอน ลบ!'
-      });
-
-      // Proceed with deletion if confirmed
-      if (result.isConfirmed) {
-        try {
-          // Get all items from the desserts array
-          const allItems = this.desserts;
-
-          // Delete all items
-          await Promise.all(allItems.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id }`);
-          }));
-
-          // Clear the desserts array
-          this.desserts = [];
-
-          // Clear the selected items array
-          this.selectedurgent = [];
-
-          // Show deletion success message
-          Swal.fire('ลบแล้ว!', 'รายการทั้งหมดได้ถูกลบแล้ว', 'success');
-        } catch (error) {
-          console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
-          // Show error message if deletion fails
-          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการทั้งหมดได้', 'error');
-        }
-      }
-    },
-
     formatDate(inputDate) {
       const date = new Date(inputDate);
       const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
@@ -256,7 +205,6 @@ export default {
       this.dialog = true;
 
     },
-
 
     async saveItem(editedItem) {
       try {
@@ -330,8 +278,6 @@ export default {
     },
 
     async deleteItem(item) {
-
-
       this.confirmItem = item;
       this.confirm = true;
     },
@@ -395,6 +341,55 @@ export default {
           // Reset the confirm dialog and clear the confirmItem
           this.confirm = false;
           this.confirmItem = null;
+        }
+      }
+    },
+    handleSelectedItemsChangeurgents(selectedItems) {
+      // Update selectedForDeletion array when items are selected/unselected
+      this.selectedurgent = selectedItems;
+    },
+
+    async deleteSelectedItemsurgents() {
+      if (this.selectedurgent.length === 0) {
+        // Show warning message if no item is selected
+        Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
+        return; // Exit the function if no item is selected
+      }
+
+      // Perform deletion confirmation
+      const result = await Swal.fire({
+        title: 'ยืนยันการลบ',
+        text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'แน่นอน ลบ!'
+      });
+
+      // Proceed with deletion if confirmed
+      if (result.isConfirmed) {
+        try {
+          // Get all items from the desserts array
+          const allItems = this.desserts;
+
+          // Delete all items
+          await Promise.all(allItems.map(async item => {
+            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id }`);
+          }));
+
+          // Clear the desserts array
+          this.desserts = [];
+
+          // Clear the selected items array
+          this.selectedurgent = [];
+
+          // Show deletion success message
+          Swal.fire('ลบแล้ว!', 'รายการทั้งหมดได้ถูกลบแล้ว', 'success');
+        } catch (error) {
+          console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
+          // Show error message if deletion fails
+          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการทั้งหมดได้', 'error');
         }
       }
     },

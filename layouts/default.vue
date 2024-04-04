@@ -111,12 +111,12 @@ export default {
           to: '/Patient'
         },
         {
-          icon: 'mdi-doctor',
+          icon: 'mdi-clipboard-pulse',
           title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
           to: '/Queueurgent'
         },
         {
-          icon: 'mdi-table',
+          icon: 'mdi-human-queue',
           title: 'ตารางจัดการคิวงาน',
           to: '/QueueJob'
         },
