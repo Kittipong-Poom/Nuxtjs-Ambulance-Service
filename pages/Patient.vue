@@ -21,7 +21,7 @@
           <v-toolbar flat>
             <h3>เลือกทั้งหมด</h3>
             <v-spacer></v-spacer>
-            <v-btn color="red" dark @click="deleteSelectedItems">ลบ</v-btn>
+            <v-btn color="red" dark @click="deleteSelectedItems">ลบสิ่งที่เลือก</v-btn>
           </v-toolbar>
         </template>
 
@@ -173,10 +173,10 @@ export default {
 
     async deleteSelectedItems() {
       if (this.selected.length === 0) {
-    // Show warning message if no item is selected
-    Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
-    return; // Exit the function if no item is selected
-  }
+        // Show warning message if no item is selected
+        Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
+        return; // Exit the function if no item is selected
+      }
 
       // Perform deletion confirmation
       const result = await Swal.fire({

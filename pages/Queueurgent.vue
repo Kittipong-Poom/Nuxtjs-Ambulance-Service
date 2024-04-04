@@ -12,7 +12,17 @@
       <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
     </v-card-title>
 
-    <v-data-table depressed :headers="headers" :items="desserts" :search="search" @click:row="redirectToPatientDetail">
+    <v-data-table show-select v-model="selectedurgent" depressed :headers="headers" :items="desserts" :search="search"
+      @click:row="redirectToPatientDetail" @input="handleSelectedItemsChangeurgents" @click:show-select="deleteSelectedItemsurgents">
+
+      <template v-slot:top>
+          <v-toolbar flat>
+            <h3>เลือกทั้งหมด</h3>
+            <v-spacer></v-spacer>
+            <v-btn color="red" dark @click="deleteSelectedItemsurgents">ลบสิ่งที่เลือก</v-btn>
+          </v-toolbar>
+        </template>
+
       <template v-slot:item.action="{ item }">
         <v-btn color="#4CAF50" class="mr-2 mb-2 white--text mt-2" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -93,6 +103,8 @@ export default {
       dialogVisible: false,
       showNotifications: false,
       notifications: [],
+      selectedurgent: [], // selected items
+      selectedForDeletion: [], // items selected for deletion
       drawer: false,
       darkMode: false,
       search: '',
@@ -162,6 +174,56 @@ export default {
     },
   },
   methods: {
+    handleSelectedItemsChangeurgents(selectedItems) {
+      // Update selectedForDeletion array when items are selected/unselected
+      this.selectedurgent = selectedItems;
+    },
+
+    async deleteSelectedItemsurgents() {
+      if (this.selectedurgent.length === 0) {
+        // Show warning message if no item is selected
+        Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
+        return; // Exit the function if no item is selected
+      }
+
+      // Perform deletion confirmation
+      const result = await Swal.fire({
+        title: 'ยืนยันการลบ',
+        text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'แน่นอน ลบ!'
+      });
+
+      // Proceed with deletion if confirmed
+      if (result.isConfirmed) {
+        try {
+          // Get all items from the desserts array
+          const allItems = this.desserts;
+
+          // Delete all items
+          await Promise.all(allItems.map(async item => {
+            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id }`);
+          }));
+
+          // Clear the desserts array
+          this.desserts = [];
+
+          // Clear the selected items array
+          this.selectedurgent = [];
+
+          // Show deletion success message
+          Swal.fire('ลบแล้ว!', 'รายการทั้งหมดได้ถูกลบแล้ว', 'success');
+        } catch (error) {
+          console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
+          // Show error message if deletion fails
+          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการทั้งหมดได้', 'error');
+        }
+      }
+    },
+
     formatDate(inputDate) {
       const date = new Date(inputDate);
       const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
@@ -194,7 +256,7 @@ export default {
       this.dialog = true;
 
     },
-    
+
 
     async saveItem(editedItem) {
       try {
@@ -209,11 +271,11 @@ export default {
             'title': 'กรอกข้อมูลสำเร็จ',
             'text': 'คลิกกระดิ่งเพื่อดูข้อมูลเพิ่มเติม'
           })
-          
+
 
           this.notifications = [];
           this.showRedBadge = false;
-          
+
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
@@ -455,5 +517,4 @@ body {
   background-color: green;
   color: white;
 }
-
 </style>
