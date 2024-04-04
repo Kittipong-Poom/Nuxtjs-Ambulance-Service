@@ -90,7 +90,6 @@ export default {
   data() {
     return {
       desserts: [],
- 
       notifications: [], 
       showRedBadge: true,
       notificationsCount: 0,
@@ -122,7 +121,6 @@ export default {
           to: '/QueueJob'
         },
 
-
         {
           icon: 'mdi-calendar',
           title: 'ปฏิทินงาน',
@@ -138,17 +136,6 @@ export default {
           title: 'แผนที่สถิติ',
           to: '/MapsStatic'
         },
-
-
-        // {
-        //   icon: 'mdi-home-account',
-        //   title: 'Welcome',
-        //   to: '/'
-        // },
-
-
-
-
       ],
       miniVariant: false,
       right: true,

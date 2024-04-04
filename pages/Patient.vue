@@ -14,19 +14,19 @@
       </v-card-title>
 
       <v-data-table v-model="selected" show-select depressed :headers="headers" :items="desserts" :search="search"
-        @click:row="redirectToPatientDetail">
+        @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
+        @click:show-select="deleteSelectedItems">
 
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Select All</v-toolbar-title>
+            <h3>เลือกทั้งหมด</h3>
             <v-spacer></v-spacer>
-            <v-checkbox v-model="selectAll" @change="selectAllItems"></v-checkbox>
-            <v-btn color="red" dark @click="deleteSelectedItems">Delete Selected</v-btn>
+            <v-btn color="red" dark @click="deleteSelectedItems">ลบ</v-btn>
           </v-toolbar>
         </template>
 
         <template v-slot:item.action="{ item }">
-          
+
           <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
             แก้ไข
@@ -44,7 +44,7 @@
 
         <template v-slot:item.type_patient_name="{ item }">
           <v-chip :color="getTypeColor(item.type_patient_name)" class="my-chip" dark
-          :class="{ 'black--text': item.type_patient_name === 'ผู้ป่วยติดเตียง', }">
+            :class="{ 'black--text': item.type_patient_name === 'ผู้ป่วยติดเตียง', }">
             {{ item.type_patient_name }}
           </v-chip>
         </template>
@@ -86,8 +86,7 @@
         @close="closeDialog" :hide-fields="{ dateAndTime: true }" />
 
       <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
-        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false"
-        />
+        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false" />
     </v-card>
   </div>
 </template>
@@ -114,10 +113,9 @@ export default {
       confirm: false,
       confirmItem: null,
       dialogVisible: false,
-      selectAll: false,
       events: [],
-      selected: [],
-      selectedForDeletion:[],
+      selected: [], // selected items
+      selectedForDeletion: [], // items selected for deletion
       search: '',
       action: '',
       isAppointmentDialogOpen: false,
@@ -142,7 +140,7 @@ export default {
       statusColorMap: {
         'งานบริการ': 'green',
         'ผู้ป่วยติดเตียง': 'yellow',
-        'อื่นๆ':'blue'
+        'อื่นๆ': 'blue'
       },
       dialog: false,
       dialogTitle: '',
@@ -163,67 +161,67 @@ export default {
   fetch() {
     this.loadData()
   },
-
   mounted() {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
-  // computed: {
-  //   formattedDesserts() {
-  //     return this.desserts.map(dessert => ({
-  //       ...dessert,
-  //       service_date: null
-  //     }));
-  //   },
-  // },
   methods: {
-
-    selectAllItems() {
-      if (this.selectAll) {
-        // Select all items for deletion
-        this.selectedForDeletion = this.desserts.map(item => item.hn_id);
-      } else {
-        // Deselect all items for deletion
-        this.selectedForDeletion = [];
-      }
+    handleSelectedItemsChange(selectedItems) {
+      // Update selectedForDeletion array when items are selected/unselected
+      this.selected = selectedItems;
     },
-    async deleteSelectedItems() {
-      if (this.selectedForDeletion.length === 0) {
-        return; // No items selected, do nothing
-      }
 
+    async deleteSelectedItems() {
+      if (this.selected.length === 0) {
+    // Show warning message if no item is selected
+    Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
+    return; // Exit the function if no item is selected
+  }
+
+      // Perform deletion confirmation
       const result = await Swal.fire({
-        title: 'Confirm Deletion',
-        text: 'Are you sure you want to delete selected items?',
+        title: 'ยืนยันการลบ',
+        text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete them!'
+        confirmButtonText: 'แน่นอน ลบ!'
       });
 
+      // Proceed with deletion if confirmed
       if (result.isConfirmed) {
         try {
-          await Promise.all(this.selectedForDeletion.map(async hn_id => {
-            await axios.delete(`${this.endpointUrl}/api/patients/${hn_id}`);
+          // Get all items from the desserts array
+          const allItems = this.desserts;
+
+          // Delete all items
+          await Promise.all(allItems.map(async item => {
+            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
           }));
 
-          // Remove deleted items from local state
-          this.desserts = this.desserts.filter(item => !this.selectedForDeletion.includes(item.hn_id));
-          
-          // Clear selected items for deletion
-          this.selectedForDeletion = [];
+          // Clear the desserts array
+          this.desserts = [];
 
-          // Show success notification
-          Swal.fire('Deleted!', 'Selected items have been deleted.', 'success');
+          // Clear the selected items array
+          this.selected = [];
+
+          // Show deletion success message
+          Swal.fire('ลบแล้ว!', 'รายการทั้งหมดได้ถูกลบแล้ว', 'success');
         } catch (error) {
-          console.error('Error deleting items:', error);
-          // Show error notification
-          Swal.fire('Error', 'Failed to delete selected items.', 'error');
+          console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
+          // Show error message if deletion fails
+          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการทั้งหมดได้', 'error');
         }
       }
     },
-
+    closeDialog() {
+      // Close the dialog
+      this.dialog = false;
+      this.dialogTitle = '';
+      this.editedItem = {};
+      this.dialogVisible = false;
+    },
     closeDialog() {
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
@@ -237,27 +235,15 @@ export default {
       const { data } = axios.get(this.endpointUrl + '/api/status');
       this.items_status = data;
       // Set editedItem and dialogTitle based on item data
-
       this.editedItem = item;
       console.log(item);
       console.log(this.editedItem.age_name);
-
       this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
-
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
 
     },
-    // formatDate(inputDate) {
-    //   if (!inputDate) {
-    //     return ''; // Return an empty string if inputDate is null
-    //   }
-    //   const date = new Date(inputDate);
-    //   const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-    //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-    //   const year = date.getFullYear();
-    //   return `${day}-${month}-${year}`;
-    // },
+
     formatDateForMySQL(dateString) {
       // Extract the date parts
       if (!dateString) {
@@ -268,11 +254,7 @@ export default {
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
     },
-    // formatDateWithoutTime(dateTimeString) {
-    //   return dateTimeString.split('T')[0];
-    // },
     redirectToPatientDetail(item) {
-
       console.log('คลิก Row นี้:', item);
     },
 
@@ -287,15 +269,6 @@ export default {
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
-
-    // openWatchDialog(item) {
-    //   this.dialogTitle = 'ดูข้อมูลผู้ป่วย';
-    //   this.dialogVisible = true;
-    //   this.editedItem = { ...item };
-    //   this.dialog = true;
-    //   this.viewMode = true;
-    // },
-
     async saveItem(editedItem) {
       try {
         let response;
@@ -317,7 +290,6 @@ export default {
             time: null
           });
           console.log(editedItem);
-          this.$store.commit('incrementPatientCount');
 
           Swal.fire({
             icon: 'success',
@@ -334,12 +306,12 @@ export default {
           });
         }
         if (editedItem.hasOwnProperty('time')) {
-        Swal.fire({
-          icon: 'success',
-          title: 'สำเร็จ',
-          text: 'นัดหมายผู้ป่วยสำเร็จ',
-        });
-        } 
+          Swal.fire({
+            icon: 'success',
+            title: 'สำเร็จ',
+            text: 'นัดหมายผู้ป่วยสำเร็จ',
+          });
+        }
 
         console.log('แก้ไขข้อมูลผู้ป่วย', editedItem);
         response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
@@ -356,8 +328,6 @@ export default {
           title: 'สำเร็จ',
           text: 'แก้ไขข้อมูลสำเร็จ',
         });
-
-
         console.log('response', response);
         const savedPatient = response.data;
         this.$nextTick(() => {
@@ -385,8 +355,6 @@ export default {
     },
 
     async deleteItem(item) {
-
-
       this.confirmItem = item;
       this.confirm = true;
     },
@@ -458,15 +426,6 @@ export default {
         // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
-
-        // const formattedData = data.map(item => {
-        //   // Assuming the service_date field contains the date to be formatted
-        //   return {
-        //     ...item,
-        //     service_date: this.formatDate(item.service_date) // Format date here
-        //   };
-        // });
-
         this.desserts = data;
         console.log(this.desserts);
 
@@ -477,27 +436,13 @@ export default {
     async fetchDataFromServer() {
       try {
         const { data } = await axios.get(this.endpointUrl + '/api/patients');
-        // const formattedData = data.map(item => {
-        //   // Assuming the service_date field contains the date to be formatted
-        //   return {
-        //     ...item,
-        //     service_date: this.formatDate(item.service_date) // Format date here
-        //   };
-        // });
+
         return data;
       } catch (error) {
         console.error('Error fetching data from server:', error);
         throw error; // Propagate the error to the caller
       }
     },
-    closeDialog() {
-      // Close the dialog
-      this.dialog = false;
-      this.dialogTitle = '';
-      this.editedItem = {};
-      this.dialogVisible = false;
-    },
-
   }
 };
 </script>

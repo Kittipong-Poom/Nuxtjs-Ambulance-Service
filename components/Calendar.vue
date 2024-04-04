@@ -43,30 +43,31 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600">
+
+      <v-sheet height="600" >
+        <!-- แสดง ปฏิทิน -->
         <v-calendar ref="calendar" v-model="focus" color="primary" locale="th" :events="events"
           :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
           @change="updateRange"></v-calendar>
-        <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
-          <v-card color="grey lighten-4" min-width="350px" flat>
-            <v-toolbar :color="selectedEvent.color" dark>
+        <!-- แสดง กดดูรายละเอียด -->
+        <v-menu   v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
+          <v-card style="border-radius: 15px;"  color="grey lighten-4" min-width="350px" flat>
+            <v-toolbar  :color="selectedEvent.color" dark>
               <v-btn icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name">
-
-              </v-toolbar-title>
+              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon>
+              <!-- <v-btn icon>
                 <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
+              </v-btn> -->
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
-              <br><strong><span v-html="selectedEvent.time"></span></strong>
-              <br><span v-html="selectedEvent.type"></span>
-              <br><strong><span v-html="selectedEvent.trackpatient"></span></strong>
-              <br><strong><span v-html="selectedEvent.other"></span></strong>
+              <v-icon>mdi-map-marker</v-icon> <span v-html="selectedEvent.address"></span>
+              <br><strong> <v-icon>mdi-clock-time-four-outline</v-icon>  <span v-html="selectedEvent.time"></span></strong>
+              <br><v-icon>mdi-medical-bag</v-icon > <span v-html="selectedEvent.type"></span>
+              <br><v-icon>mdi-ambulance</v-icon><strong> <span v-html="selectedEvent.trackpatient"></span></strong>
+              <br><v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.other"></span></strong>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">
@@ -88,7 +89,6 @@ export default {
     components: {
       Patient
     },
-
     endpointUrl:
       process.env.NODE_ENV == "development"
         ? "http://localhost:5000"
@@ -107,24 +107,24 @@ export default {
     events: [],
     desserts: [],
     colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
+      "#2450E0",
+      "#7224E0",
+      "#24E099",
+      "#E0DE24",
+      "#E04867",
+      "#E05B24",
+      "#E08175",
     ],
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party",
-    ],
+    // names: [
+    //   "Meeting",
+    //   "Holiday",
+    //   "PTO",
+    //   "Travel",
+    //   "Event",
+    //   "Birthday",
+    //   "Conference",
+    //   "Party",
+    // ],
     formattedDate: new Date().toISOString().substr(0, 10), // Initialize formattedDate with today's date
   }),
   fetch() {
@@ -204,12 +204,7 @@ export default {
 
           patients.forEach((patient, index) => {
             console.log('My Detail :');
-            // const date = new Date(patient.service_date);
-            // const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-            // const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-            // const year = date.getFullYear() - 543;
-            // const newTimestamp = `${year}-${month}-${day}`;
-            // Extract the year, month, and day components from the date string
+
             const year = new Date(patient.service_date).getFullYear();
             const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
             const day = new Date(patient.service_date).getUTCDate() + 1;
@@ -231,7 +226,7 @@ export default {
               start:`${newTimestamp}T${formattedTime}`,
               // end: `${newTimestamp}T${formattedTime}`,
               color: this.colors[colorIndex],
-              details: `ที่อยู่ : ${patient.coordinate}`,
+              address: `ที่อยู่ : ${patient.coordinate}`,
               time: `เวลา : ${formattedTime}`,
               type: `ประเภทผู้ป่วย : ${patient.type_patient_name}`,
               trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name}`,
@@ -249,4 +244,6 @@ export default {
 </script>
 
 
-<style></style>
+<style>
+
+</style>
