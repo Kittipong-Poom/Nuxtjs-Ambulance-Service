@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title class="d-flex justify-center align-center  head1">
-            <h1>ตารางจัดการคิว</h1>
+            <h2>ตารางจัดการคิวงาน</h2>
         </v-card-title>
 
         <v-card-title>

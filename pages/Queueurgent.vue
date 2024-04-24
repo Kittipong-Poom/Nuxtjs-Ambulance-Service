@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title justify="center" class="center-container1">
-      <h1>เคสผู้ป่วยฉุกเฉิน</h1>
+      <h2>เคสผู้ป่วยฉุกเฉิน</h2>
     </v-card-title>
     <v-card-title>
       <!-- Add new information -->

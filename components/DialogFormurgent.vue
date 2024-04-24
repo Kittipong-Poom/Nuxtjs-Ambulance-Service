@@ -73,7 +73,7 @@
               </v-col>
             </v-row>
             <!-- กลุ่มอาการฉุกเฉิน -->
-            <v-combobox v-model="editedItem.emergency_group" prepend-icon="mdi-select-group" outlined :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
+            <v-combobox v-model="editedItem.emergency_group" prepend-inner-icon="mdi-select-group" outlined :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
               "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
               "3.สัตว์กัด",
               "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
@@ -106,20 +106,19 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field v-model="editedItem.lati" label="ละติจูด" outlined
-                  prepend-icon="mdi-map-marker"></v-text-field>
-                  <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text
-                  :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
-
+                prepend-inner-icon="mdi-map-marker"></v-text-field>              
               </v-col>
-              <v-col cols="6" md="6">
+              <v-col cols="12" md="6">
                 <v-text-field v-model="editedItem.longi" label="ลองจิจูด" outlined
-                  prepend-icon="mdi-map-marker"></v-text-field>
+                prepend-inner-icon="mdi-map-marker"></v-text-field>
 
               </v-col>
             </v-row>
+            <v-btn color="green" class="mb-5 align-center justify-center" @click="getCurrentLocation" text
+                  :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
 
             <!-- การติดตามการนำส่งผู้ป่วย -->
-            <v-select v-model="editedItem.patient_delivery" prepend-icon="mdi-truck-plus" outlined
+            <v-select v-model="editedItem.patient_delivery" prepend-inner-icon="mdi-truck-plus" outlined
               label="การติดตามการนำส่งผู้ป่วย" :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']">
             </v-select>
 

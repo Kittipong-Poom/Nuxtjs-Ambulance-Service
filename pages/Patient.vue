@@ -2,11 +2,11 @@
   <div>
     <v-card>
       <v-card-title justify="center" class="center-container1">
-        <h1>ตารางข้อมูลผู้ป่วยทั่วไป</h1>
+        <h2>ตารางข้อมูลผู้ป่วยทั่วไป</h2>
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
-        <v-btn depressed class="button" color="primary" @click="openDialog('add')">
+        <v-btn depressed class="button mb-4" color="primary" @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
         <v-spacer />
@@ -26,15 +26,15 @@
         </template>
 
         <template v-slot:item.action="{ item }">
-          <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialog('edit', item)">
+          <v-btn color="#4CAF50" class="mr-2  white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
             แก้ไข
           </v-btn>
-          <v-btn class="mr-2" color="primary" @click="openAppointmentDialog(item)">
+          <v-btn class="mr-2 ma-2" color="primary" @click="openAppointmentDialog(item)">
             <v-icon>mdi-account-search-outline</v-icon>
             นัดหมาย
           </v-btn>
-          <v-btn color="red" class="white--text " @click="deleteItem(item)">
+          <v-btn color="red" class="white--text mb-2 " @click="deleteItem(item)">
             <v-icon>mdi-delete</v-icon>
             ลบ
           </v-btn>
