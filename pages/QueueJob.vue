@@ -66,18 +66,19 @@ export default {
             isAppointmentDialogOpen: false,
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
             headers: [
-                { text: 'HN', value: 'hn_id', align: 'center' },
+                { text: 'HN', value: 'hn', align: 'center' },
                 { text: 'อายุ', value: 'age_name', align: 'center' },
                 { text: 'เพศ', value: 'gender', align: 'center' },
                 { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
                 { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
                 { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
-                { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
+                { text: 'ที่อยู่', value: 'address', align: 'center' },
+                { text: 'ละติจูด', value: 'lati', align: 'center' },
+                { text: 'ลองติจูด', value: 'longi', align: 'center' },
                 { text: 'วันที่นัดหมาย', value: 'service_date', align: 'center' },
                 { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
                 { text: 'เพิ่มเติม', value: 'other', align: 'center' },
                 { text: 'สถานะ', value: 'casestatus_name', align: 'center' },
-
                 { text: '', value: 'action', sortable: false, align: 'center' }
             ],
             selectedPatient: null,
@@ -88,7 +89,7 @@ export default {
             desserts: [],
             search: '',
             editedItem: {
-                hn_id: '',
+                hn: '',
                 age_name: '',
                 gender: '',
                 tracking_name: '',
@@ -96,7 +97,9 @@ export default {
                 casestatus_name: '',
                 number: '',
                 time: '',
-                coordinate: '',
+                address: '',
+                lati: '',
+                longi: '',
                 other: '',
                 type_patient_name: ''
             },
@@ -104,6 +107,7 @@ export default {
                 'งานบริการ': 'green',
                 'รอรับงาน': 'red',
                 'กำลังดำเนินงาน': 'yellow',
+                'ยกเลิก' : 'gray',
                 'เสร็จสิ้น': 'green',
                 'ผู้ป่วยติดเตียง': 'yellow',
                 'อื่นๆ': 'blue',
@@ -115,8 +119,12 @@ export default {
         filteredDesserts() {
             return this.desserts.filter(patient => {
                 // Check if any of the fields in the patient data is filled
-                return patient.hn_id || patient.age_name || patient.gender || patient.number || patient.time || patient.coordinate
+                return patient.hn || patient.age_name || patient.gender || patient.number || patient.time || patient.address || patient.lati || patient.longi
                     || patient.type_patient_name || patient.service_date || patient.tracking_name || patient.other || patient.casestatus_name
+            }).sort((a, b) => {
+                // Sort by casestatus_name: 'รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น'
+                const statusOrder = { 'รอรับงาน': 1, 'กำลังดำเนินงาน': 2, 'เสร็จสิ้น': 3 };
+                return statusOrder[a.casestatus_name] - statusOrder[b.casestatus_name];
             });
         },
 

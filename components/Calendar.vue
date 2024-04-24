@@ -68,6 +68,8 @@
               <br><v-icon>mdi-medical-bag</v-icon > <span v-html="selectedEvent.type"></span>
               <br><v-icon>mdi-ambulance</v-icon><strong> <span v-html="selectedEvent.trackpatient"></span></strong>
               <br><v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.other"></span></strong>
+              <br><v-icon>mdi-ambulance</v-icon><strong> <span v-html="selectedEvent.lati"></span></strong>
+              <br><v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.longi"></span></strong>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">
@@ -169,6 +171,7 @@ export default {
     next() {
       this.$refs.calendar.next();
     },
+    
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
@@ -187,6 +190,7 @@ export default {
 
       nativeEvent.stopPropagation();
     },
+
     updateRange({ start, end }) {
 
     },
@@ -196,15 +200,13 @@ export default {
         const response = await axios.get(`${this.endpointUrl}/api/patients/time`);
         const patients = response.data;
         console.log("patient", patients);
-
-
         if (Array.isArray(patients)) {
           // Clear existing events
           this.events = [];
 
           patients.forEach((patient, index) => {
             console.log('My Detail :');
-
+            if (patient.casestatus_name !== 'ยกเลิก') {
             const year = new Date(patient.service_date).getFullYear();
             const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
             const day = new Date(patient.service_date).getUTCDate() + 1;
@@ -226,13 +228,16 @@ export default {
               start:`${newTimestamp}T${formattedTime}`,
               // end: `${newTimestamp}T${formattedTime}`,
               color: this.colors[colorIndex],
-              address: `ที่อยู่ : ${patient.coordinate}`,
+              address: `ที่อยู่ : ${patient.address}`,
+              lati: `ละติจูด : ${patient.lati}`,
+              longi: `ลองติจูด : ${patient.longi}`,
               time: `เวลา : ${formattedTime}`,
               type: `ประเภทผู้ป่วย : ${patient.type_patient_name}`,
               trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name}`,
               other: `เพิ่มเติม : ${patient.other}`,
             };
             this.events.push(event);
+          }
           });
         }
       } catch (error) {

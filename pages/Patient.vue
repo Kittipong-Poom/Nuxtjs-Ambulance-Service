@@ -26,7 +26,6 @@
         </template>
 
         <template v-slot:item.action="{ item }">
-
           <v-btn color="#4CAF50" class="mr-2 white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
             แก้ไข
@@ -99,6 +98,7 @@ import DepartmentCard from '~/components/DepartmentCard.vue';
 import BarChartPatient from '~/components/BarChartPatient.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 export default {
   components: {
     Calendar,
@@ -121,16 +121,15 @@ export default {
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
-        { text: 'HN', value: 'hn_id', align: 'center' },
+        { text: 'HN', value: 'hn', align: 'center' },
         { text: 'อายุ', value: 'age_name', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
         { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
         { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
-        { text: 'ที่อยู่/พิกัด', value: 'coordinate', align: 'center' },
-        // { text: 'วันที่นัดหมาย', value: `service_date`, align: 'center' },
-        // { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
-        // { text: 'สถานะ', value: 'casestatus', align: 'center' },
+        { text: 'ที่อยู่', value: 'address', align: 'center' },
+        { text: 'ละติจูด', value: 'lati', align: 'center' },
+        { text: 'ลองติจูด', value: 'longi', align: 'center' },
         { text: 'เพิ่มเติม', value: 'other', align: 'center' },
         { text: '', value: 'action', sortable: false, align: 'center' }
       ],
@@ -145,16 +144,19 @@ export default {
       dialog: false,
       dialogTitle: '',
       editedItem: {
+        hn: '',
         ages_id: '',
         gender: '',
         number: '',
         tracking_patient_id: '',
-        coordinate: '',
+        address: '',
+        lati: '',
+        longi: '',
         type_patient_id: '',
         other: '',
         status_case_id: null,
-        service_date: '',
-        time: ''
+        service_date: null,
+        time: null,
       },
     };
   },
@@ -165,12 +167,22 @@ export default {
     console.log('ENV', this.endpointUrl)
     this.loadData();
   },
+  computed: {
+    formattedDate() {
+      // Parse the Thai date string and subtract 543 years to get the correct year
+      const thaiDate = dayjs(this.date, 'DD-MM-YYYY');
+      // เพิ่ม 543 ปีเพื่อเปลี่ยนเป็นปีไทย
+      const thaiYearDate = thaiDate.add(543, 'year');
+      // กำหนดรูปแบบของวันที่ในรูปแบบ YYYY-MM-DD เพื่อให้สามารถจัดเก็บในฐานข้อมูลได้
+      const formattedDate = thaiYearDate.format('YYYY-MM-DD');
+      return formattedDate;
+    },
+  },
   methods: {
     handleSelectedItemsChange(selectedItems) {
       // Update selectedForDeletion array when items are selected/unselected
       this.selected = selectedItems;
     },
-
     async deleteSelectedItems() {
       if (this.selected.length === 0) {
         // Show warning message if no item is selected
@@ -253,6 +265,7 @@ export default {
       // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
+
     },
     redirectToPatientDetail(item) {
       console.log('คลิก Row นี้:', item);
@@ -269,25 +282,30 @@ export default {
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
+
     async saveItem(editedItem) {
       try {
         let response;
 
+        // editedItem.service_date = this.formattedDate;
         editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
 
         if (!editedItem.hn_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/patients`, {
+            hn: editedItem.hn,
             ages_id: editedItem.ages_id.age_id,
             gender: editedItem.gender,
             number: editedItem.number,
             tracking_patient_id: editedItem.tracking_patient_id,
-            coordinate: editedItem.coordinate,
+            address: editedItem.address,
+            lati: editedItem.lati,
+            longi: editedItem.longi,
             type_patient_id: editedItem.type_patient_id,
             other: editedItem.other,
             status_case_id: null,
             service_date: null,
-            time: null
+            time: null,
           });
           console.log(editedItem);
 
@@ -297,37 +315,45 @@ export default {
             text: 'กรอกข้อมูลสำเร็จ',
           });
         } else {
-          // Update existing patient
+          // Update appointment
           console.log('นัดหมายผู้ป่วย', editedItem.time);
           response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
             status_case_id: editedItem.status_case_id,
             service_date: editedItem.service_date,
             time: editedItem.time
           });
-        }
-        if (editedItem.hasOwnProperty('time')) {
-          Swal.fire({
-            icon: 'success',
-            title: 'สำเร็จ',
-            text: 'นัดหมายผู้ป่วยสำเร็จ',
-          });
+
+          // Check if time property exists in editedItem to determine if it's an appointment update
+          if (editedItem.hasOwnProperty('time')) {
+            Swal.fire({
+              icon: 'success',
+              title: 'สำเร็จ',
+              text: 'นัดหมายผู้ป่วยสำเร็จ',
+            });
+          }
         }
 
+        // Update patient information
         console.log('แก้ไขข้อมูลผู้ป่วย', editedItem);
-        response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
+        response = await axios.put(`${this.endpointUrl}/api/patientsedit/${editedItem.hn_id}`, {
+          hn: editedItem.hn,
           ages_id: editedItem.ages_id.age_id,
           gender: editedItem.gender,
           number: editedItem.number,
           tracking_patient_id: editedItem.tracking_patient_id,
-          coordinate: editedItem.coordinate,
+          address: editedItem.address,
+          lati: editedItem.lati,
+          longi: editedItem.longi,
           type_patient_id: editedItem.type_patient_id,
           other: editedItem.other,
         });
+
         Swal.fire({
           icon: 'success',
           title: 'สำเร็จ',
           text: 'แก้ไขข้อมูลสำเร็จ',
         });
+
         console.log('response', response);
         const savedPatient = response.data;
         this.$nextTick(() => {

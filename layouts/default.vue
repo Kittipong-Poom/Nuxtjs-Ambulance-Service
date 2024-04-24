@@ -34,29 +34,25 @@
 
       <!-- Notifications Dropdown ปุ่มกระดิ่ง จุดแดง กดแล้วจะหายไป -->
       <v-menu offset-y>
-    <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon color="#FFFF" @click="markNotificationsAsRead">
-        <v-badge :content="notifications.length" :color="showRedBadge ? 'red' : ''" :overlap="notifications.length > 0">
-          <v-icon>mdi-bell</v-icon>
-        </v-badge>
-      </v-btn>
-    </template>
-    <v-list>
-  <v-list-item v-if="patient ">
-    <v-list-item-title>HN : {{ patient.hnnumber }}</v-list-item-title>
-  </v-list-item>
-  <v-list-item v-else>
-    <v-list-item-title>No patient details available</v-list-item-title>
-  </v-list-item>
-</v-list>
-  </v-menu>
-      <!-- Menu Button -->
-      <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon color="#FFFF">
-            <v-icon>mdi-menu</v-icon>
+          <v-btn v-on="on" icon color="#FFFF" @click="markNotificationsAsRead">
+            <v-badge :content="notifications.length" :color="showRedBadge ? 'red' : ''"
+              :overlap="notifications.length > 0">
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
           </v-btn>
         </template>
+        <v-list>
+          <v-list-item v-if="patient">
+            <v-list-item-title>HN : {{ patient.hnnumber }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item v-else>
+            <v-list-item-title>No patient details available</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <!-- Menu Button -->
+      <v-menu offset-y>
         <v-list>
           <v-list-item link to="/Dashboard">
             <v-list-item-title>Home</v-list-item-title>
@@ -75,7 +71,7 @@
   </v-app>
 </template>
 
-<script >
+<script>
 
 import Patient from '~/pages/Patient.vue';
 import Queueurgent from '~/pages/Queueurgent.vue';
@@ -90,7 +86,7 @@ export default {
   data() {
     return {
       desserts: [],
-      notifications: [], 
+      notifications: [],
       showRedBadge: true,
       notificationsCount: 0,
       showNotifications: false,
@@ -111,12 +107,12 @@ export default {
           to: '/Patient'
         },
         {
-          icon: 'mdi-clipboard-pulse',
+          icon: 'mdi-doctor',
           title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
           to: '/Queueurgent'
         },
         {
-          icon: 'mdi-human-queue',
+          icon: 'mdi-table',
           title: 'ตารางจัดการคิวงาน',
           to: '/QueueJob'
         },
@@ -133,8 +129,13 @@ export default {
         },
         {
           icon: 'mdi-map',
-          title: 'แผนที่สถิติ',
-          to: '/MapsStatic'
+          title: 'แผนที่สถิติเคสฉุกเฉิน',
+          to: '/MapsStaticUrgent'
+        },
+        {
+          icon: 'mdi-map',
+          title: 'แผนที่สถิติเคสนัดรับ',
+          to: '/MapsStaticAppointment'
         },
       ],
       miniVariant: false,
@@ -162,8 +163,10 @@ export default {
           return 'ปฏิทินงาน';
         case '/Maps':
           return 'แผนที่';
-        case '/MapsStatic':
-          return 'แผนที่สถิติ';
+        case '/MapsStaticUrgent':
+          return 'แผนที่สถิติเคสฉุกเฉิน';
+        case '/MapsStaticAppointment':
+          return 'แผนที่สถิติเคสนัดรับ';
         default:
           return 'Ambulance-Service';
       }

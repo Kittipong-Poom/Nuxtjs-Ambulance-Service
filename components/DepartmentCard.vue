@@ -31,19 +31,15 @@
             </v-row>
         </v-container>
 
-
-
         <v-row justify="center">
             <!-- emergencymonth -->
             <v-sheet class="pa-12" color="grey-lighten-3">
                 <v-sheet :elevation="8" class="mx-auto rounded-xl" height="50" width="225">
                     <div class="emergencymonth">
-
                         <v-card-subtitle>
                             <b>ผู้ป่วยฉุกเฉินของเดือนนี้</b>
                         </v-card-subtitle>
-
-                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#DC143C">
+                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#F5253A">
                             <v-card-subtitle>
                                 <b class="white--text"> สีเเดง {{ this.redCount }} คน </b>
                                 <v-icon color="red" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
@@ -85,7 +81,6 @@
                             <b>ผู้ป่วยนัดรับของเดือนนี้</b>
                         </v-card-subtitle>
 
-
                         <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                             <v-card-subtitle>
                                 <b> ผู้ป่วยติดเตียง {{ this.serviceBedCount }} คน
@@ -96,7 +91,7 @@
 
                         <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                             <v-card-subtitle>
-                                <b> ผู้ป่วยบริการ {{ this.serviceCount }} คน
+                                <b> งานบริการ {{ this.serviceCount }} คน
                                     <v-icon color="green" size="small" style="margin-left: 5px;">mdi-home
                                     </v-icon></b>
                             </v-card-subtitle>

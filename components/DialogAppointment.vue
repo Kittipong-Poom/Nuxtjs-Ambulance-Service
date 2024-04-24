@@ -9,7 +9,7 @@
           <!-- HN AND AGE -->
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field disabled v-model="editedItem.hn_id" outlined label="HN (Hospital Number)*"></v-text-field>
+              <v-text-field disabled v-model="editedItem.hn" outlined label="HN (Hospital Number)*"></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field disabled v-model="editedItem.age_name" outlined label="อายุ"></v-text-field>
@@ -22,7 +22,15 @@
               <v-text-field disabled v-model="editedItem.gender" outlined label="เพศ"></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field disabled v-model="editedItem.coordinate" outlined label="จุดเกิดเหตุ/พิกัด"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field v-model="editedItem.lati" outlined label="ละติจูด"></v-text-field>
+            </v-col>
+            <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
+              :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
+            <v-col cols="12" md="6">
+              <v-text-field v-model="editedItem.longi" outlined label="ลองติจูด"></v-text-field>
+
             </v-col>
           </v-row>
           <v-text-field disabled v-model="editedItem.other" label="เพิ่มเติม" outlined
@@ -51,9 +59,9 @@
 
             <!-- Time -->
             <v-col cols="12" md="6">
-              <v-text-field v-model="editedItem.time" label="เวลา" outlined
-                prepend-icon="mdi-clock-outline"></v-text-field>
+              <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time"></v-text-field>
             </v-col>
+
           </v-row>
 
           <!-- Status -->
@@ -73,11 +81,15 @@
 </template>
 
 <script>
+import { TimePicker } from 'vuetify';
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 import axios from 'axios'
 
 export default {
+  components: {
+    TimePicker,
+  },
   props: {
     dialog: Boolean,
     editedItem: Object,
@@ -135,7 +147,49 @@ export default {
         console.error('Error saving item:', error);
       }
     },
+    async getCurrentLocation() {
+      this.loading = true
 
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
+        const position = await this.askForLocationPermission();
+        // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        // กำหนดค่า Latitude และ Longitude ให้กับตัวแปร editedItem
+        this.editedItem.lati = latitude;
+        this.editedItem.longi = longitude;
+        this.$forceUpdate();
+
+        this.snackbar = {
+          show: true,
+          color: 'success',
+          message: 'ดึงตำแหน่งปัจจุบันเสร็จสิ้น'
+        };
+      } catch (error) {
+        console.error('Error getting current location:', error);
+        // Update snackbar to show error message
+        this.snackbar = {
+          show: true,
+          color: 'error',
+          message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
+        };
+      } finally {
+        // Reset loading state
+        this.loading = false;
+      }
+    },
+    askForLocationPermission() {
+      return new Promise((resolve, reject) => {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        } else {
+          reject(new Error('Geolocation is not supported by this browser.'));
+        }
+      });
+    },
     closeDialog() {
       if (this.dialog) {
         this.dialog = false;
