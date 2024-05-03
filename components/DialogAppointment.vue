@@ -18,20 +18,26 @@
 
           <!-- GENDER AND COORDINATE AND OTHER -->
           <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" >
               <v-text-field disabled v-model="editedItem.gender" outlined label="เพศ"></v-text-field>
             </v-col>
-            <v-col cols="12" md="6">
+   
+            <v-col cols="12" >
+              <v-text-field  v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" outlined label="ละติจูด"></v-text-field>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field v-model="editedItem.lati" outlined label="ละติจูด"></v-text-field>
+            <v-col cols="12">
+              <v-text-field  v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker" outlined label="ลองติจูด"></v-text-field>
+
             </v-col>
             <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
               :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
-            <v-col cols="12" md="6">
-              <v-text-field v-model="editedItem.longi" outlined label="ลองติจูด"></v-text-field>
-
-            </v-col>
+            <!-- <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
+              :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn> -->
+              
+              <v-col >
+              <v-text-field v-model="editedItem.address" prepend-inner-icon="mdi-map-marker" label="ที่อยู่" outlined
+                  :rules="[rules.address]" ref="address"></v-text-field>
+                  </v-col>
           </v-row>
           <v-text-field disabled v-model="editedItem.other" label="เพิ่มเติม" outlined
             :rules="[rules.other]"></v-text-field>
@@ -42,7 +48,7 @@
               <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
                 :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-text-field v-model="formattedDate" label="วันที่นัดหมาย" outlined prepend-icon="mdi-calendar"
+                  <v-text-field v-model="formattedDate" label="วันที่นัดหมาย" outlined prepend-inner-icon="mdi-calendar"
                     readonly v-bind="attrs" v-on="on" clearable></v-text-field>
                 </template>
                 <v-date-picker v-model="dateString" no-title scrollable locale="th" :min="new Date().toISOString()">
@@ -110,7 +116,6 @@ export default {
           return true;
         },
       },
-
     };
   },
   computed: {
@@ -119,8 +124,8 @@ export default {
       if (!this.editedItem.service_date) {
         return '';
       }
-      const thaiDate = dayjs(this.editedItem.service_date).add(543, 'year');
-      return thaiDate.format('DD-MM-YYYY')
+      const thaiDate = dayjs(this.editedItem.service_date).year(2567);
+      return thaiDate.format('DD-MM-YYYY');
     },
   },
   async created() {
@@ -192,10 +197,10 @@ export default {
     },
     closeDialog() {
       if (this.dialog) {
-        this.dialog = false;
-        this.dialogVisible = false;
-        this.$emit('close-dialog');
-      }
+    this.$emit('update:dialog', false); // Emit event to update the dialog prop
+    this.dialogVisible = false;
+    this.$emit('close-dialog');
+  }
     },
 
     validateForm() {

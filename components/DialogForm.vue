@@ -20,7 +20,7 @@
                     item-value="age_id" prepend-inner-icon="mdi-gender-male-female" return-object></v-select>
                 </div>
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" >
                 <!-- เพศ -->
                 <v-select v-model="editedItem.gender" label="เพศ" outlined :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
               </v-col>
@@ -67,7 +67,7 @@
             <v-row>
               <v-col cols="12">
                 <!-- เพิ่มเติม -->
-                <v-text-field v-model="editedItem.other" label="เพิ่มเติม" outlined
+                <v-text-field v-model="editedItem.other" label="กรอกรายละเอียดเพิ่มเติม" outlined
                   :rules="[rules.other]"></v-text-field>
               </v-col>
             </v-row>
@@ -95,9 +95,9 @@ export default {
   },
   data() {
     return {
-
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       items_ages: [],
+      loading: false,
       items_tracking: [],
       items_type: [],
       hideDatePicker: false,

@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title class="d-flex justify-center align-center  head1">
-            <h2>ตารางจัดการคิวงาน</h2>
+            <h2>ตารางจัดการคิว</h2>
         </v-card-title>
 
         <v-card-title>
@@ -107,7 +107,7 @@ export default {
                 'งานบริการ': 'green',
                 'รอรับงาน': 'red',
                 'กำลังดำเนินงาน': 'yellow',
-                'ยกเลิก' : 'gray',
+                'ยกเลิก': 'gray',
                 'เสร็จสิ้น': 'green',
                 'ผู้ป่วยติดเตียง': 'yellow',
                 'อื่นๆ': 'blue',
@@ -160,25 +160,14 @@ export default {
         },
         formatDateForMySQL(dateString) {
             // Extract the date parts
+            if (!dateString) {
+                return null; // Return an empty string if dateString is undefined or null
+            }
             const datePart = dateString.split('-');
             // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
             const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
             return formattedDate;
         },
-        // openDialog(action, item = null) {
-        //     this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
-        //     this.editedItem = action === 'add' ? {} : { ...item };
-        //     this.dialog = true;
-        //     this.viewMode = action !== 'add';
-        //     this.viewMode = false;
-        // },
-        // formatDate(inputDate) {
-        //     const date = new Date(inputDate);
-        //     const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-        //     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-        //     const year = date.getFullYear();
-        //     return `${day}-${month}-${year}`;
-        // },
         showDialog(patient) {
             this.selectedPatient = patient;
             this.isDialogVisible = true;
@@ -265,11 +254,6 @@ export default {
                 const { data } = await axios.get(this.endpointUrl + '/api/patients/time');
 
                 console.log('data', data);
-                // ตรวจสอบว่าข้อมูลใน primary key บางตัวครบทุกช่องหรือไม่
-                // const completeDataKeys = ['patient_id', 'age', 'gender', 'numberphone', 'type', 'trackpatient', 'coordinate', 'service_date', 'time', 'casestatus'];
-                // const filteredData = data.filter(item => {
-                //     return completeDataKeys.every(key => item[key]);
-                // });
 
                 // // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
                 const formattedData = data.map(item => {

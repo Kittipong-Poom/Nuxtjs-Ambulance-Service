@@ -120,6 +120,12 @@ export default {
       action: '',
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      rules: {
+      other: (value) => {
+        if (!value) return "กรอกรายละเอียดเพิ่มเติม";
+        return true;
+      },
+    },
       headers: [
         { text: 'HN', value: 'hn', align: 'center' },
         { text: 'อายุ', value: 'age_name', align: 'center' },
@@ -324,13 +330,11 @@ export default {
           });
 
           // Check if time property exists in editedItem to determine if it's an appointment update
-          if (editedItem.hasOwnProperty('time')) {
             Swal.fire({
               icon: 'success',
               title: 'สำเร็จ',
               text: 'นัดหมายผู้ป่วยสำเร็จ',
             });
-          }
         }
 
         // Update patient information
@@ -347,7 +351,6 @@ export default {
           type_patient_id: editedItem.type_patient_id,
           other: editedItem.other,
         });
-
         Swal.fire({
           icon: 'success',
           title: 'สำเร็จ',

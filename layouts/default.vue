@@ -2,17 +2,31 @@
   <v-app dark>
     <!-- Navigation Drawer -->
     <v-navigation-drawer color="#1A437B" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
-      <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-          <v-list-item-action>
-            <v-icon :style="{ color: 'white' }">{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title :style="{ color: 'white' }">{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+  <v-list>
+    <!-- Main menu item for Maps -->
+    <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+      <v-list-item-action>
+        <v-icon :style="{ color: 'white' }">{{ item.icon }}</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title :style="{ color: 'white' }">{{ item.title }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <!-- Dropdown for Maps sub-items -->
+    <v-list-group no-action>
+      <template v-slot:activator>
+        <v-list-item-content>
+          <v-list-item-title :style="{ color: 'white' }">Maps</v-list-item-title>
+        </v-list-item-content>
+      </template>
+      <v-list-item v-for="(subItem, index) in mapsSubItems" :key="index" :to="subItem.to" router exact>
+        <v-list-item-content>
+          <v-list-item-title :style="{ color: 'white' }">{{ subItem.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list-group>
+  </v-list>
+</v-navigation-drawer>
 
     <!-- App Bar -->
     <v-app-bar color="#285CA2" :clipped-left="clipped" fixed app>
@@ -51,12 +65,11 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      
       <!-- Menu Button -->
       <v-menu offset-y>
         <v-list>
-          <v-list-item link to="/Dashboard">
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item>
+  
           <!-- Add more v-list-items for additional dropdown options -->
         </v-list>
       </v-menu>
@@ -122,21 +135,7 @@ export default {
           title: 'ปฏิทินงาน',
           to: '/Calendars'
         },
-        {
-          icon: 'mdi-map',
-          title: 'แผนที่',
-          to: '/Maps'
-        },
-        {
-          icon: 'mdi-map',
-          title: 'แผนที่สถิติเคสฉุกเฉิน',
-          to: '/MapsStaticUrgent'
-        },
-        {
-          icon: 'mdi-map',
-          title: 'แผนที่สถิติเคสนัดรับ',
-          to: '/MapsStaticAppointment'
-        },
+        
       ],
       miniVariant: false,
       right: true,
@@ -170,7 +169,27 @@ export default {
         default:
           return 'Ambulance-Service';
       }
-    }
+    },
+    mapsSubItems() {
+    // Define sub-items for Maps dropdown
+    return [
+      {
+        icon: 'mdi-map',
+        title: 'พิกัดของรถฉุกเฉิน',
+        to: '/Maps'
+      },
+      {
+        icon: 'mdi-map',
+        title: 'แผนที่สถิติเคสฉุกเฉิน',
+        to: '/MapsStaticUrgent'
+      },
+      {
+        icon: 'mdi-map',
+        title: 'แผนที่สถิติเคสนัดรับ',
+        to: '/MapsStaticAppointment'
+      }
+    ];
+  }
   },
   methods: {
     toggleMode() {
