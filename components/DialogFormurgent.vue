@@ -9,6 +9,10 @@
           <v-container>
             <v-row>
               <v-col cols="12" md="6">
+                <v-text-field v-model="editedItem.eventnum" label="เลขออกเหตุ" outlined
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
                 <!-- วันที่ -->
                 <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
                   :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">

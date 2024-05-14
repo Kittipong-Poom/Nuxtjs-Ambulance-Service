@@ -10,7 +10,7 @@
                                 <div class="font-weight-black">ผู้ป่วยฉุกเฉิน</div>
                                 <div class="all"> รวม {{ this.emergencyCount }} คน</div>
                             </div>
-                            <v-icon color="red" size="x-large">mdi-doctor</v-icon>
+                            <v-icon color="red" class="mr-3" size="35">mdi-ambulance</v-icon>
                         </v-sheet>
                     </v-sheet>
                 </v-sheet>
@@ -24,7 +24,7 @@
                                 <div class="font-weight-black">ผู้ป่วยนัดรับ</div>
                                 <div class="all">รวม {{ this.AllserviceCount }} คน</div>
                             </div>
-                            <v-icon color="green" size="x-large">mdi-hospital</v-icon>
+                            <v-icon color="red" class="mr-3" size="35">mdi-hospital</v-icon>
                         </v-sheet>
                     </v-sheet>
                 </v-sheet>
@@ -42,28 +42,28 @@
                         <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#F5253A">
                             <v-card-subtitle>
                                 <b class="white--text"> สีเเดง {{ this.redCount }} คน </b>
-                                <v-icon color="red" size="small" style="margin-left: 5px;">mdi-doctor</v-icon>
-                            </v-card-subtitle>
-                        </v-sheet>
-
-                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#32CD32">
-                            <v-card-subtitle>
-                                <b class="white--text"> สีเขียว {{ this.greenCount }} คน <v-icon color="red"
-                                        size="small" style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                                <v-icon color="black" size="25" style="margin-left: 5px;">mdi-car-emergency</v-icon>
                             </v-card-subtitle>
                         </v-sheet>
 
                         <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#FFFF00">
                             <v-card-subtitle>
-                                <b> สีเหลือง {{ this.yellowCount }} คน <v-icon color="red" size="small"
-                                        style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                                <b > สีเหลือง {{ this.yellowCount }} คน <v-icon color="black"
+                                        size="25" style="margin-left: 5px;">mdi-hospital-box</v-icon></b>
+                            </v-card-subtitle>
+                        </v-sheet>
+
+                        <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#32CD32">
+                            <v-card-subtitle>
+                                <b> สีเขียว {{ this.greenCount }} คน <v-icon color="black" size="25"
+                                        style="margin-left: 5px;">mdi-human-greeting</v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
                         <v-sheet class="mx-auto rounded-xl" :elevation="7" height="50" width="225" color="#F5F5F5">
                             <v-card-subtitle>
-                                <b> สีขาว {{ this.whiteCount }} คน <v-icon color="red" size="small"
-                                        style="margin-left: 5px;">mdi-doctor</v-icon></b>
+                                <b> สีขาว {{ this.whiteCount }} คน <v-icon color="black" size="25"
+                                        style="margin-left: 5px;">mdi-human-male</v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
 
@@ -84,7 +84,7 @@
                         <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                             <v-card-subtitle>
                                 <b> ผู้ป่วยติดเตียง {{ this.serviceBedCount }} คน
-                                    <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed
+                                    <v-icon color="green" size="25" style="margin-left: 5px;">mdi-bed
                                     </v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
@@ -92,7 +92,7 @@
                         <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                             <v-card-subtitle>
                                 <b> งานบริการ {{ this.serviceCount }} คน
-                                    <v-icon color="green" size="small" style="margin-left: 5px;">mdi-home
+                                    <v-icon color="green" size="25" style="margin-left: 5px;">mdi-home
                                     </v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
@@ -100,7 +100,7 @@
                         <v-sheet :elevation="7" class="mx-auto rounded-xl" height="50" width="225">
                             <v-card-subtitle>
                                 <b> อื่นๆ {{ this.serviceCountOther }} คน
-                                    <v-icon color="green" size="small" style="margin-left: 5px;">mdi-bed
+                                    <v-icon color="green" size="25"  style="margin-left: 5px;">mdi-dots-horizontal-circle
                                     </v-icon></b>
                             </v-card-subtitle>
                         </v-sheet>
@@ -135,11 +135,38 @@ export default {
             whiteCount: '',
             patientsCount: '',
             emergencyCount: '',
+            lastUpdateMonth: null,
+            lastUpdateYear: null,
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
         }
     },
 
     methods: {
+        async resetDataIfNeeded() {
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1; // Months are zero-based, so add 1
+            const currentYear = today.getFullYear();
+
+            // If last update month and year are not set or if they are different from current month and year
+            if (this.lastUpdateMonth === null || this.lastUpdateYear === null || this.lastUpdateMonth !== currentMonth || this.lastUpdateYear !== currentYear) {
+                // Reset data and counts
+                this.bedCount = '';
+                this.serviceCount = '';
+                this.serviceCountOther = '';
+                this.serviceBedCount = '';
+                this.AllserviceCount = '';
+                this.redCount = '';
+                this.yellowCount = '';
+                this.greenCount = '';
+                this.whiteCount = '';
+                this.patientsCount = '';
+                this.emergencyCount = '';
+
+                // Update last update month and year to current values
+                this.lastUpdateMonth = currentMonth;
+                this.lastUpdateYear = currentYear;
+            }
+        },
         async getpatient() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/patients`);
@@ -167,17 +194,17 @@ export default {
                 console.error('Error:', error);
             }
         },
-        async getbedpatient() {
-            try {
-                const response = await axios.get(`${this.endpointUrl}/api/gettype`);
-                console.log(this.endpointUrl);
-                console.log('getData:', response.data);
-                this.bedCount = response.data.length;
-                console.log('Data count:', this.bedCount);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        },
+        // async getbedpatient() {
+        //     try {
+        //         const response = await axios.get(`${this.endpointUrl}/api/gettype`);
+        //         console.log(this.endpointUrl);
+        //         console.log('getData:', response.data);
+        //         this.bedCount = response.data.length;
+        //         console.log('Data count:', this.bedCount);
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //     }
+        // },
         async getservicepatient() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/serviceCount`);
@@ -275,7 +302,8 @@ export default {
 
     created() {
         console.log('ENV', this.endpointUrl)
-        this.getbedpatient();
+        // this.getbedpatient();
+        this.resetDataIfNeeded();
         this.getservicepatient();
         this.getredemergency();
         this.getyellowemergency();
@@ -317,4 +345,5 @@ export default {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
 </style>

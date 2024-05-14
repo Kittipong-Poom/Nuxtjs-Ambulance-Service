@@ -20,7 +20,7 @@
                     item-value="age_id" prepend-inner-icon="mdi-gender-male-female" return-object></v-select>
                 </div>
               </v-col>
-              <v-col cols="12" >
+              <v-col cols="12">
                 <!-- เพศ -->
                 <v-select v-model="editedItem.gender" label="เพศ" outlined :items="['ชาย', 'หญิง', 'อื่นๆ']"></v-select>
               </v-col>
@@ -117,12 +117,11 @@ export default {
           if (!value) return "กรอกรายละเอียดเพิ่มเติม";
           return true;
         },
-        HN: (value) => {
+        hn: (value) => { // Changed key to match template reference
           if (!value) return "กรอกเลข HN ";
           return true;
         },
       },
-
     };
   },
   created() {

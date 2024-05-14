@@ -63,6 +63,11 @@ export default {
     PieChartPatient,
     Patient
   },
+  data() {
+    return {
+      desserts: [] // Define the "desserts" property as an empty array or initialize it with data
+    };
+  }
 };
 </script>
 

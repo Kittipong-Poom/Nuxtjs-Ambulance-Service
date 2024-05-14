@@ -6,42 +6,6 @@
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
-          <!-- HN AND AGE -->
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field disabled v-model="editedItem.hn" outlined label="HN (Hospital Number)*"></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field disabled v-model="editedItem.age_name" outlined label="อายุ"></v-text-field>
-            </v-col>
-          </v-row>
-
-          <!-- GENDER AND COORDINATE AND OTHER -->
-          <v-row>
-            <v-col cols="12" >
-              <v-text-field disabled v-model="editedItem.gender" outlined label="เพศ"></v-text-field>
-            </v-col>
-   
-            <v-col cols="12" >
-              <v-text-field  v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" outlined label="ละติจูด"></v-text-field>
-            </v-col>
-            <v-col cols="12">
-              <v-text-field  v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker" outlined label="ลองติจูด"></v-text-field>
-
-            </v-col>
-            <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
-              :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
-            <!-- <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
-              :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn> -->
-              
-              <v-col >
-              <v-text-field v-model="editedItem.address" prepend-inner-icon="mdi-map-marker" label="ที่อยู่" outlined
-                  :rules="[rules.address]" ref="address"></v-text-field>
-                  </v-col>
-          </v-row>
-          <v-text-field disabled v-model="editedItem.other" label="เพิ่มเติม" outlined
-            :rules="[rules.other]"></v-text-field>
-
           <!-- วันที่ -->
           <v-row>
             <v-col cols="12" md="6">
@@ -63,19 +27,19 @@
               </v-menu>
             </v-col>
 
-            <!-- Time -->
+            <!-- เวลา -->
             <v-col cols="12" md="6">
               <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time"></v-text-field>
             </v-col>
 
           </v-row>
 
-          <!-- Status -->
+          <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" label="สถานะ" outlined :items="items_status"
             item-text="casestatus_name" item-value="casestatus_id"></v-select>
         </v-card-text>
 
-        <!-- Save -->
+        <!-- บันทึก -->
         <v-card-actions>
           <v-btn color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
           <v-btn color="blue darken-1" class="white--text" @click="closeDialog">ยกเลิก</v-btn>
@@ -87,40 +51,24 @@
 </template>
 
 <script>
-import { TimePicker } from 'vuetify';
 import dayjs from 'dayjs';
-import 'dayjs/locale/th';
 import axios from 'axios'
 
 export default {
-  components: {
-    TimePicker,
-  },
   props: {
     dialog: Boolean,
     editedItem: Object,
     dialogTitle: String,
-    fieldsToDisplay: Array, // Add a prop to specify which fields to display
   },
   data() {
     return {
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       items_status: [],
-      selectedStatus: '',
-      dialogVisible: false,
-      date: new Date().toISOString(),
       menu: false,
-      rules: {
-        other: (value) => {
-          if (!value) return "กรอกรายละเอียดเพิ่มเติม";
-          return true;
-        },
-      },
     };
   },
   computed: {
     formattedDate() {
-      console.log(this.editedItem.service_date);
       if (!this.editedItem.service_date) {
         return '';
       }
@@ -129,91 +77,57 @@ export default {
     },
   },
   async created() {
-    console.log(this.editedItem);
     const { data } = await axios.get(this.endpointUrl + '/api/status');
     this.items_status = data;
-    console.log(this.items_status);
   },
-  methods: {
-    async save() {
-      try {
-        this.$emit('notificationSaved');
-        if (this.validateForm()) {
-          if (!this.editedItem.status_case_id) {
-            // Display an error message if casestatus is not selected
-            this.$emit('error', 'Please select a status.');
-            return; // Exit early if casestatus is not selected
-          }
-          this.editedItem.service_date = this.formattedDate;
-          this.$emit('save', this.editedItem);
-          this.closeDialog();
-        }
-      } catch (error) {
-        console.error('Error saving item:', error);
+
+methods: {
+  
+  async save() {
+    try {
+      if (!this.editedItem.status_case_id) {
+        // แสดงข้อความข้อผิดพลาดหากไม่ได้เลือกสถานะ
+        this.$emit('error', 'โปรดเลือกสถานะ');
+        return; // ออกจากฟังก์ชั่นถ้าไม่ได้เลือกสถานะ
       }
-    },
-    async getCurrentLocation() {
-      this.loading = true
 
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
+      // แปลงวันที่กลับเป็นรูปแบบที่ MySQL เข้าใจ
+      const thaiDate = dayjs(this.editedItem.service_date).year(2567);
+      const mysqlDate = thaiDate.format('YYYY-MM-DD');
 
-        // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
-        const position = await this.askForLocationPermission();
-        // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        // กำหนดค่า Latitude และ Longitude ให้กับตัวแปร editedItem
-        this.editedItem.lati = latitude;
-        this.editedItem.longi = longitude;
-        this.$forceUpdate();
+      // สร้างข้อมูลที่จะส่งไปยัง API
+      const postData = {
+        service_date: mysqlDate,
+        time: this.editedItem.time,
+        hn: this.editedItem.hn,
+        status_case_id: this.editedItem.status_case_id,
+        lati: this.editedItem.lati,
+        longi: this.editedItem.longi,
+        number: this.editedItem.number,
+        address: this.editedItem.address,
+      };
+      
+      // ทำการ POST ข้อมูลไปยัง API
+      const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);
+      
+      // ทำการปิด dialog หลังจากบันทึกข้อมูลสำเร็จ
+      this.closeDialog();
+      
+      // ส่งข้อมูลที่บันทึกไปยัง component ที่เรียกใช้งาน
+      this.$emit('save', response.data);
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการบันทึก:', error);
+    }
+  },
+  
 
-        this.snackbar = {
-          show: true,
-          color: 'success',
-          message: 'ดึงตำแหน่งปัจจุบันเสร็จสิ้น'
-        };
-      } catch (error) {
-        console.error('Error getting current location:', error);
-        // Update snackbar to show error message
-        this.snackbar = {
-          show: true,
-          color: 'error',
-          message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
-        };
-      } finally {
-        // Reset loading state
-        this.loading = false;
-      }
-    },
-    askForLocationPermission() {
-      return new Promise((resolve, reject) => {
-        if ('geolocation' in navigator) {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
-        } else {
-          reject(new Error('Geolocation is not supported by this browser.'));
-        }
-      });
-    },
     closeDialog() {
       if (this.dialog) {
     this.$emit('update:dialog', false); // Emit event to update the dialog prop
     this.dialogVisible = false;
-    this.$emit('close-dialog');
-  }
-    },
-
-    validateForm() {
-      for (const key in this.editedItem) {
-        const fieldRef = this.$refs[key];
-        if (fieldRef && fieldRef.validate) {
-          fieldRef.validate();
-          if (fieldRef.hasError) {
-            return false;
-          }
-        }
+    this.$emit('close-dialog'); // Emit event to update the dialog prop
       }
-      return true;
+      
     },
   },
 };

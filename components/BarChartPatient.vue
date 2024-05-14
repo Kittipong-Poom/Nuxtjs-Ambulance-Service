@@ -5,7 +5,7 @@
     <div class="additional-text">
       <p>
         กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี 2566 <br>
-        โดยมีฉุกเฉินเเทนเป็นสีเเดงที่บอกถึงการเกิดอุบัติเหตุ ในเเต่ละเดือน  <br>
+        โดยมีฉุกเฉินเเทนเป็นสีเเดงที่บอกถึงการเกิดอุบัติเหตุ ในเเต่ละเดือน <br>
         เเละให้สีฟ้าเเทนเป็นผู้ป่วยนัดรับ ในเเต่ละเดือน
       </p>
     </div>
@@ -63,11 +63,11 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     plugins: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => ({}),
     },
     tableData: {
       type: Array,
@@ -76,6 +76,7 @@ export default {
   },
   data() {
     return {
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       chartData: {
         labels: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
           "กรกฏาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
@@ -83,12 +84,12 @@ export default {
           {
             label: "ผู้ป่วยฉุกเฉิน",
             backgroundColor: "#DD1B16",
-            data: [5, 9, 4, 6, 8, 21, 15, 13, 18, 11, 10, 12],
+            data: [],
           },
           {
             label: "ผู้ป่วยนัดรับ",
             backgroundColor: "#4169E1",
-            data: [8, 14, 7, 9, 12, 18, 13, 15, 10, 8, 7, 9],
+            data: [],
           },
         ],
       },
@@ -132,32 +133,40 @@ export default {
       }
     };
   },
-  fetch() {
+  mounted() {
     this.loadData();
   },
   methods: {
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl + "/api/patients");
-        this.desserts = data;
-        console.log(this.desserts);
-        this.t = this.countTypes(this.desserts);
-        const tWithoutObserver = this.t.map(item => item);
+        const response = await axios.get(this.endpointUrl + "/api/patients/time");
+        const data = response.data;
 
-        // Update data for the first dataset
-        this.chartData.datasets[0].data.push(...tWithoutObserver);
+        // Check if data is an array
+        if (Array.isArray(data)) {
+          this.desserts = data;
+          console.log('รับข้อมูลมา',this.desserts);
+          
+          // Process data
+          this.t = this.countTypes(this.desserts);
+          const tWithoutObserver = this.t.map(item => item);
 
-        // Add data for the second dataset
-        const tWithoutObserverSecond = this.countTypes(this.desserts);
-        this.chartData.datasets[1].data.push(...tWithoutObserverSecond);
+          // Update data for the first dataset
+          this.chartData.datasets[0].data = [...tWithoutObserver];
+
+          // Add data for the second dataset
+          const tWithoutObserverSecond = this.countTypes(this.desserts);
+          this.chartData.datasets[1].data = [...tWithoutObserverSecond];
+        } else {
+          console.error("Response data is not an array:", data);
+        }
       } catch (error) {
         console.error("Error loading data:", error);
       }
     },
-
+    
     countTypes(data) {
       const typeCounts = {};
-
       data.forEach((item) => {
         const type = item.type;
         if (typeCounts[type]) {
@@ -171,6 +180,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 .additional-text {

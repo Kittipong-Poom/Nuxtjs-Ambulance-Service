@@ -1,91 +1,83 @@
 <template>
   <div>
-    <Pie
-      :chart-options="chartOptions"
-      :chart-data="chartData"
-      :chart-id="chartId"
-      :dataset-id-key="datasetIdKey"
-      :plugins="plugins"
-      :css-classes="cssClasses"
-      :styles="styles"
-      :width="width"
-      :height="height"
-    />
+    <Pie :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+      :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
     <div class="additional-text">
       <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
         ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีม่วงเข้ม <br>
-        ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือสีนํ้าเงิน  <br>
+        ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือสีนํ้าเงิน <br>
         ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีม่วงแก่<br>
         ไตรมาสที่ 4 คือ ช่วงเดือนตุลาคม - ธันวาคม คือสีเหนือ
       </p>
     </div>
   </div>
-  </template>
-  
-  <script>
-  import { Pie } from 'vue-chartjs/legacy'
-  
-  import {
-    Chart as ChartJS,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    CategoryScale
-  } from 'chart.js'
-  
-  ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
-  
-  export default {
-    name: 'PieChartPatient',
-    components: {
-      Pie
+</template>
+
+<script>
+import { Pie } from 'vue-chartjs/legacy'
+
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale
+} from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+
+export default {
+  name: 'PieChartPatient',
+  components: {
+    Pie
+  },
+  props: {
+    chartId: {
+      type: String,
+      default: 'pie-chart'
     },
-    props: {
-      chartId: {
-        type: String,
-        default: 'pie-chart'
-      },
-      datasetIdKey: {
-        type: String,
-        default: 'label'
-      },
-      width: {
-        type: Number,
-        default: 400
-      },
-      height: {
-        type: Number,
-        default: 400
-      },
-      cssClasses: {
-        default: '',
-        type: String
-      },
-      styles: {
-        type: Object,
-        default: () => {}
-      },
-      plugins: {
-        type: Array,
-        default: () => []
-      }
+    datasetIdKey: {
+      type: String,
+      default: 'label'
     },
-    data() {
-      return {
-        chartData: {
-          labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
-          datasets: [
-            {
-              backgroundColor: ['#8481DD', '#8BC1F7', '#B2B0EA', '#FFCAC9',],
-              data: [40 , 20 , 50 , 20]
-            }
-          ]
-        },
-        chartOptions: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
+    width: {
+      type: Number,
+      default: 400
+    },
+    height: {
+      type: Number,
+      default: 400
+    },
+    cssClasses: {
+      default: '',
+      type: String
+    },
+    styles: {
+      type: Object,
+      default: () => { }
+    },
+    plugins: {
+      type: Object,
+      default: () => ({}),
+    }
+  },
+  data() {
+    return {
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      chartData: {
+        labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
+        datasets: [
+          {
+            backgroundColor: ['#8481DD', '#8BC1F7', '#B2B0EA', '#FFCAC9',],
+            data: [40, 20, 50, 20]
+          }
+        ]
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
           legend: {
             position: 'top', // Set legend position to right
             labels: {
@@ -127,7 +119,7 @@
                 return labels;
               }
             }
-            
+
           },
           title: {
             position: 'top',
@@ -138,16 +130,16 @@
             }
           }
         }
-        }
       }
     }
-  }
-  </script>
-  <style>
-  .additional-text {
-    text-align: center;
-    margin-top: 20px; 
-    font-size: 14px; 
-    color: #555; 
-  }
-  </style>
+  },
+}
+</script>
+<style>
+.additional-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+</style>

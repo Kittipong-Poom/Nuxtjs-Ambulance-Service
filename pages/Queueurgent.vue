@@ -10,18 +10,24 @@
       </v-btn>
       <v-spacer />
       <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
+
     </v-card-title>
 
     <v-data-table show-select v-model="selectedurgent" depressed :headers="headers" :items="desserts" :search="search"
-      @click:row="redirectToPatientDetail" @input="handleSelectedItemsChangeurgents" @click:show-select="deleteSelectedItemsurgents">
+      @click:row="redirectToPatientDetail" @input="handleSelectedItemsChangeurgents"
+      @click:show-select="deleteSelectedItemsurgents">
 
       <template v-slot:top>
-          <v-toolbar flat>
-            <h3>เลือกทั้งหมด</h3>
-            <v-spacer></v-spacer>
-            <v-btn color="red" dark @click="deleteSelectedItemsurgents">ลบสิ่งที่เลือก</v-btn>
-          </v-toolbar>
-        </template>
+        <v-toolbar flat>
+          <h3>เลือกทั้งหมด</h3>
+          <v-spacer></v-spacer>
+          <v-btn depressed class="button mb-0" color="primary" @click="exportToExcel">
+            Export to Excel
+          </v-btn>
+          <v-btn color="red" dark @click="deleteSelectedItemsurgents">ลบสิ่งที่เลือก</v-btn>
+
+        </v-toolbar>
+      </template>
 
       <template v-slot:item.action="{ item }">
         <v-btn color="#4CAF50" class="mr-2 mb-2 white--text mt-2" @click="openDialogurgent('edit', item)">
@@ -110,6 +116,7 @@ export default {
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
+        { text: 'เลขออกเหตุ', value: 'eventnum', align: 'center' },
         { text: 'วัน/เดือน/ปี', value: 'service_date', align: 'center' },
         { text: 'เวลา', value: 'time', align: 'center' },
         { text: 'เพศ', value: 'gender', align: 'center' },
@@ -133,6 +140,7 @@ export default {
       dialog: false,
       dialogTitle1: '',
       editedItem: {
+        eventnum: '',
         service_date: '',
         time: '',
         gender: '',
@@ -174,6 +182,19 @@ export default {
     },
   },
   methods: {
+
+    exportToExcel() {
+      import('xlsx').then(XLSX => {
+        const worksheet = XLSX.utils.json_to_sheet(this.desserts);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+        XLSX.writeFile(workbook, 'เคสฉุกเฉิน.xlsx');
+      }).catch(error => {
+        console.error('Error importing xlsx:', error);
+        // Handle error if xlsx library fails to load
+      });
+    },
+
     handleSelectedItemsChangeurgents(selectedItems) {
       // Update selectedForDeletion array when items are selected/unselected
       this.selectedurgent = selectedItems;
@@ -205,7 +226,7 @@ export default {
 
           // Delete all items
           await Promise.all(allItems.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id }`);
+            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id}`);
           }));
 
           // Clear the desserts array
@@ -320,7 +341,7 @@ export default {
           'group': 'fail',
           'title': 'เพิ่มไม่สำเร็จ',
         })
-// Show an error notification
+        // Show an error notification
         Swal.fire({
           icon: 'error',
           title: 'Error',

@@ -12,17 +12,18 @@
 
         <v-data-table depressed :headers="headers" :items="filteredDesserts" :search="search">
             <template v-slot:item.action="{ item }">
-
-                <v-btn color="#4CAF50" class="mr-2 white--text" @click="openAppointmentDialog(item)">
+                <div class="d-flex">
+                  <v-btn color="#4CAF50" class="mr-2 white--text" @click="openAppointmentDialog(item)">
                     <v-icon>mdi-pencil-box-multiple-outline</v-icon>
                     แก้ไขข้อมูลนัดหมาย
-                </v-btn>
-                <!-- <v-btn v-if="item.casestatus !== 'เสร็จสิ้น' && item.casestatus !== 'กำลังดำเนินงาน'" color="#4CAF50"
-                    class="mr-2 white--text" @click="openDialog('edit', item)">
-                    <v-icon>mdi-pencil-box-multiple-outline</v-icon>
-                    แก้ไขข้อมูลนัดหมาย
-                </v-btn> -->
-            </template>
+                  </v-btn>
+                  <v-btn color="blue" class="mr-2 white--text" @click="openGoogleMaps(item)">
+                    <v-icon>mdi-map-marker</v-icon>
+                    เริ่มการนำทาง
+                  </v-btn>
+                </div>
+              </template>
+              
 
 
             <template v-slot:item.type_patient_name="{ item }">
@@ -67,18 +68,17 @@ export default {
             endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
             headers: [
                 { text: 'HN', value: 'hn', align: 'center' },
-                { text: 'อายุ', value: 'age_name', align: 'center' },
-                { text: 'เพศ', value: 'gender', align: 'center' },
+                
                 { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
-                { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
-                { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
+                
+                
                 { text: 'ที่อยู่', value: 'address', align: 'center' },
                 { text: 'ละติจูด', value: 'lati', align: 'center' },
                 { text: 'ลองติจูด', value: 'longi', align: 'center' },
                 { text: 'วันที่นัดหมาย', value: 'service_date', align: 'center' },
                 { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
-                { text: 'เพิ่มเติม', value: 'other', align: 'center' },
-                { text: 'สถานะ', value: 'casestatus_name', align: 'center' },
+                
+                { text: 'สถานะ', value: 'status_case_id', align: 'center' },
                 { text: '', value: 'action', sortable: false, align: 'center' }
             ],
             selectedPatient: null,
@@ -127,9 +127,42 @@ export default {
                 return statusOrder[a.casestatus_name] - statusOrder[b.casestatus_name];
             });
         },
+        
 
     },
     methods: {
+        async loadData() {
+      try {
+        const { data } = await axios.get(this.endpointUrl + '/api/appointments')
+        // this.desserts = data;
+        console.log("This data", data)
+        this.$emit('data-loaded', data);
+        this.desserts = data;
+        console.log(this.desserts);
+
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    },
+    async fetchDataFromServer() {
+      try {
+        const { data } = await axios.get(this.endpointUrl + '/api/appointments');
+
+        return data;
+      } catch (error) {
+        console.error('Error fetching data from server:', error);
+        throw error; // Propagate the error to the caller
+      }
+    },
+        openGoogleMaps(item) {
+        // สร้าง URL ของ Google Maps ด้วยพิกัดที่ต้องการ
+        const latitude = item.lati;
+        const longitude = item.longi;
+        const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+        // เปิดลิงก์ในหน้าต่างใหม่
+        window.open(url);
+    },
         async openAppointmentDialog(item) {
             // Close the Patient.vue dialog if it is open
             if (this.dialog) {
@@ -197,7 +230,7 @@ export default {
 
                 // Update existing patient
                 console.log('แก้ไขข้อมูลนัดหมาย');
-                response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
+                response = await axios.put(`${this.endpointUrl}/api/appointments/${editedItem.id}`, {
                     status_case_id: editedItem.status_case_id,
                     service_date: editedItem.service_date,
                     time: editedItem.time
@@ -249,55 +282,7 @@ export default {
             this.editedItem = {};
             this.dialogVisible = false;
         },
-        async loadData() {
-            try {
-                const { data } = await axios.get(this.endpointUrl + '/api/patients/time');
-
-                console.log('data', data);
-
-                // // ถ้ามีข้อมูลที่ครบทุกช่องของ primary key ให้นำข้อมูลมาแสดง
-                const formattedData = data.map(item => {
-                    // Check if the time is not null and is a valid string
-                    if (item.time && typeof item.time === 'string') {
-                        // Split the time string to get hours and minutes
-                        const [hours, minutes] = item.time.split(':');
-                        // Assuming the service_date field contains the date to be formatted
-                        return {
-                            ...item,
-                            service_date: this.formatDate(item.service_date), // Format date here
-                            time: `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`
-                        };
-                    } else {
-                        // Handle if time is not in the expected format
-                        console.error('Invalid time format:', item.time);
-                        return item; // Return item as it is
-                    }
-                });
-
-                this.desserts = formattedData;
-                console.log(this.desserts);
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        },
-
-
-        async fetchDataFromServer() {
-            try {
-                const { data } = await axios.get(this.endpointUrl + '/api/patients/time');
-                const formattedData = data.map(item => {
-                    // Assuming the service_date field contains the date to be formatted
-                    return {
-                        ...item,
-                        service_date: this.formatDate(item.service_date) // Format date here
-                    };
-                });
-                return formattedData;
-            } catch (error) {
-                console.error('Error fetching data from server:', error);
-                throw error; // Propagate the error to the caller
-            }
-        },
+        
     },
     // Fetch data when component is mounted
     mounted() {

@@ -7,10 +7,22 @@
   
   <script>
   import Calendar from '@/components/Calendar.vue'
-  
+  import Swal from 'sweetalert2';
   export default {
     components: {
       Calendar
+    },
+    mounted(){
+      this.showAlert();
+    },
+    methods:{
+      showAlert() {
+        Swal.fire({
+          title: 'แจ้งเตือน',
+          text: 'กรุณาเช็ควันที่ต้องไปรับผู้ป่วย',
+          icon: 'warning',
+        });
+      }
     }
   }
   </script>

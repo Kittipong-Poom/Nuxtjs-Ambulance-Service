@@ -58,7 +58,7 @@
         </template>
         <v-list>
           <v-list-item v-if="patient">
-            <v-list-item-title>HN : {{ patient.hnnumber }}</v-list-item-title>
+            <v-list-item-title>HN : {{ patient.hn_id }}</v-list-item-title>
           </v-list-item>
           <v-list-item v-else>
             <v-list-item-title>No patient details available</v-list-item-title>
@@ -129,13 +129,16 @@ export default {
           title: 'ตารางจัดการคิวงาน',
           to: '/QueueJob'
         },
-
         {
           icon: 'mdi-calendar',
           title: 'ปฏิทินงาน',
           to: '/Calendars'
         },
-        
+        {
+          icon: 'mdi-calendar',
+          title: 'test',
+          to: '/testkub'
+        },
       ],
       miniVariant: false,
       right: true,

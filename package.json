@@ -60,7 +60,8 @@
     "vue2-google-maps": "^0.10.7",
     "vue3-google-maps": "^0.0.1",
     "vuesax": "^3.12.2",
-    "vuetify": "^2.6.10"
+    "vuetify": "^2.6.10",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",

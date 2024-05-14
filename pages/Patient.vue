@@ -16,7 +16,9 @@
       <v-data-table v-model="selected" show-select depressed :headers="headers" :items="desserts" :search="search"
         @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
         @click:show-select="deleteSelectedItems">
-
+        <template v-slot:item.hn="{ item }">
+          <span @click="redirectToPatientDetail(item)" style="cursor: pointer; font-weight: bold;">{{ item.hn }}</span>
+        </template>
         <template v-slot:top>
           <v-toolbar flat>
             <h3>เลือกทั้งหมด</h3>
@@ -185,6 +187,10 @@ export default {
     },
   },
   methods: {
+    redirectToPatientDetail(item) {
+      console.log('Redirect to patient detail:', item.hn);
+      // Add your logic here to handle redirection to patient detail page
+    },
     handleSelectedItemsChange(selectedItems) {
       // Update selectedForDeletion array when items are selected/unselected
       this.selected = selectedItems;
@@ -287,6 +293,8 @@ export default {
       this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
+      
+      return true;
     },
 
     async saveItem(editedItem) {
@@ -416,7 +424,6 @@ export default {
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.hn_id !== item.hn_id);
-              this.$store.commit('decrementPatientCount');
               // Show success notification
               Swal.fire({
                 icon: 'success',

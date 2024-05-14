@@ -9,10 +9,10 @@
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
             วันนี้
           </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon small> mdi-chevron-left </v-icon>
+          <v-btn   small  color="primary" @click="prev">
+            <v-icon  small> mdi-chevron-left </v-icon>
           </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="next">
+          <v-btn   small class="ma-5" color="primary" @click="next">
             <v-icon small> mdi-chevron-right </v-icon>
           </v-btn>
           <v-toolbar-title v-if="$refs.calendar">
@@ -43,7 +43,6 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-
       <v-sheet height="600" >
         <!-- แสดง ปฏิทิน -->
         <v-calendar ref="calendar" v-model="focus" color="primary" locale="th" :events="events"
@@ -163,7 +162,8 @@ export default {
       return event.color;
     },
     setToday() {
-      this.focus = "";
+      this.type = 'day';
+      // this.focus = new Date();
     },
     prev() {
       this.$refs.calendar.prev();
@@ -206,7 +206,7 @@ export default {
 
           patients.forEach((patient, index) => {
             console.log('My Detail :');
-            if (patient.casestatus_name !== 'ยกเลิก') {
+            if (patient.casestatus_name !== 'ยกเลิก' && patient.casestatus_name !== 'เสร็จสิ้น') {
             const year = new Date(patient.service_date).getFullYear();
             const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
             const day = new Date(patient.service_date).getUTCDate() + 1;
