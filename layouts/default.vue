@@ -47,7 +47,7 @@
       </v-btn>
 
       <!-- Notifications Dropdown ปุ่มกระดิ่ง จุดแดง กดแล้วจะหายไป -->
-      <v-menu offset-y>
+      <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon color="#FFFF" @click="markNotificationsAsRead">
             <v-badge :content="notifications.length" :color="showRedBadge ? 'red' : ''"
@@ -64,7 +64,7 @@
             <v-list-item-title>No patient details available</v-list-item-title>
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
       
       <!-- Menu Button -->
       <v-menu offset-y>
@@ -111,18 +111,13 @@ export default {
 
         {
           icon: 'mdi-view-dashboard',
-          title: 'แดชบอร์ด',
+          title: 'Dashboard',
           to: '/Dashboard'
         },
         {
           icon: 'mdi-table',
           title: 'จัดการข้อมูลผู้ป่วยทั่วไป',
           to: '/Patient'
-        },
-        {
-          icon: 'mdi-doctor',
-          title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
-          to: '/Queueurgent'
         },
         {
           icon: 'mdi-table',
@@ -135,9 +130,9 @@ export default {
           to: '/Calendars'
         },
         {
-          icon: 'mdi-calendar',
-          title: 'test',
-          to: '/testkub'
+          icon: 'mdi-doctor',
+          title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
+          to: '/Queueurgent'
         },
       ],
       miniVariant: false,
@@ -154,7 +149,7 @@ export default {
       const route = this.$route;
       switch (route.path) {
         case '/Dashboard':
-          return 'แดชบอร์ด';
+          return 'Dashboard';
         case '/Patient':
           return 'จัดการข้อมูลผู้ป่วยทั่วไป';
         case '/Queueurgent':

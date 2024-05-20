@@ -9,10 +9,10 @@
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
             วันนี้
           </v-btn>
-          <v-btn   small  color="primary" @click="prev">
-            <v-icon  small> mdi-chevron-left </v-icon>
+          <v-btn small color="primary" @click="prev">
+            <v-icon small> mdi-chevron-left </v-icon>
           </v-btn>
-          <v-btn   small class="ma-5" color="primary" @click="next">
+          <v-btn small class="ma-5" color="primary" @click="next">
             <v-icon small> mdi-chevron-right </v-icon>
           </v-btn>
           <v-toolbar-title v-if="$refs.calendar">
@@ -43,15 +43,15 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600" >
+      <v-sheet height="600">
         <!-- แสดง ปฏิทิน -->
         <v-calendar ref="calendar" v-model="focus" color="primary" locale="th" :events="events"
           :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
           @change="updateRange"></v-calendar>
         <!-- แสดง กดดูรายละเอียด -->
-        <v-menu   v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
-          <v-card style="border-radius: 15px;"  color="grey lighten-4" min-width="350px" flat>
-            <v-toolbar  :color="selectedEvent.color" dark>
+        <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
+          <v-card style="border-radius: 15px;" color="grey lighten-4" min-width="350px" flat>
+            <v-toolbar :color="selectedEvent.color" dark>
               <v-btn icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
@@ -63,8 +63,9 @@
             </v-toolbar>
             <v-card-text>
               <v-icon>mdi-map-marker</v-icon> <span v-html="selectedEvent.address"></span>
-              <br><strong> <v-icon>mdi-clock-time-four-outline</v-icon>  <span v-html="selectedEvent.time"></span></strong>
-              <br><v-icon>mdi-medical-bag</v-icon > <span v-html="selectedEvent.type"></span>
+              <br><strong> <v-icon>mdi-clock-time-four-outline</v-icon> <span
+                  v-html="selectedEvent.time"></span></strong>
+              <br><v-icon>mdi-medical-bag</v-icon> <span v-html="selectedEvent.type"></span>
               <br><v-icon>mdi-ambulance</v-icon><strong> <span v-html="selectedEvent.trackpatient"></span></strong>
               <br><v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.other"></span></strong>
               <br><v-icon>mdi-map-marker</v-icon><strong> <span v-html="selectedEvent.lati"></span></strong>
@@ -171,7 +172,7 @@ export default {
     next() {
       this.$refs.calendar.next();
     },
-    
+
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
@@ -197,51 +198,61 @@ export default {
 
     async fetchDesserts() {
       try {
-        const response = await axios.get(`${this.endpointUrl}/api/patients/time`);
-        const patients = response.data;
-        console.log("patient", patients);
-        if (Array.isArray(patients)) {
+        // Fetch appointments and patients data
+        const [appointmentsResponse, patientsResponse] = await Promise.all([
+          axios.get(`${this.endpointUrl}/api/appointments`),
+          axios.get(`${this.endpointUrl}/api/patients`)
+        ]);
+
+        const appointments = appointmentsResponse.data;
+        const patients = patientsResponse.data;
+
+        console.log("appointments", appointments);
+        console.log("patients", patients);
+
+        if (Array.isArray(appointments) && Array.isArray(patients)) {
           // Clear existing events
           this.events = [];
 
-          patients.forEach((patient, index) => {
-            console.log('My Detail :');
-            if (patient.casestatus_name !== 'ยกเลิก' && patient.casestatus_name !== 'เสร็จสิ้น') {
-            const year = new Date(patient.service_date).getFullYear();
-            const month = new Date(patient.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
-            const day = new Date(patient.service_date).getUTCDate() + 1;
+          appointments.forEach((appointment, index) => {
+            const patient = patients.find(p => p.hn === appointment.hn);
 
-            // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
-            const newyear = year - 543;
+            if (patient && appointment.status_case_id !== 'ยกเลิก' && appointment.status_case_id !== 'เสร็จสิ้น') {
+              const year = new Date(appointment.service_date).getFullYear();
+              const month = new Date(appointment.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
+              const day = new Date(appointment.service_date).getUTCDate() + 1;
 
-            // Format the components into the standard date format: YYYY-MM-DD
-            const newTimestamp = `${newyear}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+              // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
+              const newyear = year - 543;
 
-            const timeComponents = patient.time.split(':');
-            const hours = parseInt(timeComponents[0], 10).toString().padStart(2, '0');
-            const minutes = parseInt(timeComponents[1], 10).toString().padStart(2, '0');
-            const formattedTime = `${hours}:${minutes}`;
+              // Format the components into the standard date format: YYYY-MM-DD
+              const newTimestamp = `${newyear}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-            const colorIndex = index % this.colors.length;
-            const event = {
-              name: `HN ${patient.hn_id}`,
-              start:`${newTimestamp}T${formattedTime}`,
-              // end: `${newTimestamp}T${formattedTime}`,
-              color: this.colors[colorIndex],
-              address: `ที่อยู่ : ${patient.address}`,
-              lati: `ละติจูด : ${patient.lati}`,
-              longi: `ลองติจูด : ${patient.longi}`,
-              time: `เวลา : ${formattedTime}`,
-              type: `ประเภทผู้ป่วย : ${patient.type_patient_name}`,
-              trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name}`,
-              other: `เพิ่มเติม : ${patient.other}`,
-            };
-            this.events.push(event);
-          }
+              const timeComponents = appointment.time.split(':');
+              const hours = parseInt(timeComponents[0], 10).toString().padStart(2, '0');
+              const minutes = parseInt(timeComponents[1], 10).toString().padStart(2, '0');
+              const formattedTime = `${hours}:${minutes}`;
+
+              const colorIndex = index % this.colors.length;
+              const event = {
+                name: `HN ${appointment.hn}`,
+                start: `${newTimestamp}T${formattedTime}`,
+                // end: `${newTimestamp}T${formattedTime}`,
+                color: this.colors[colorIndex],
+                address: `ที่อยู่ : ${appointment.address}`,
+                lati: `ละติจูด : ${appointment.lati}`,
+                longi: `ลองติจูด : ${appointment.longi}`,
+                time: `เวลา : ${formattedTime}`,
+                type: `ประเภทผู้ป่วย : ${patient.type_patient_name || 'N/A'}`, // Fallback to 'N/A' if undefined
+                trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name || 'N/A'}`, // Fallback to 'N/A' if undefined
+                other: `เพิ่มเติม : ${patient.other || 'N/A'}`, // Fallback to 'N/A' if undefined
+              };
+              this.events.push(event);
+            }
           });
         }
       } catch (error) {
-        console.error("Error fetching desserts:", error);
+        console.error("Error fetching data:", error);
       }
     }
   }
@@ -249,6 +260,4 @@ export default {
 </script>
 
 
-<style>
-
-</style>
+<style></style>

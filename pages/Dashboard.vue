@@ -9,15 +9,8 @@
         <v-col cols="12" class="ma-2 pa-1 text-uppercase text-center" color="grey-lighten-3">
           
           <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
+
+
           
         <h2 class="patient align-center head">สถิติผู้ป่วย</h2>
           
@@ -35,7 +28,7 @@
         <!-- PieChart -->
         <v-col cols="12" md="6">
           <v-sheet class="pa-12" color="grey-lighten-3">
-            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="450">
+            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="500">
               <PieChartPatient />
             </v-sheet>
           </v-sheet>

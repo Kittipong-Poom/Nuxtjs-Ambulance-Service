@@ -1,7 +1,7 @@
 <template>
   <div>
     <Pie :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
-      :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
+      :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" v-if="loaded"/>
     <div class="additional-text">
       <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
         ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีม่วงเข้ม <br>
@@ -15,7 +15,7 @@
 
 <script>
 import { Pie } from 'vue-chartjs/legacy'
-
+import axios from 'axios'
 import {
   Chart as ChartJS,
   Title,
@@ -65,12 +65,13 @@ export default {
   data() {
     return {
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      loaded: false,
       chartData: {
         labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
         datasets: [
           {
             backgroundColor: ['#8481DD', '#8BC1F7', '#B2B0EA', '#FFCAC9',],
-            data: [40, 20, 50, 20]
+            data: []
           }
         ]
       },
@@ -79,9 +80,8 @@ export default {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'top', // Set legend position to right
+            position: 'top',
             labels: {
-              // Define labels here
               generateLabels: function (chart) {
                 const labels = [];
                 labels.push({
@@ -119,20 +119,49 @@ export default {
                 return labels;
               }
             }
-
           },
           title: {
             position: 'top',
             display: true,
-            text: 'อัตราการเกิดเหตุประจำปี 2566 ',        // Text of the title
+            text: 'อัตราการเกิดเหตุประจำปี 2566 ',
             font: {
-              size: 16 // Adjust font size if needed
+              size: 16
             }
           }
         }
       }
     }
   },
+  mounted(){
+    this.loadData();
+  },
+  methods:{
+    async loadData(){
+      try{
+        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
+        const dataUrgent = responseUrgent.data;
+
+        if (Array.isArray(dataUrgent)) {
+          this.chartData.datasets[0].data = this.countTypes(dataUrgent);
+        } else {
+          console.error("Response data from /api/caseurgents is not an array:", dataUrgent);
+        }
+        console.log('Get api caseurgents', this.countTypes(dataUrgent))
+        this.loaded = true;
+      }catch(error){
+        console.log('Error Fetching Data : ',error)
+      }
+    },
+    countTypes(data) {
+      const quarterCounts = [0, 0, 0, 0];
+      data.forEach((item) => {
+        const month = new Date(item.service_date).getMonth();
+        const quarter = Math.floor(month / 3);
+        quarterCounts[quarter]++;
+      });
+      return quarterCounts;
+    },
+  }
 }
 </script>
 <style>

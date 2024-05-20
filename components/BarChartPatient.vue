@@ -1,7 +1,7 @@
 <template>
   <div>
     <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
-      :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
+      :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" v-if="loaded"/>
     <div class="additional-text">
       <p>
         กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี 2566 <br>
@@ -63,7 +63,7 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => { },
+      default: () => {},
     },
     plugins: {
       type: Object,
@@ -76,10 +76,26 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      endpointUrl:
+        process.env.NODE_ENV == "development"
+          ? "http://localhost:5000"
+          : "https://ambulance-fbf9.onrender.com",
+      loaded: false, // Define the loaded property
       chartData: {
-        labels: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-          "กรกฏาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+        labels: [
+          "มกราคม",
+          "กุมภาพันธ์",
+          "มีนาคม",
+          "เมษายน",
+          "พฤษภาคม",
+          "มิถุนายน",
+          "กรกฏาคม",
+          "สิงหาคม",
+          "กันยายน",
+          "ตุลาคม",
+          "พฤศจิกายน",
+          "ธันวาคม",
+        ],
         datasets: [
           {
             label: "ผู้ป่วยฉุกเฉิน",
@@ -98,39 +114,39 @@ export default {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'right',
+            position: "right",
             labels: {
               generateLabels: function (chart) {
                 const labels = [];
                 labels.push({
-                  text: 'ผู้ป่วยฉุกเฉิน',
-                  fillStyle: '#DD1B16',
-                  strokeStyle: '#DD1B16',
+                  text: "ผู้ป่วยฉุกเฉิน",
+                  fillStyle: "#DD1B16",
+                  strokeStyle: "#DD1B16",
                   lineWidth: 2,
                   hidden: false,
-                  index: 0
+                  index: 0,
                 });
                 labels.push({
-                  text: 'ผู้ป่วยนัดรับ',
-                  fillStyle: '#4169E1',
-                  strokeStyle: '#4169E1',
+                  text: "ผู้ป่วยนัดรับ",
+                  fillStyle: "#4169E1",
+                  strokeStyle: "#4169E1",
                   lineWidth: 2,
                   hidden: false,
-                  index: 1
+                  index: 1,
                 });
                 return labels;
-              }
-            }
+              },
+            },
           },
           title: {
             display: true,
-            text: 'ข้อมูลผู้ป่วยประจำปี 2566',
+            text: "ข้อมูลผู้ป่วยประจำปี 2566",
             font: {
-              size: 16
-            }
+              size: 16,
+            },
           },
-        }
-      }
+        },
+      },
     };
   },
   mounted() {
@@ -139,48 +155,48 @@ export default {
   methods: {
     async loadData() {
       try {
-        const response = await axios.get(this.endpointUrl + "/api/patients/time");
-        const data = response.data;
+        // Fetch data for emergency patients from /api/caseurgents
+        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
+        const dataUrgent = responseUrgent.data;
 
         // Check if data is an array
-        if (Array.isArray(data)) {
-          this.desserts = data;
-          console.log('รับข้อมูลมา',this.desserts);
-          
-          // Process data
-          this.t = this.countTypes(this.desserts);
-          const tWithoutObserver = this.t.map(item => item);
-
-          // Update data for the first dataset
-          this.chartData.datasets[0].data = [...tWithoutObserver];
-
-          // Add data for the second dataset
-          const tWithoutObserverSecond = this.countTypes(this.desserts);
-          this.chartData.datasets[1].data = [...tWithoutObserverSecond];
+        if (Array.isArray(dataUrgent)) {
+          // Process data for emergency patients
+          this.chartData.datasets[0].data = this.countTypes(dataUrgent);
         } else {
-          console.error("Response data is not an array:", data);
+          console.error("Response data from /api/caseurgents is not an array:", dataUrgent);
         }
+
+        // Fetch data for scheduled patients from /api/appointments
+        const responseScheduled = await axios.get(this.endpointUrl + "/api/appointments");
+        const dataScheduled = responseScheduled.data;
+
+        // Check if data is an array
+        if (Array.isArray(dataScheduled)) {
+          // Process data for scheduled patients
+          this.chartData.datasets[1].data = this.countTypes(dataScheduled);
+        } else {
+          console.error("Response data from /api/appointments is not an array:", dataScheduled);
+        }
+
+        this.loaded = true; // Set loaded to true after data is loaded
+
       } catch (error) {
         console.error("Error loading data:", error);
       }
     },
-    
+
     countTypes(data) {
-      const typeCounts = {};
+      const typeCounts = Array(12).fill(0); // Initialize an array with 12 zeros
       data.forEach((item) => {
-        const type = item.type;
-        if (typeCounts[type]) {
-          typeCounts[type]++;
-        } else {
-          typeCounts[type] = 1;
-        }
+        const month = new Date(item.service_date).getMonth(); // Get the month (0-11)
+        typeCounts[month]++; // Increment the count for the corresponding month
       });
-      return Object.values(typeCounts);
+      return typeCounts;
     },
   },
 };
 </script>
-
 
 <style>
 .additional-text {

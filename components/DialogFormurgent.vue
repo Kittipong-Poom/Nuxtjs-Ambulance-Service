@@ -34,8 +34,7 @@
               </v-col>
               <!-- เวลา -->
               <v-col cols="12" md="6">
-                <v-text-field v-model="formattedTime" outlined label="เวลา"
-                  prepend-inner-icon="mdi-clock-outline"></v-text-field>
+                <v-text-field v-model="formattedTime" outlined label="เวลา" type="time" ></v-text-field>
               </v-col>
             </v-row>
             <!-- เพิ่มปุ่ม Current Location -->

@@ -31,12 +31,23 @@
             <v-col cols="12" md="6">
               <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time"></v-text-field>
             </v-col>
-
+            <v-col cols="12" md="6">
+              <!-- ละติจูด -->
+              <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
+                 ref="lati"></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <!-- ลองจิจูด -->
+              <v-text-field v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker" label="ลองติจูด*" outlined
+                ref="longi"></v-text-field>
+            </v-col>
           </v-row>
 
           <!-- สถานะ -->
-          <v-select v-model="editedItem.status_case_id" label="สถานะ" outlined :items="items_status"
-            item-text="casestatus_name" item-value="casestatus_id"></v-select>
+          <!-- <v-select v-model="editedItem.status_case_id" label="สถานะ" outlined :items="items_status"
+            item-text="casestatus_name" item-value="casestatus_id"></v-select> -->
+            <v-select v-model="editedItem.status_case_id" outlined label="สถานะ"
+                  :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น' ,'ยกเลิก']"></v-select>
         </v-card-text>
 
         <!-- บันทึก -->
@@ -76,10 +87,10 @@ export default {
       return thaiDate.format('DD-MM-YYYY');
     },
   },
-  async created() {
-    const { data } = await axios.get(this.endpointUrl + '/api/status');
-    this.items_status = data;
-  },
+  // async created() {
+  //   const { data } = await axios.get(this.endpointUrl + '/api/status');
+  //   this.items_status = data;
+  // },
 
 methods: {
   
