@@ -3,9 +3,9 @@
     <!-- แสดงหน้ากรอกเลข HN ก่อน -->
     <v-dialog v-model="dialog" max-width="300">
       <v-card>
-        <v-card-title class="text-center">กรุณากรอกเลข HN</v-card-title>
+        <v-card-title class="text-center">กรุณากรอกรหัสผู้ป่วย(HN)</v-card-title>
         <v-card-text>
-          <v-text-field v-model="hnInput" label="เลข HN" outlined></v-text-field>
+          <v-text-field v-model="hnInput" label="รหัสผู้ป่วย" outlined></v-text-field>
         </v-card-text>
         <v-card-actions class="justify-center">
           <v-btn color="primary" @click="submitHN">ยืนยัน</v-btn>
@@ -27,7 +27,7 @@
                 <v-list>
                   <v-list-item v-for="appointment in appointments" :key="appointment.id">
                     <v-list-item-content>
-                      <v-list-item-title>HN: {{ appointment.hn }}</v-list-item-title>
+                      <v-list-item-title>รหัสผู้ป่วย: {{ appointment.hn }}</v-list-item-title>
                       <v-list-item-subtitle>วันที่: {{ formatDate(appointment.service_date) }}</v-list-item-subtitle>
                       <v-list-item-subtitle>เวลา: {{ appointment.time }}</v-list-item-subtitle>
                       <v-list-item-subtitle>สถานะ: {{ appointment.status_case_id}}</v-list-item-subtitle>
@@ -55,7 +55,7 @@ export default {
   props: {
     dialog: Boolean,
     hn: String,
-    dialogTitle: String,
+    dialogTitle2: String,
   },
   data() {
     return {
@@ -63,7 +63,8 @@ export default {
       appointments: [],
       dialog: false,
       hnDialog: false, // เพิ่มตัวแปรเพื่อควบคุมการแสดงหน้ากรอกเลข HN
-      hnInput: '', // เพิ่มตัวแปรเพื่อเก็บค่าเลข HN ที่ผู้ใช้กรอก
+      hnInput: '',
+      hnInputDialog: false, // เพิ่มตัวแปรเพื่อเก็บค่าเลข HN ที่ผู้ใช้กรอก
     };
   },
 
@@ -116,6 +117,7 @@ export default {
     },
     closeDialog() {
       this.hnDialog = false;
+      window.location.reload();
     },
   },
 };

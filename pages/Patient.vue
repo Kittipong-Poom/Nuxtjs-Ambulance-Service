@@ -6,9 +6,13 @@
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
-        <v-btn depressed class="button mb-4" color="primary" @click="openDialog('add')">
+        <v-btn depressed class="button mb-0 mr-3" color="primary" @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
+        <v-btn depressed class="button mb-0 mr-3" color="black" dark @click="openHistoryDialog">
+          ประวัติการนัดหมาย
+        </v-btn>
+        
         <v-spacer />
         <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
       </v-card-title>
@@ -17,9 +21,7 @@
         @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
         @click:show-select="deleteSelectedItems">
 
-        <template v-slot:item.hn="{ item }">
-          <span @click="openHistoryDialog(item)" style="cursor: pointer; font-weight: bold;">{{ item.hn }}</span>
-        </template>
+        
         <template v-slot:top>
           <v-toolbar flat>
             
@@ -28,7 +30,8 @@
             <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
               Export to Excel
             </v-btn>
-            <v-btn color="red" dark @click="deleteSelectedItems">ลบสิ่งที่เลือก</v-btn>
+            <v-btn depressed class="button mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
+              ลบสิ่งที่เลือก</v-btn>
           </v-toolbar>
         </template>
 
@@ -86,8 +89,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <History v-if="isHistoryDialogOpen" :dialog="isHistoryDialogOpen" :edited-item="editedItem"
-        :dialog-title="dialogTitle2" @close-dialog="isHistoryDialogOpen = true"/>
+      <History v-if="isHistoryDialogOpen" :dialog="isHistoryDialogOpen"
+        :dialog-title="dialogTitle2" @close-dialog="isHistoryDialogOpen = false"/>
       <!-- Include the dialog -->
       <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
         @close="closeDialog" :hide-fields="{ dateAndTime: true }" />
@@ -197,10 +200,17 @@ export default {
     },
   },
   methods: {
-    openHistoryDialog(item) {
-      this.editedItem = { ...item };
-      this.isHistoryDialogOpen = true;
-    },
+    openHistoryDialog() {
+  // Check if any other dialog is open and close it
+  if (this.isAppointmentDialogOpen || this.dialog) {
+    this.isAppointmentDialogOpen = false;
+    this.dialog = false;
+  }
+  this.isHistoryDialogOpen = true;
+},
+
+
+
     exportToExcel() {
       import('xlsx').then(XLSX => {
         const worksheet = XLSX.utils.json_to_sheet(this.desserts);
@@ -270,24 +280,28 @@ export default {
     closeDialog() {
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
+      this.isHistoryDialogOpen = false;
       // Other logic...
     },
     openAppointmentDialog(item) {
-      // Close the Patient.vue dialog if it is open
-      if (this.dialog) {
-        this.dialog = false;
-      }
-      const { data } = axios.get(this.endpointUrl + '/api/status');
-      this.items_status = data;
-      // Set editedItem and dialogTitle based on item data
-      this.editedItem = item;
-      console.log(item);
-      console.log(this.editedItem.age_name);
-      this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
-      // Show the appointment dialog
-      this.isAppointmentDialogOpen = true;
+  // ก่อนเปิด appointment dialog ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
+  if (this.dialog || this.isHistoryDialogOpen) {
+    this.dialog = false;
+    this.isHistoryDialogOpen = false;
+  }
 
-    },
+  // เปิด appointment dialog ใหม่
+  const { data } = axios.get(this.endpointUrl + '/api/status');
+  this.items_status = data;
+  // Set editedItem and dialogTitle based on item data
+  this.editedItem = item;
+  console.log(item);
+  console.log(this.editedItem.age_name);
+  this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
+  // Show the appointment dialog
+  this.isAppointmentDialogOpen = true;
+},
+
 
     formatDateForMySQL(dateString) {
       // Extract the date parts
@@ -311,12 +325,18 @@ export default {
       return this.statusColorMap[type] || 'defaultColor';
     },
     openDialog(action, item = null) {
-      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
-      this.editedItem = action === 'add' ? {} : { ...item };
-      this.dialog = true;
-      
-      return true;
-    },
+  // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
+  if (this.isAppointmentDialogOpen || this.isHistoryDialogOpen) {
+    this.isAppointmentDialogOpen = false;
+    this.isHistoryDialogOpen = false;
+  }
+
+  // เปิด dialog ใหม่
+  this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
+  this.editedItem = action === 'add' ? {} : { ...item };
+  this.dialog = true;
+},
+
 
     async saveItem(editedItem) {
   try {

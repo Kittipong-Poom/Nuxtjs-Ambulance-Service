@@ -290,9 +290,6 @@ formatDateForMySQL(dateString) {
     },
     mounted() {
         this.loadData();
-        setInterval(() => {
-            this.updateStatuses();
-        }, 60000); // 60000 milliseconds = 1 minute
     }
 }
 </script>

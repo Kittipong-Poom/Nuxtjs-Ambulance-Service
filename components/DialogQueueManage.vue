@@ -32,7 +32,7 @@
 
                         <!-- เวลา -->
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="editedItem.time" label="เวลา" outlined ></v-text-field>
+                            <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time"></v-text-field>
                         </v-col>
                     </v-row>
 
@@ -84,7 +84,6 @@ export default {
         };
     },
     computed: {
-        
         formattedDate() {
             if (!this.dateString) {
                 return ''; // ถ้ายังไม่มีวันที่เลือก

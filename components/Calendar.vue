@@ -86,6 +86,7 @@
 <script>
 import Patient from "~/pages/Patient.vue";
 import axios from "axios";
+import dayjs from "dayjs";
 export default {
   data: () => ({
     components: {
@@ -197,64 +198,65 @@ export default {
     },
 
     async fetchDesserts() {
-      try {
-        // Fetch appointments and patients data
-        const [appointmentsResponse, patientsResponse] = await Promise.all([
-          axios.get(`${this.endpointUrl}/api/appointments`),
-          axios.get(`${this.endpointUrl}/api/patients`)
-        ]);
+  try {
+    // Fetch appointments and patients data
+    const [appointmentsResponse, patientsResponse] = await Promise.all([
+      axios.get(`${this.endpointUrl}/api/appointments`),
+      axios.get(`${this.endpointUrl}/api/patients`)
+    ]);
 
-        const appointments = appointmentsResponse.data;
-        const patients = patientsResponse.data;
+    const appointments = appointmentsResponse.data;
+    const patients = patientsResponse.data;
 
-        console.log("appointments", appointments);
-        console.log("patients", patients);
+    console.log("appointments", appointments);
+    console.log("patients", patients);
 
-        if (Array.isArray(appointments) && Array.isArray(patients)) {
-          // Clear existing events
-          this.events = [];
+    if (Array.isArray(appointments) && Array.isArray(patients)) {
+      // Clear existing events
+      this.events = [];
 
-          appointments.forEach((appointment, index) => {
-            const patient = patients.find(p => p.hn === appointment.hn);
+      appointments.forEach((appointment, index) => {
+        const patient = patients.find(p => p.hn === appointment.hn);
 
-            if (patient && appointment.status_case_id !== 'ยกเลิก' && appointment.status_case_id !== 'เสร็จสิ้น') {
-              const year = new Date(appointment.service_date).getFullYear();
-              const month = new Date(appointment.service_date).getUTCMonth() + 1; // Add 1 because getUTCMonth() returns zero-based month
-              const day = new Date(appointment.service_date).getUTCDate() + 1;
+        if (patient && appointment.status_case_id !== 'ยกเลิก' && appointment.status_case_id !== 'เสร็จสิ้น') {
+          // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
+          const gregorianDate = dayjs(appointment.service_date).subtract(543, 'year');
+          const formattedDate = gregorianDate.format('YYYY-MM-DD');
+          console.log(`Converted date: ${formattedDate}`);
 
-              // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
-              const newyear = year - 543;
+          const timeComponents = appointment.time.split(':');
+          const hours = parseInt(timeComponents[0], 10).toString().padStart(2, '0');
+          const minutes = parseInt(timeComponents[1], 10).toString().padStart(2, '0');
+          const formattedTime = `${hours}:${minutes}`;
+          console.log(`Formatted time: ${formattedTime}`);
 
-              // Format the components into the standard date format: YYYY-MM-DD
-              const newTimestamp = `${newyear}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+          // Create a Date object for the start time in ISO format
+          const startTime = `${formattedDate}T${formattedTime}:00`;
+          console.log(`Start time: ${startTime}`);
 
-              const timeComponents = appointment.time.split(':');
-              const hours = parseInt(timeComponents[0], 10).toString().padStart(2, '0');
-              const minutes = parseInt(timeComponents[1], 10).toString().padStart(2, '0');
-              const formattedTime = `${hours}:${minutes}`;
-
-              const colorIndex = index % this.colors.length;
-              const event = {
-                name: `HN ${appointment.hn}`,
-                start: `${newTimestamp}T${formattedTime}`,
-                // end: `${newTimestamp}T${formattedTime}`,
-                color: this.colors[colorIndex],
-                address: `ที่อยู่ : ${appointment.address}`,
-                lati: `ละติจูด : ${appointment.lati}`,
-                longi: `ลองติจูด : ${appointment.longi}`,
-                time: `เวลา : ${formattedTime}`,
-                type: `ประเภทผู้ป่วย : ${patient.type_patient_name || 'N/A'}`, // Fallback to 'N/A' if undefined
-                trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name || 'N/A'}`, // Fallback to 'N/A' if undefined
-                other: `เพิ่มเติม : ${patient.other || 'N/A'}`, // Fallback to 'N/A' if undefined
-              };
-              this.events.push(event);
-            }
-          });
+          const colorIndex = index % this.colors.length;
+          const event = {
+            name: `HN ${appointment.hn}`,
+            start: startTime,
+            color: this.colors[colorIndex],
+            address: `ที่อยู่ : ${appointment.address}`,
+            lati: `ละติจูด : ${appointment.lati}`,
+            longi: `ลองติจูด : ${appointment.longi}`,
+            time: `เวลา : ${formattedTime}`,
+            type: `ประเภทผู้ป่วย : ${patient.type_patient_name || 'N/A'}`, // Fallback to 'N/A' if undefined
+            trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name || 'N/A'}`, // Fallback to 'N/A' if undefined
+            other: `เพิ่มเติม : ${patient.other || 'N/A'}`, // Fallback to 'N/A' if undefined
+          };
+          this.events.push(event);
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      });
+
+      console.log("Events:", this.events);
     }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
   }
 };
 </script>
