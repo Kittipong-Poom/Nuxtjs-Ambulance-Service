@@ -48,6 +48,8 @@
                             ref="longi"></v-text-field>
                         </v-col>
                     </v-row>
+                    <v-btn color="green" class="mb-5 align-center justify-center" @click="getCurrentLocation" text
+                  :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
 
                     <!-- สถานะ -->
                     <v-select v-model="editedItem.status_case_id" outlined label="สถานะ"
@@ -97,6 +99,48 @@ export default {
         },
     },
     methods: {
+        async getCurrentLocation() {
+      this.loading = true
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
+        const position = await this.askForLocationPermission();
+        // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        // กำหนดค่า Latitude และ Longitude ให้กับตัวแปร editedItem
+        this.editedItem.lati = latitude;
+        this.editedItem.longi = longitude;
+        this.$forceUpdate();
+
+        this.snackbar = {
+          show: true,
+          color: 'success',
+          message: 'ดึงตำแหน่งปัจจุบันเสร็จสิ้น'
+        };
+      } catch (error) {
+        console.error('Error getting current location:', error);
+        // Update snackbar to show error message
+        this.snackbar = {
+          show: true,
+          color: 'error',
+          message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
+        };
+      } finally {
+        // Reset loading state
+        this.loading = false;
+      }
+    },
+    askForLocationPermission() {
+      return new Promise((resolve, reject) => {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        } else {
+          reject(new Error('Geolocation is not supported by this browser.'));
+        }
+      });
+    },
         async fetchAppointmentDate() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/appointments/${this.editedItem.hn}`);
