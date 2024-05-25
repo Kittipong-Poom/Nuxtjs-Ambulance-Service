@@ -13,12 +13,8 @@
 
     </v-card-title>
 
-    <v-data-table show-select v-model="selectedurgent" depressed :headers="headers" :items="desserts" :search="search"
-      @click:row="redirectToPatientDetail" @input="handleSelectedItemsChangeurgents"
-      @click:show-select="deleteSelectedItemsurgents">
-
-
-
+    <v-data-table :headers="headers" :items="desserts"  :search="search" item-key="caseurgent_id" show-select
+      v-model="selected" @input="handleSelectedItemsChange" @click:show-select="deleteSelectedItems">
       <template v-slot:top>
         <v-toolbar flat>
           <h3>เลือกทั้งหมด</h3>
@@ -26,11 +22,11 @@
           <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
             Export to Excel
           </v-btn>
-          <v-btn color="red" dark @click="deleteSelectedItemsurgents">ลบสิ่งที่เลือก</v-btn>
-
+          <v-btn depressed class=" mb-0 mr-3 white--text" color="red" @click="deleteSelectedItems">
+            ลบสิ่งที่เลือก
+          </v-btn>
         </v-toolbar>
       </template>
-
       <template v-slot:item.action="{ item }">
         <v-btn color="#4CAF50" class="mr-2 mb-2 white--text mt-2" @click="openDialogurgent('edit', item)">
           <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -40,9 +36,7 @@
           <v-icon>mdi-delete</v-icon>
           ลบ
         </v-btn>
-
       </template>
-
       <template v-slot:item.violence="{ item }">
         <v-chip class="my-chip2" :color="getStatusColor(item.violence)"
           :class="{ 'black--text': item.violence === 'ผู้ป่วยฉุกเฉินเร่งด่วน' || item.violence === 'ผู้ป่วยทั่วไป', }"
@@ -50,7 +44,6 @@
           {{ item.violence }}
         </v-chip>
       </template>
-
     </v-data-table>
 
     <!---ปุ่มลบ-->
@@ -88,19 +81,11 @@
 <script>
 
 import { Notify } from 'vue-notification';
-import DefaultLayout from '~/layouts/default.vue';
-import DialogForm from '~/components/DialogForm.vue';
-import DepartmentCard from '~/components/DepartmentCard.vue';
-import BarChartPatient from '~/components/BarChartPatient.vue';
 import DialogFormurgent from '~/components/DialogFormurgent.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 export default {
   components: {
-    DefaultLayout,
-    DialogForm,
-    DepartmentCard,
-    BarChartPatient,
     DialogFormurgent,
     Notify
   },
@@ -111,10 +96,8 @@ export default {
       dialogVisible: false,
       showNotifications: false,
       notifications: [],
-      selectedurgent: [], // selected items
-      selectedForDeletion: [], // items selected for deletion
-      drawer: false,
-      darkMode: false,
+      selectedItems: [],
+      selected: [],
       search: '',
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       headers: [
@@ -156,10 +139,9 @@ export default {
       },
     };
   },
-  fetch() {
-    this.loadData()
-  },
-
+  // fetch() {
+  //   this.loadData()
+  // },
   mounted() {
     console.log('ENV', this.endpointUrl)
     this.loadData();
@@ -195,32 +177,12 @@ export default {
     },
   },
   methods: {
-
-    exportToExcel() {
-      import('xlsx').then(XLSX => {
-        const dataToExport = this.filteredDesserts.map(item => {
-          return {
-            ...item,
-            emergency_group: Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group
-          };
-        });
-        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-        XLSX.writeFile(workbook, 'เคสฉุกเฉิน.xlsx');
-      }).catch(error => {
-        console.error('Error importing xlsx:', error);
-        // Handle error if xlsx library fails to load
-      });
-    },
-
-    handleSelectedItemsChangeurgents(selectedItems) {
+    handleSelectedItemsChange(selectedItems) {
       // Update selectedForDeletion array when items are selected/unselected
-      this.selectedurgent = selectedItems;
+      this.selected = selectedItems;
     },
-
-    async deleteSelectedItemsurgents() {
-      if (this.selectedurgent.length === 0) {
+    async deleteSelectedItems() {
+      if (this.selected.length === 0) {
         // Show warning message if no item is selected
         Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
         return; // Exit the function if no item is selected
@@ -240,30 +202,46 @@ export default {
       // Proceed with deletion if confirmed
       if (result.isConfirmed) {
         try {
-          // Get all items from the desserts array
-          const allItems = this.desserts;
-
-          // Delete all items
-          await Promise.all(allItems.map(async item => {
+          // Delete only the selected items
+          await Promise.all(this.selected.map(async item => {
             await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id}`);
           }));
 
-          // Clear the desserts array
-          this.desserts = [];
+          // Remove the selected items from the desserts array
+          this.desserts = this.desserts.filter(dessert => !this.selected.includes(dessert));
 
           // Clear the selected items array
-          this.selectedurgent = [];
+          this.selected = [];
 
           // Show deletion success message
-          Swal.fire('ลบแล้ว!', 'รายการทั้งหมดได้ถูกลบแล้ว', 'success');
+          Swal.fire('ลบแล้ว!', 'รายการที่เลือกได้ถูกลบแล้ว', 'success');
         } catch (error) {
           console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
           // Show error message if deletion fails
-          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการทั้งหมดได้', 'error');
+          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการที่เลือกได้', 'error');
         }
       }
     },
+    exportToExcel() {
+      import('xlsx').then(XLSX => {
+        const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
+        const exportData = dataToExport.map(item => {
+          return {
+            ...item,
+            emergency_group: Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group
+          };
+        });
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+        XLSX.writeFile(workbook, 'เคสฉุกเฉิน.xlsx');
+      }).catch(error => {
+        console.error('Error importing xlsx:', error);
+      });
+    },
 
+
+    //ใช้สำหรับ แปลง iso และแปลง DD-MM-YYYY
     formatDate(inputDate) {
       const date = new Date(inputDate);
       const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
@@ -271,22 +249,14 @@ export default {
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
     },
-    formatDateForMySQL(dateString) {
+    //ใช้สำหรับ save ข้อมูล
+    formatDateForsaveItem(dateString) {
       // Extract the date parts
       const datePart = dateString.split('-');
       // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
     },
-    formatDateWithoutTime(dateTimeString) {
-      return dateTimeString.split('T')[0];
-    },
-
-    redirectToPatientDetail(item) {
-
-      console.log('คลิก Row นี้:', item);
-    },
-
     getStatusColor(violence) {
       return this.statusColorMap[violence] || 'primary';
     },
@@ -294,14 +264,13 @@ export default {
       this.dialogTitle1 = action === 'add' ? 'จัดการผู้ป่วยใหม่เคสฉุกเฉิน' : 'แก้ไขข้อมูลผู้ป่วยฉุกเฉิน';
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
-
     },
 
 
     async saveItem(editedItem) {
       try {
         let response;
-        editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
+        editedItem.service_date = this.formatDateForsaveItem(editedItem.service_date);
         editedItem.emergency_group = JSON.stringify(editedItem.emergency_group);
         if (!editedItem.caseurgent_id) {
           // Add new patient
@@ -372,8 +341,6 @@ export default {
     },
 
     async deleteItem(item) {
-
-
       this.confirmItem = item;
       this.confirm = true;
     },

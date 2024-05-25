@@ -17,8 +17,8 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
       </v-card-title>
 
-      <v-data-table v-model="selected" show-select  depressed :headers="headers" :items="desserts" :search="search"
-        @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
+      <v-data-table v-model="selected" show-select depressed :headers="headers" item-key="hn_id" :items="desserts"
+        :search="search" @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
         @click:show-select="deleteSelectedItems">
 
 
@@ -35,7 +35,7 @@
           </v-toolbar>
         </template>
 
-        
+
         <template v-slot:item.action="{ item }">
           <v-btn color="#4CAF50" class="mr-2  white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -104,20 +104,14 @@
 
 <script>
 import Appointment from '~/components/DialogAppointment.vue';
-import Calendar from '~/components/Calendar.vue';
 import DialogForm from '~/components/DialogForm.vue';
-import DepartmentCard from '~/components/DepartmentCard.vue';
-import BarChartPatient from '~/components/BarChartPatient.vue';
 import History from '~/components/History.vue';
 import axios from 'axios'
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 export default {
   components: {
-    Calendar,
     DialogForm,
-    DepartmentCard,
-    BarChartPatient,
     Appointment,
     History,
   },
@@ -137,12 +131,6 @@ export default {
       action: '',
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
-      rules: {
-        other: (value) => {
-          if (!value) return "กรอกรายละเอียดเพิ่มเติม";
-          return true;
-        },
-      },
       headers: [
         { text: 'HN', value: 'hn', align: 'center' },
         { text: 'อายุ', value: 'age_name', align: 'center' },
@@ -191,11 +179,14 @@ export default {
   },
   computed: {
     filteredDesserts() {
-      const search = this.search.toLowerCase();
+      if (!this.search) {
+        return this.desserts;
+      }
+      const searchLower = this.search.toLowerCase();
       return this.desserts.filter(item => {
-        return Object.keys(item).some(key => {
-          return String(item[key]).toLowerCase().includes(search);
-        });
+        return Object.values(item).some(value =>
+          String(value).toLowerCase().includes(searchLower)
+        );
       });
     },
     formattedDate() {
@@ -220,16 +211,19 @@ export default {
 
     exportToExcel() {
       import('xlsx').then(XLSX => {
-        // Clone the array and remove the fields 'service_date' and 'time'
-        const dataToExport = this.filteredDesserts.map(({ service_date, time, ...rest }) => rest);
-
-        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
+        const exportData = dataToExport.map(item => {
+          return {
+            ...item,
+            emergency_group: Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group
+          };
+        });
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
         XLSX.writeFile(workbook, 'ข้อมูลผู้ป่วยทั่วไป.xlsx');
       }).catch(error => {
         console.error('Error importing xlsx:', error);
-        // Handle error if xlsx library fails to load
       });
     },
     handleSelectedItemsChange(selectedItems) {
@@ -257,26 +251,23 @@ export default {
       // Proceed with deletion if confirmed
       if (result.isConfirmed) {
         try {
-          // Get all items from the desserts array
-          const allItems = this.desserts;
-
-          // Delete all items
-          await Promise.all(allItems.map(async item => {
+          // Delete only the selected items
+          await Promise.all(this.selected.map(async item => {
             await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
           }));
 
-          // Clear the desserts array
-          this.desserts = [];
+          // Remove the selected items from the desserts array
+          this.desserts = this.desserts.filter(dessert => !this.selected.includes(dessert));
 
           // Clear the selected items array
           this.selected = [];
 
           // Show deletion success message
-          Swal.fire('ลบแล้ว!', 'รายการทั้งหมดได้ถูกลบแล้ว', 'success');
+          Swal.fire('ลบแล้ว!', 'รายการที่เลือกได้ถูกลบแล้ว', 'success');
         } catch (error) {
           console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
           // Show error message if deletion fails
-          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการทั้งหมดได้', 'error');
+          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการที่เลือกได้', 'error');
         }
       }
     },

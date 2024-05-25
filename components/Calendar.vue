@@ -84,14 +84,10 @@
 </template>
 
 <script>
-import Patient from "~/pages/Patient.vue";
 import axios from "axios";
 import dayjs from "dayjs";
 export default {
   data: () => ({
-    components: {
-      Patient
-    },
     endpointUrl:
       process.env.NODE_ENV == "development"
         ? "http://localhost:5000"

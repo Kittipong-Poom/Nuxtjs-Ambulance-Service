@@ -7,7 +7,6 @@
   
   <script>
   import Calendar from '@/components/Calendar.vue'
-  import Swal from 'sweetalert2';
   export default {
     components: {
       Calendar

@@ -49,12 +49,10 @@
 <script>
 import BarChartPatient from '../components/BarChartPatient.vue'
 import PieChartPatient from '../components/PieChartPatient.vue'
-import Patient from './Patient.vue'
 export default {
   components: {
     BarChartPatient,
     PieChartPatient,
-    Patient
   },
   data() {
     return {

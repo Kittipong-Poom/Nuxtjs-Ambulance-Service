@@ -9,11 +9,10 @@
             <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
         </v-card-title>
 
-        <v-data-table v-model="selected" show-select depressed :headers="headers" :items="filteredDesserts"
-            :search="search" item-key="id" @input="handleSelectedItemsChange" @click:show-select="deleteSelectedItems">
+        <v-data-table :headers="headers" :items="filteredDesserts" :search="search" item-key="id" show-select
+            v-model="selected" @input="handleSelectedItemsChange">
             <template v-slot:top>
                 <v-toolbar flat>
-
                     <h3>เลือกทั้งหมด</h3>
                     <v-spacer></v-spacer>
                     <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
@@ -53,8 +52,8 @@
             </template>
         </v-data-table>
 
-        <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
-            @close="closeDialog" :hide-fields="{ actions: true }" />
+        <!-- <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
+            @close="closeDialog" :hide-fields="{ actions: true }" /> -->
 
         <Appointment :dialog="isAppointmentDialogOpen" :editedItem="editedItem" :dialogTitle="dialogTitle"
             @close-dialog="isAppointmentDialogOpen = false" @update-success="handleUpdateSuccess" />
@@ -65,12 +64,9 @@
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import Appointment from '~/components/DialogQueueManage.vue';
-import Patient from './Patient.vue';
 import axios from 'axios';
-
 export default {
     components: {
-        Patient,
         Appointment,
     },
     data() {
@@ -92,7 +88,6 @@ export default {
             selectedPatient: null,
             selectedItem: null,
             selected: [], // selected items
-            selectedForDeletion: [], // items selected for deletion
             dialog: false,
             dialogTitle: '',
             desserts: [],
@@ -170,13 +165,15 @@ export default {
         },
         async deleteSelectedItems() {
             if (this.selected.length === 0) {
+                // Show warning message if no item is selected
                 Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
-                return;
+                return; // Exit the function if no item is selected
             }
 
+            // Perform deletion confirmation
             const result = await Swal.fire({
                 title: 'ยืนยันการลบ',
-                text: 'ถ้าลบแล้วไม่สามารถกู้คืนข้อมูลได้อีก',
+                text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -184,24 +181,25 @@ export default {
                 confirmButtonText: 'แน่นอน ลบ!'
             });
 
+            // Proceed with deletion if confirmed
             if (result.isConfirmed) {
                 try {
-                    await Promise.all(this.selected.map(async selectedItem => {
-                        await axios.delete(`${this.endpointUrl}/api/appointments/${selectedItem.id}`);
-                        // Remove the deleted item from the filteredDesserts array
-                        const index = this.filteredDesserts.findIndex(item => item.id === selectedItem.id);
-                        if (index !== -1) {
-                            this.filteredDesserts.splice(index, 1);
-                        }
+                    // Delete only the selected items
+                    await Promise.all(this.selected.map(async item => {
+                        await axios.delete(`${this.endpointUrl}/api/appointments/${item.id}`);
                     }));
 
+                    // Remove the selected items from the desserts array
+                    this.desserts = this.desserts.filter(dessert => !this.selected.includes(dessert));
+
+                    // Clear the selected items array
                     this.selected = [];
 
-                    this.desserts = [];
-
+                    // Show deletion success message
                     Swal.fire('ลบแล้ว!', 'รายการที่เลือกได้ถูกลบแล้ว', 'success');
                 } catch (error) {
                     console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
+                    // Show error message if deletion fails
                     Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการที่เลือกได้', 'error');
                 }
             }
@@ -306,21 +304,9 @@ export default {
             const formattedDate = `${gregorianYear}-${datePart[1]}-${datePart[0]}`;
             return formattedDate;
         },
-
-        showDialog(patient) {
-            this.selectedPatient = patient;
-            this.isDialogVisible = true;
-        },
         closeDialog() {
             this.selectedPatient = null;
             this.isDialogVisible = false;
-        },
-        toggleDialog(patient) {
-            if (this.isDialogVisible) {
-                this.closeDialog();
-            } else {
-                this.showDialog(patient);
-            }
         },
         async saveItem(editedItem) {
             try {
