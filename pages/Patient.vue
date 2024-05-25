@@ -253,7 +253,7 @@ export default {
         try {
           // Delete only the selected items
           await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
+            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn}`);
           }));
 
           // Remove the selected items from the desserts array
@@ -508,10 +508,11 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn_id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn}`);
+            await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
-              this.desserts = this.desserts.filter(p => p.hn_id !== item.hn_id);
+              this.desserts = this.desserts.filter(p => p.hn !== item.hn);
               // Show success notification
               Swal.fire({
                 icon: 'success',

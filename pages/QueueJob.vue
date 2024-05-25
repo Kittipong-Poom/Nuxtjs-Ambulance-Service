@@ -186,7 +186,7 @@ export default {
                 try {
                     // Delete only the selected items
                     await Promise.all(this.selected.map(async item => {
-                        await axios.delete(`${this.endpointUrl}/api/appointments/${item.id}`);
+                        await axios.delete(`${this.endpointUrl}/api/appointmentsall/${item.id}`);
                     }));
 
                     // Remove the selected items from the desserts array
