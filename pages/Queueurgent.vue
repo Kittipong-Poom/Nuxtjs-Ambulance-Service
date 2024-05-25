@@ -18,7 +18,7 @@
       @click:show-select="deleteSelectedItemsurgents">
 
 
-      
+
       <template v-slot:top>
         <v-toolbar flat>
           <h3>เลือกทั้งหมด</h3>
@@ -125,7 +125,7 @@ export default {
         { text: 'อายุ', value: 'age', align: 'center' },
         { text: 'ประเภทผู้ป่วย', value: 'status', align: 'center' },
         { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence', align: 'center' },
-        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center', width: 500},
+        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center', width: 500 },
         { text: 'Latitude', value: 'lati', align: 'center' },
         { text: 'Longitude', value: 'longi', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery', align: 'center' },
@@ -165,7 +165,17 @@ export default {
     this.loadData();
   },
   computed: {
-
+    filteredDesserts() {
+      if (!this.search) {
+        return this.desserts;
+      }
+      const searchLower = this.search.toLowerCase();
+      return this.desserts.filter(item => {
+        return Object.values(item).some(value =>
+          String(value).toLowerCase().includes(searchLower)
+        );
+      });
+    },
     formattedDesserts() {
       return this.desserts.map(dessert => ({
         ...dessert,
@@ -188,7 +198,13 @@ export default {
 
     exportToExcel() {
       import('xlsx').then(XLSX => {
-        const worksheet = XLSX.utils.json_to_sheet(this.desserts);
+        const dataToExport = this.filteredDesserts.map(item => {
+          return {
+            ...item,
+            emergency_group: Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group
+          };
+        });
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
         XLSX.writeFile(workbook, 'เคสฉุกเฉิน.xlsx');
@@ -303,7 +319,7 @@ export default {
           Swal.fire({
             icon: 'success',
             title: 'สำเร็จ',
-            text: 'แก้ไขข้อมูลสำเร็จ',
+            text: 'กรอกข้อมูลสำเร็จ',
           });
 
         } else {
@@ -437,6 +453,7 @@ export default {
           return {
             ...item,
             service_date: this.formatDate(item.service_date) // Format date here
+
           };
         });
 
@@ -454,7 +471,7 @@ export default {
           // Assuming the service_date field contains the date to be formatted
           return {
             ...item,
-            service_date: this.formatDate(item.service_date) // Format date here
+            service_date: this.formatDate(item.service_date), // Format date here
           };
         });
         return formattedData;
@@ -479,7 +496,8 @@ export default {
 body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.truncate{
+
+.truncate {
   text-overflow: ellipsis;
   overflow: hidden;
 }

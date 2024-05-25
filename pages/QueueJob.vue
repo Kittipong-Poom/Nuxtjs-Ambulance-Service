@@ -6,17 +6,30 @@
 
         <v-card-title>
             <v-spacer />
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details />
+            <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
         </v-card-title>
 
-        <v-data-table depressed :headers="headers" :items="filteredDesserts" :search="search" item-key="id">
+        <v-data-table v-model="selected" show-select depressed :headers="headers" :items="filteredDesserts"
+            :search="search" item-key="id" @input="handleSelectedItemsChange" @click:show-select="deleteSelectedItems">
+            <template v-slot:top>
+                <v-toolbar flat>
+
+                    <h3>เลือกทั้งหมด</h3>
+                    <v-spacer></v-spacer>
+                    <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
+                        Export to Excel
+                    </v-btn>
+                    <v-btn depressed class=" mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
+                        ลบสิ่งที่เลือก</v-btn>
+
+                </v-toolbar>
+            </template>
             <template v-slot:item.action="{ item }">
                 <div class="d-flex">
                     <v-btn color="#4CAF50" class="mr-2 white--text" @click="openAppointmentDialog(item)">
                         <v-icon>mdi-pencil-box-multiple-outline</v-icon>
                         แก้ไขข้อมูลนัดหมาย
                     </v-btn>
-                    
                     <v-btn color="blue" class="mr-2 white--text" @click="openGoogleMaps(item)">
                         <v-icon>mdi-map-marker</v-icon>
                         เริ่มการนำทาง
@@ -78,6 +91,8 @@ export default {
             ],
             selectedPatient: null,
             selectedItem: null,
+            selected: [], // selected items
+            selectedForDeletion: [], // items selected for deletion
             dialog: false,
             dialogTitle: '',
             desserts: [],
@@ -110,24 +125,87 @@ export default {
     },
     computed: {
         filteredDesserts() {
-            return this.desserts.filter(patient => {
-                return patient.hn || patient.age_name || patient.gender || patient.number || patient.time || patient.address || patient.lati || patient.longi
-                    || patient.type_patient_name || patient.service_date || patient.tracking_name || patient.other || patient.status_case_id;
-            }).sort((a, b) => {
-                const statusOrder = { 'รอรับงาน': 1, 'กำลังดำเนินงาน': 2, 'เสร็จสิ้น': 3 };
-                const statusComparison = statusOrder[a.status_case_id] - statusOrder[b.status_case_id];
+            const search = this.search.toLowerCase();
+            return this.desserts
+                .filter(item => {
+                    return Object.keys(item).some(key => {
+                        return String(item[key]).toLowerCase().includes(search);
+                    });
+                })
+                .sort((a, b) => {
+                    const statusOrder = { 'รอรับงาน': 1, 'กำลังดำเนินงาน': 2, 'เสร็จสิ้น': 3 };
+                    const statusComparison = statusOrder[a.status_case_id] - statusOrder[b.status_case_id];
 
-                if (statusComparison !== 0) {
-                    return statusComparison;
-                }
+                    if (statusComparison !== 0) {
+                        return statusComparison;
+                    }
 
-                const dateA = dayjs(a.service_date, 'YYYY-MM-DD');
-                const dateB = dayjs(b.service_date, 'YYYY-MM-DD');
-                return dateA.isAfter(dateB) ? 1 : -1;
-            });
-        },
+                    const dateA = dayjs(a.service_date, 'YYYY-MM-DD');
+                    const dateB = dayjs(b.service_date, 'YYYY-MM-DD');
+                    return dateA.isAfter(dateB) ? 1 : -1;
+                });
+        }
     },
     methods: {
+        exportToExcel() {
+            import('xlsx').then(XLSX => {
+                // Use the selected items if there are any, otherwise, use filtered desserts
+                const itemsToExport = this.selected.length > 0 ? this.selected : this.filteredDesserts;
+
+                // Map the items for export
+                const dataToExport = itemsToExport.map(({ service_date, time, ...rest }) => rest);
+
+                const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+                XLSX.writeFile(workbook, 'จัดการตารางคิวงาน.xlsx');
+            }).catch(error => {
+                console.error('Error importing xlsx:', error);
+                // Handle error if xlsx library fails to load
+            });
+        },
+        handleSelectedItemsChange(selectedItems) {
+            // Update selectedForDeletion array when items are selected/unselected
+            this.selected = selectedItems;
+        },
+        async deleteSelectedItems() {
+            if (this.selected.length === 0) {
+                Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'ยืนยันการลบ',
+                text: 'ถ้าลบแล้วไม่สามารถกู้คืนข้อมูลได้อีก',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'แน่นอน ลบ!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all(this.selected.map(async selectedItem => {
+                        await axios.delete(`${this.endpointUrl}/api/appointments/${selectedItem.id}`);
+                        // Remove the deleted item from the filteredDesserts array
+                        const index = this.filteredDesserts.findIndex(item => item.id === selectedItem.id);
+                        if (index !== -1) {
+                            this.filteredDesserts.splice(index, 1);
+                        }
+                    }));
+
+                    this.selected = [];
+
+                    this.desserts = [];
+
+                    Swal.fire('ลบแล้ว!', 'รายการที่เลือกได้ถูกลบแล้ว', 'success');
+                } catch (error) {
+                    console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการที่เลือกได้', 'error');
+                }
+            }
+        },
         async loadData() {
             try {
                 const { data } = await axios.get(this.endpointUrl + '/api/appointments')
@@ -192,41 +270,42 @@ export default {
             window.open(url);
         },
         openAppointmentDialog(item) {
-    // Pass the service date along with other item properties
-    this.editedItem = { ...item, service_date: new Date(item.service_date) };
-    this.dialogTitle = 'แก้ไขนัดหมายผู้ป่วย';
-    this.isAppointmentDialogOpen = true;
-},
+            // Pass the service date along with other item properties
+            this.editedItem = { ...item, service_date: new Date(item.service_date) };
+            this.dateString = item.service_date;
+            this.dialogTitle = 'แก้ไขนัดหมายผู้ป่วย';
+            this.isAppointmentDialogOpen = true;
+        },
         handleUpdateSuccess() {
             this.isAppointmentDialogOpen = false;
             console.log('Update was successful');
             this.fetchDataFromServer();  // Fetch data to get the latest updates
         },
         formatTime(time) {
-    if (!time) return '';
-    const timeObj = new Date(time);
-    const hours = timeObj.getHours().toString().padStart(2, '0');
-    const minutes = timeObj.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-},
+            if (!time) return '';
+            const timeObj = new Date(time);
+            const hours = timeObj.getHours().toString().padStart(2, '0');
+            const minutes = timeObj.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        },
 
         formatDate(inputDate) {
-    const date = new Date(inputDate);
-    const buddhistYear = 2567; // Hardcoded Buddhist year
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    return `${day}-${month}-${buddhistYear}`;
-},
+            const date = new Date(inputDate);
+            const buddhistYear = 2567; // Hardcoded Buddhist year
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            return `${day}-${month}-${buddhistYear}`;
+        },
 
-formatDateForMySQL(dateString) {
-    if (!dateString) {
-        return null;
-    }
-    const datePart = dateString.split('-');
-    const gregorianYear = parseInt(datePart[2]) - 543; // Convert Buddhist year to Gregorian calendar
-    const formattedDate = `${gregorianYear}-${datePart[1]}-${datePart[0]}`;
-    return formattedDate;
-},
+        formatDateForMySQL(dateString) {
+            if (!dateString) {
+                return null;
+            }
+            const datePart = dateString.split('-');
+            const gregorianYear = parseInt(datePart[2]) - 543; // Convert Buddhist year to Gregorian calendar
+            const formattedDate = `${gregorianYear}-${datePart[1]}-${datePart[0]}`;
+            return formattedDate;
+        },
 
         showDialog(patient) {
             this.selectedPatient = patient;
@@ -267,7 +346,7 @@ formatDateForMySQL(dateString) {
                     }
                 }
                 this.closeDialog();
-
+                this.$emit('item-saved');
                 const index = this.desserts.findIndex(item => item.id === savedAppointment.id);
                 if (index !== -1) {
                     this.$set(this.desserts[index], 'status_case_id', savedAppointment.status_case_id);

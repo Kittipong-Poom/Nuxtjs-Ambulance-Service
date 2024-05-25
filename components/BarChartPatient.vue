@@ -4,7 +4,7 @@
       :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" v-if="loaded"/>
     <div class="additional-text">
       <p>
-        กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี 2566 <br>
+        กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี 2567 <br>
         โดยมีฉุกเฉินเเทนเป็นสีเเดงที่บอกถึงการเกิดอุบัติเหตุ ในเเต่ละเดือน <br>
         เเละให้สีฟ้าเเทนเป็นผู้ป่วยนัดรับ ในเเต่ละเดือน
       </p>
@@ -140,7 +140,7 @@ export default {
           },
           title: {
             display: true,
-            text: "ข้อมูลผู้ป่วยประจำปี 2566",
+            text: "ข้อมูลผู้ป่วยประจำปี 2567",
             font: {
               size: 16,
             },

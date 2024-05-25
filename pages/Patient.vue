@@ -12,29 +12,30 @@
         <v-btn depressed class="button mb-0 mr-3" color="black" dark @click="openHistoryDialog">
           ประวัติการนัดหมาย
         </v-btn>
-        
+
         <v-spacer />
         <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
       </v-card-title>
 
-      <v-data-table v-model="selected" show-select depressed :headers="headers" :items="desserts" :search="search"
+      <v-data-table v-model="selected" show-select  depressed :headers="headers" :items="desserts" :search="search"
         @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
         @click:show-select="deleteSelectedItems">
 
-        
+
         <template v-slot:top>
           <v-toolbar flat>
-            
+
             <h3>เลือกทั้งหมด</h3>
             <v-spacer></v-spacer>
             <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
               Export to Excel
             </v-btn>
-            <v-btn depressed class="button mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
+            <v-btn depressed class=" mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
               ลบสิ่งที่เลือก</v-btn>
           </v-toolbar>
         </template>
 
+        
         <template v-slot:item.action="{ item }">
           <v-btn color="#4CAF50" class="mr-2  white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -89,14 +90,14 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <History v-if="isHistoryDialogOpen" :dialog="isHistoryDialogOpen"
-        :dialog-title="dialogTitle2" @close-dialog="isHistoryDialogOpen = false"/>
+      <History v-if="isHistoryDialogOpen" :dialog="isHistoryDialogOpen" :dialog-title="dialogTitle2"
+        @close-dialog="isHistoryDialogOpen = false" />
       <!-- Include the dialog -->
       <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
         @close="closeDialog" :hide-fields="{ dateAndTime: true }" />
 
       <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
-      :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false" />
+        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false" />
     </v-card>
   </div>
 </template>
@@ -137,11 +138,11 @@ export default {
       isAppointmentDialogOpen: false,
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       rules: {
-      other: (value) => {
-        if (!value) return "กรอกรายละเอียดเพิ่มเติม";
-        return true;
+        other: (value) => {
+          if (!value) return "กรอกรายละเอียดเพิ่มเติม";
+          return true;
+        },
       },
-    },
       headers: [
         { text: 'HN', value: 'hn', align: 'center' },
         { text: 'อายุ', value: 'age_name', align: 'center' },
@@ -189,6 +190,14 @@ export default {
     this.loadData();
   },
   computed: {
+    filteredDesserts() {
+      const search = this.search.toLowerCase();
+      return this.desserts.filter(item => {
+        return Object.keys(item).some(key => {
+          return String(item[key]).toLowerCase().includes(search);
+        });
+      });
+    },
     formattedDate() {
       // Parse the Thai date string and subtract 543 years to get the correct year
       const thaiDate = dayjs(this.date, 'DD-MM-YYYY');
@@ -201,19 +210,20 @@ export default {
   },
   methods: {
     openHistoryDialog() {
-  // Check if any other dialog is open and close it
-  if (this.isAppointmentDialogOpen || this.dialog) {
-    this.isAppointmentDialogOpen = false;
-    this.dialog = false;
-  }
-  this.isHistoryDialogOpen = true;
-},
-
-
+      // Check if any other dialog is open and close it
+      if (this.isAppointmentDialogOpen || this.dialog) {
+        this.isAppointmentDialogOpen = false;
+        this.dialog = false;
+      }
+      this.isHistoryDialogOpen = true;
+    },
 
     exportToExcel() {
       import('xlsx').then(XLSX => {
-        const worksheet = XLSX.utils.json_to_sheet(this.desserts);
+        // Clone the array and remove the fields 'service_date' and 'time'
+        const dataToExport = this.filteredDesserts.map(({ service_date, time, ...rest }) => rest);
+
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
         XLSX.writeFile(workbook, 'ข้อมูลผู้ป่วยทั่วไป.xlsx');
@@ -284,23 +294,23 @@ export default {
       // Other logic...
     },
     openAppointmentDialog(item) {
-  // ก่อนเปิด appointment dialog ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
-  if (this.dialog || this.isHistoryDialogOpen) {
-    this.dialog = false;
-    this.isHistoryDialogOpen = false;
-  }
+      // ก่อนเปิด appointment dialog ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
+      if (this.dialog || this.isHistoryDialogOpen) {
+        this.dialog = false;
+        this.isHistoryDialogOpen = false;
+      }
 
-  // เปิด appointment dialog ใหม่
-  const { data } = axios.get(this.endpointUrl + '/api/status');
-  this.items_status = data;
-  // Set editedItem and dialogTitle based on item data
-  this.editedItem = item;
-  console.log(item);
-  console.log(this.editedItem.age_name);
-  this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
-  // Show the appointment dialog
-  this.isAppointmentDialogOpen = true;
-},
+      // เปิด appointment dialog ใหม่
+      const { data } = axios.get(this.endpointUrl + '/api/status');
+      this.items_status = data;
+      // Set editedItem and dialogTitle based on item data
+      this.editedItem = item;
+      console.log(item);
+      console.log(this.editedItem.age_name);
+      this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
+      // Show the appointment dialog
+      this.isAppointmentDialogOpen = true;
+    },
 
 
     formatDateForMySQL(dateString) {
@@ -325,158 +335,158 @@ export default {
       return this.statusColorMap[type] || 'defaultColor';
     },
     openDialog(action, item = null) {
-  // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
-  if (this.isAppointmentDialogOpen || this.isHistoryDialogOpen) {
-    this.isAppointmentDialogOpen = false;
-    this.isHistoryDialogOpen = false;
-  }
+      // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
+      if (this.isAppointmentDialogOpen || this.isHistoryDialogOpen) {
+        this.isAppointmentDialogOpen = false;
+        this.isHistoryDialogOpen = false;
+      }
 
-  // เปิด dialog ใหม่
-  this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
-  this.editedItem = action === 'add' ? {} : { ...item };
-  this.dialog = true;
-},
+      // เปิด dialog ใหม่
+      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
+      this.editedItem = action === 'add' ? {} : { ...item };
+      this.dialog = true;
+    },
 
 
     async saveItem(editedItem) {
-  try {
-    let response;
-
-    const isAddNewPatient = !editedItem.hn_id;
-    const isUpdatePatientInfo = editedItem.hn_id && !editedItem.time;
-    const isUpdateAppointment = editedItem.hn_id && editedItem.time;
-
-    console.log('isAddNewPatient:', isAddNewPatient);
-    console.log('isUpdatePatientInfo:', isUpdatePatientInfo);
-    console.log('isUpdateAppointment:', isUpdateAppointment);
-
-    if (isAddNewPatient) {
-      // Add new patient
-      console.log('Adding new patient', editedItem);
-
       try {
-        response = await axios.post(`${this.endpointUrl}/api/patients`, {
-          hn: editedItem.hn,
-          ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
-          gender: editedItem.gender,
-          number: editedItem.number,
-          tracking_patient_id: editedItem.tracking_patient_id,
-          address: editedItem.address,
-          lati: editedItem.lati,
-          longi: editedItem.longi,
-          type_patient_id: editedItem.type_patient_id,
-          other: editedItem.other,
-          service_date: null,
-          time: null,
-        });
-        console.log('response:', response);
+        let response;
 
-        Swal.fire({
-          icon: 'success',
-          title: 'สำเร็จ',
-          text: 'กรอกข้อมูลสำเร็จ',
+        const isAddNewPatient = !editedItem.hn_id;
+        const isUpdatePatientInfo = editedItem.hn_id && !editedItem.time;
+        const isUpdateAppointment = editedItem.hn_id && editedItem.time;
+
+        console.log('isAddNewPatient:', isAddNewPatient);
+        console.log('isUpdatePatientInfo:', isUpdatePatientInfo);
+        console.log('isUpdateAppointment:', isUpdateAppointment);
+
+        if (isAddNewPatient) {
+          // Add new patient
+          console.log('Adding new patient', editedItem);
+
+          try {
+            response = await axios.post(`${this.endpointUrl}/api/patients`, {
+              hn: editedItem.hn,
+              ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
+              gender: editedItem.gender,
+              number: editedItem.number,
+              tracking_patient_id: editedItem.tracking_patient_id,
+              address: editedItem.address,
+              lati: editedItem.lati,
+              longi: editedItem.longi,
+              type_patient_id: editedItem.type_patient_id,
+              other: editedItem.other,
+              service_date: null,
+              time: null,
+            });
+            console.log('response:', response);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'สำเร็จ',
+              text: 'กรอกข้อมูลสำเร็จ',
+            });
+          } catch (error) {
+            console.error('Error in axios.post:', error.response || error);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'สำเร็จ',
+              text: 'นัดหมายสำเร็จ',
+            });
+            return;
+          }
+
+        } else if (isUpdateAppointment) {
+          // Update appointment
+          console.log('Updating appointment', editedItem);
+
+          try {
+            response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
+              status_case_id: editedItem.status_case_id,
+              service_date: editedItem.service_date,
+              time: editedItem.time
+            });
+            console.log('response:', response);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'สำเร็จ',
+              text: 'อัพเดตการนัดหมายสำเร็จ',
+            });
+          } catch (error) {
+            console.error('Error in axios.put (appointment):', error.response || error);
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'ไม่สามารถนัดหมายผู้ป่วยได้:11111 ' + (error.response.data.message || error.message),
+            });
+            return;
+          }
+
+        } else if (isUpdatePatientInfo) {
+          // Update patient information
+          console.log('Updating patient info', editedItem);
+
+          try {
+            response = await axios.put(`${this.endpointUrl}/api/patientsedit/${editedItem.hn_id}`, {
+              hn: editedItem.hn,
+              ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
+              gender: editedItem.gender,
+              number: editedItem.number,
+              tracking_patient_id: editedItem.tracking_patient_id,
+              address: editedItem.address,
+              lati: editedItem.lati,
+              longi: editedItem.longi,
+              type_patient_id: editedItem.type_patient_id,
+              other: editedItem.other,
+            });
+            console.log('response:', response);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'สำเร็จ',
+              text: 'แก้ไขข้อมูลสำเร็จ',
+            });
+          } catch (error) {
+            console.error('Error in axios.put (patient info):', error.response || error);
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'ไม่สามารถแก้ไขข้อมูลได้:5555 ' + (error.response.data.message || error.message),
+            });
+            return;
+          }
+        }
+
+        console.log('response', response);
+
+        const savedPatient = response.data;
+
+        this.$nextTick(() => {
+          if (isAddNewPatient) {
+            this.desserts.push(savedPatient);
+          } else {
+            const index = this.desserts.findIndex(item => item.hn_id === savedPatient.hn_id);
+            this.$set(this.desserts, index, savedPatient);
+          }
+          this.closeDialog();
         });
+        this.desserts = await this.fetchDataFromServer();
+
       } catch (error) {
-        console.error('Error in axios.post:', error.response || error);
+        console.error('Error saving item:', error.response || error);
 
-        Swal.fire({
-          icon: 'success',
-          title: 'สำเร็จ',
-          text: 'นัดหมายสำเร็จ', 
-        });
-        return;
-      }
-
-    } else if (isUpdateAppointment) {
-      // Update appointment
-      console.log('Updating appointment', editedItem);
-
-      try {
-        response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
-          status_case_id: editedItem.status_case_id,
-          service_date: editedItem.service_date,
-          time: editedItem.time
-        });
-        console.log('response:', response);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'สำเร็จ',
-          text: 'อัพเดตการนัดหมายสำเร็จ',
-        });
-      } catch (error) {
-        console.error('Error in axios.put (appointment):', error.response || error);
-
+        // Show an error notification
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'ไม่สามารถนัดหมายผู้ป่วยได้:11111 ' + (error.response.data.message || error.message),
+          text: 'ไม่สามารถบันทึกข้อมูลได้: 66666' + (error.response.data.message || error.message),
         });
-        return;
       }
-
-    } else if (isUpdatePatientInfo) {
-      // Update patient information
-      console.log('Updating patient info', editedItem);
-
-      try {
-        response = await axios.put(`${this.endpointUrl}/api/patientsedit/${editedItem.hn_id}`, {
-          hn: editedItem.hn,
-          ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
-          gender: editedItem.gender,
-          number: editedItem.number,
-          tracking_patient_id: editedItem.tracking_patient_id,
-          address: editedItem.address,
-          lati: editedItem.lati,
-          longi: editedItem.longi,
-          type_patient_id: editedItem.type_patient_id,
-          other: editedItem.other,
-        });
-        console.log('response:', response);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'สำเร็จ',
-          text: 'แก้ไขข้อมูลสำเร็จ',
-        });
-      } catch (error) {
-        console.error('Error in axios.put (patient info):', error.response || error);
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'ไม่สามารถแก้ไขข้อมูลได้:5555 ' + (error.response.data.message || error.message),
-        });
-        return;
-      }
-    }
-
-    console.log('response', response);
-
-    const savedPatient = response.data;
-
-    this.$nextTick(() => {
-      if (isAddNewPatient) {
-        this.desserts.push(savedPatient);
-      } else {
-        const index = this.desserts.findIndex(item => item.hn_id === savedPatient.hn_id);
-        this.$set(this.desserts, index, savedPatient);
-      }
-      this.closeDialog();
-    });
-    this.desserts = await this.fetchDataFromServer();
-
-  } catch (error) {
-    console.error('Error saving item:', error.response || error);
-
-    // Show an error notification
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'ไม่สามารถบันทึกข้อมูลได้: 66666' + (error.response.data.message || error.message),
-    });
-  }
-},
+    },
 
     async deleteItem(item) {
       this.confirmItem = item;

@@ -60,7 +60,7 @@ export default {
         const stat = markerData.status_case_id;
 
         // Create a popup content string with lati and longi values
-        const popupContent = `<b>Latitude:</b> ${lat}<br><b>Longitude:</b> ${lng}<br><b>Status:</b> ${stat}`;
+        const popupContent = `<b>ละติจูด:</b> ${lat}<br><b>ลองติจูด:</b> ${lng}<br><b>สถานะ:</b> ${stat}`;
 
         // Create a marker with the popup content
         let markerInstance = L.marker([lat, lng]).bindPopup(popupContent).addTo(this.map);

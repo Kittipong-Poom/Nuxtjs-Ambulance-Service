@@ -10,8 +10,7 @@
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
-                                :return-value.sync="dateString" transition="scale-transition" offset-y
-                                min-width="auto">
+                                :return-value.sync="dateString" transition="scale-transition" offset-y min-width="auto">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field v-model="formattedDate" label="วันที่นัดหมาย" outlined
                                         prepend-inner-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"
@@ -38,18 +37,18 @@
 
                     <v-row>
                         <v-col cols="12" md="6">
-                          <!-- ละติจูด -->
-                          <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
-                             ref="lati"></v-text-field>
+                            <!-- ละติจูด -->
+                            <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด"
+                                outlined ref="lati"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6">
-                          <!-- ลองจิจูด -->
-                          <v-text-field v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker" label="ลองติจูด*" outlined
-                            ref="longi"></v-text-field>
+                            <!-- ลองจิจูด -->
+                            <v-text-field v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker"
+                                label="ลองติจูด*" outlined ref="longi"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-btn color="green" class="mb-5 align-center justify-center" @click="getCurrentLocation" text
-                  :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
+                        :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
 
                     <!-- สถานะ -->
                     <v-select v-model="editedItem.status_case_id" outlined label="สถานะ"
@@ -83,6 +82,7 @@ export default {
             endpointUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
             menu: false,
             dateString: '', // Initialize dateString here
+            loading: false,
         };
     },
     computed: {
@@ -99,48 +99,49 @@ export default {
         },
     },
     methods: {
+        
         async getCurrentLocation() {
-      this.loading = true
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
+            this.loading = true
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000))
 
-        // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
-        const position = await this.askForLocationPermission();
-        // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        // กำหนดค่า Latitude และ Longitude ให้กับตัวแปร editedItem
-        this.editedItem.lati = latitude;
-        this.editedItem.longi = longitude;
-        this.$forceUpdate();
+                // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
+                const position = await this.askForLocationPermission();
+                // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                // กำหนดค่า Latitude และ Longitude ให้กับตัวแปร editedItem
+                this.editedItem.lati = latitude;
+                this.editedItem.longi = longitude;
+                this.$forceUpdate();
 
-        this.snackbar = {
-          show: true,
-          color: 'success',
-          message: 'ดึงตำแหน่งปัจจุบันเสร็จสิ้น'
-        };
-      } catch (error) {
-        console.error('Error getting current location:', error);
-        // Update snackbar to show error message
-        this.snackbar = {
-          show: true,
-          color: 'error',
-          message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
-        };
-      } finally {
-        // Reset loading state
-        this.loading = false;
-      }
-    },
-    askForLocationPermission() {
-      return new Promise((resolve, reject) => {
-        if ('geolocation' in navigator) {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
-        } else {
-          reject(new Error('Geolocation is not supported by this browser.'));
-        }
-      });
-    },
+                this.snackbar = {
+                    show: true,
+                    color: 'success',
+                    message: 'ดึงตำแหน่งปัจจุบันเสร็จสิ้น'
+                };
+            } catch (error) {
+                console.error('Error getting current location:', error);
+                // Update snackbar to show error message
+                this.snackbar = {
+                    show: true,
+                    color: 'error',
+                    message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
+                };
+            } finally {
+                // Reset loading state
+                this.loading = false;
+            }
+        },
+        askForLocationPermission() {
+            return new Promise((resolve, reject) => {
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                } else {
+                    reject(new Error('Geolocation is not supported by this browser.'));
+                }
+            });
+        },
         async fetchAppointmentDate() {
             try {
                 const response = await axios.get(`${this.endpointUrl}/api/appointments/${this.editedItem.hn}`);
@@ -153,29 +154,29 @@ export default {
             }
         },
         async save() {
-    try {
-        // Convert Thai date to Gregorian date for storage
-        const thaiDate = dayjs(this.dateString).subtract(543, 'year');
-        const mysqlDate = thaiDate.format('YYYY-MM-DD');
+            try {
+                // Convert Thai date to Gregorian date for storage
+                const thaiDate = dayjs(this.dateString).subtract(543, 'year');
+                const mysqlDate = thaiDate.format('YYYY-MM-DD');
 
-        const response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, { ...this.editedItem, service_date: mysqlDate });
+                const response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, { ...this.editedItem, service_date: mysqlDate });
 
-        // เมื่อบันทึกสำเร็จให้ทำการเปลี่ยนสถานะทันที
-        this.editedItem.status_case_id = response.data.status_case_id;
+                // เมื่อบันทึกสำเร็จให้ทำการเปลี่ยนสถานะทันที
+                this.editedItem.status_case_id = response.data.status_case_id;
 
-        console.log('Save response:', response.data);
-        this.$emit('update-success');
-        this.closeDialog();
-        Swal.fire({
-            icon: 'success',
-            title: 'สำเร็จ',
-            text: 'แก้ไขข้อมูลนัดหมายสำเร็จ',
-        });
-    } catch (error) {
-        console.error('Error saving appointment:', error);
-        alert('เกิดข้อผิดพลาดในการนัดหมาย.');
-    }
-},
+                console.log('Save response:', response.data);
+                this.$emit('update-success');
+                this.closeDialog();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'สำเร็จ',
+                    text: 'แก้ไขข้อมูลนัดหมายสำเร็จ',
+                });
+            } catch (error) {
+                console.error('Error saving appointment:', error);
+                alert('เกิดข้อผิดพลาดในการนัดหมาย.');
+            }
+        },
 
         closeDialog() {
             this.$emit('close-dialog');
