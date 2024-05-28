@@ -6,25 +6,23 @@
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
-        <v-btn depressed class="button mb-0 mr-3" color="primary" @click="openDialog('add')">
+        <v-btn depressed class="button mb-2 mr-3" color="primary" @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
-        <v-btn depressed class="button mb-0 mr-3" color="black" dark @click="openHistoryDialog">
-          ประวัติการนัดหมาย
-        </v-btn>
-
+        
         <v-spacer />
         <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
       </v-card-title>
 
       <v-data-table v-model="selected" show-select depressed :headers="headers" item-key="hn_id" :items="desserts"
-        :search="search" @click:row="redirectToPatientDetail" @input="handleSelectedItemsChange"
+        :search="search"  @input="handleSelectedItemsChange"
         @click:show-select="deleteSelectedItems">
-
+        <template v-slot:item.hn="{ item }">
+          <span @click="openHistoryDialog(item.hn)" style="cursor: pointer; font-weight: bold;">{{ item.hn }}</span>
+        </template>
 
         <template v-slot:top>
           <v-toolbar flat>
-
             <h3>เลือกทั้งหมด</h3>
             <v-spacer></v-spacer>
             <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
@@ -59,13 +57,13 @@
           </v-chip>
         </template>
 
-        <template v-slot:item.casestatus="{ item }">
+        <!-- <template v-slot:item.casestatus="{ item }">
           <v-chip :color="getStatusColor(item.casestatus_name)" class="my-chip" dark
             :class="{ 'black--text': item.casestatus_name === 'กำลังดำเนินงาน', }"
             :dark="item.casestatus_name === 'รอรับงาน' || item.casestatus_name === 'เสร็จสิ้น'">
             {{ item.casestatus_name }}
           </v-chip>
-        </template>
+        </template> -->
       </v-data-table>
 
 
@@ -90,9 +88,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <History v-if="isHistoryDialogOpen" :dialog="isHistoryDialogOpen" :dialog-title="dialogTitle2"
-        @close-dialog="isHistoryDialogOpen = false" />
-      <!-- Include the dialog -->
+      <History v-if="isHistoryDialogOpen" :dialog="isHistoryDialogOpen" :hn="selectedHN" />
+
       <dialog-form :dialog="dialog" :edited-item="editedItem" :dialog-title="dialogTitle" @save="saveItem"
         @close="closeDialog" :hide-fields="{ dateAndTime: true }" />
 
@@ -117,6 +114,7 @@ export default {
   },
   data() {
     return {
+      openHistoryCard: false,
       selectedHN: null,
       hn: '',
       isHistoryDialogOpen: false,
@@ -200,13 +198,16 @@ export default {
     },
   },
   methods: {
-    openHistoryDialog() {
-      // Check if any other dialog is open and close it
+    openHistoryDialog(hn) {
       if (this.isAppointmentDialogOpen || this.dialog) {
         this.isAppointmentDialogOpen = false;
         this.dialog = false;
       }
+      this.selectedHN = hn;
+      console.log('เลขhn',hn)
       this.isHistoryDialogOpen = true;
+      console.log('opennnn');
+      this.$emit('open-history', hn);
     },
 
     exportToExcel() {
@@ -253,7 +254,7 @@ export default {
         try {
           // Delete only the selected items
           await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn}`);
+            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
           }));
 
           // Remove the selected items from the desserts array
@@ -290,7 +291,6 @@ export default {
         this.dialog = false;
         this.isHistoryDialogOpen = false;
       }
-
       // เปิด appointment dialog ใหม่
       const { data } = axios.get(this.endpointUrl + '/api/status');
       this.items_status = data;
@@ -302,8 +302,6 @@ export default {
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
     },
-
-
     formatDateForMySQL(dateString) {
       // Extract the date parts
       if (!dateString) {
@@ -315,16 +313,13 @@ export default {
       return formattedDate;
 
     },
-    redirectToPatientDetail(item) {
-      console.log('คลิก Row นี้:', item);
-    },
-
     getTypeColor(type) {
       return this.statusColorMap[type] || 'defaultColor';
     },
-    getStatusColor(type) {
-      return this.statusColorMap[type] || 'defaultColor';
-    },
+    // getStatusColor(type) {
+    //   return this.statusColorMap[type] || 'defaultColor';
+    // },
+    
     openDialog(action, item = null) {
       // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
       if (this.isAppointmentDialogOpen || this.isHistoryDialogOpen) {
@@ -508,7 +503,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn}`);
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn_id}`);
             await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
@@ -568,7 +563,14 @@ export default {
         throw error; // Propagate the error to the caller
       }
     },
-  }
+  },
+  created() {
+    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
+    if (!localStorage.getItem('user')) {
+      // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
+      this.$router.push('/');
+    }
+  },
 };
 </script>
 

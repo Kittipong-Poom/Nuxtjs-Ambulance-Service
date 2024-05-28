@@ -2,31 +2,31 @@
   <v-app dark>
     <!-- Navigation Drawer -->
     <v-navigation-drawer color="#1A437B" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
-  <v-list>
-    <!-- Main menu item for Maps -->
-    <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-      <v-list-item-action>
-        <v-icon :style="{ color: 'white' }">{{ item.icon }}</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title :style="{ color: 'white' }">{{ item.title }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <!-- Dropdown for Maps sub-items -->
-    <v-list-group no-action>
-      <template v-slot:activator>
-        <v-list-item-content>
-          <v-list-item-title :style="{ color: 'white' }">Maps</v-list-item-title>
-        </v-list-item-content>
-      </template>
-      <v-list-item v-for="(subItem, index) in mapsSubItems" :key="index" :to="subItem.to" router exact>
-        <v-list-item-content>
-          <v-list-item-title :style="{ color: 'white' }">{{ subItem.title }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list-group>
-  </v-list>
-</v-navigation-drawer>
+      <v-list>
+        <!-- Main menu items -->
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+          <v-list-item-action>
+            <v-icon :style="{ color: 'white' }">{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title :style="{ color: 'white' }">{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <!-- Dropdown for Maps sub-items -->
+        <v-list-group no-action>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title :style="{ color: 'white' }">Maps</v-list-item-title>
+            </v-list-item-content>
+          </template>
+          <v-list-item v-for="(subItem, index) in mapsSubItems" :key="index" :to="subItem.to" router exact>
+            <v-list-item-content>
+              <v-list-item-title :style="{ color: 'white' }">{{ subItem.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+    </v-navigation-drawer>
 
     <!-- App Bar -->
     <v-app-bar color="#285CA2" :clipped-left="clipped" fixed app>
@@ -37,42 +37,15 @@
       <v-btn color="#FFFF" icon @click.stop="clipped = !clipped">
         <v-icon>mdi-application</v-icon>
       </v-btn>
+
       <v-toolbar-title class="white--text">{{ pageTitle }}</v-toolbar-title>
 
       <v-spacer />
 
-      <!-- Toggle Dark Mode Button -->
-      <v-btn @click="toggleMode" class="ma-2 white--text" color="#FFFF" icon>
-        <v-icon color="#FFFF">{{ darkMode ? 'mdi-brightness-6' : 'mdi-brightness-7' }}</v-icon>
+      <!-- Conditional rendering of logout button -->
+      <v-btn v-if="isLoggedIn" @click="logout" icon>
+        <v-icon color="#FFFF">mdi-logout</v-icon>
       </v-btn>
-
-      <!-- Notifications Dropdown ปุ่มกระดิ่ง จุดแดง กดแล้วจะหายไป -->
-      <!-- <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon color="#FFFF" @click="markNotificationsAsRead">
-            <v-badge :content="notifications.length" :color="showRedBadge ? 'red' : ''"
-              :overlap="notifications.length > 0">
-              <v-icon>mdi-bell</v-icon>
-            </v-badge>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item v-if="patient">
-            <v-list-item-title>HN : {{ patient.hn_id }}</v-list-item-title>
-          </v-list-item>
-          <v-list-item v-else>
-            <v-list-item-title>No patient details available</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu> -->
-      
-      <!-- Menu Button -->
-      <v-menu offset-y>
-        <v-list>
-  
-          <!-- Add more v-list-items for additional dropdown options -->
-        </v-list>
-      </v-menu>
     </v-app-bar>
 
     <!-- Main Content -->
@@ -86,27 +59,19 @@
 
 <script>
 
-import Patient from '~/pages/Patient.vue';
-import Queueurgent from '~/pages/Queueurgent.vue';
-import DialogFormurgent from '~/components/DialogFormurgent.vue';
+
 export default {
   name: 'DefaultLayout',
-  components: {
-    Queueurgent,
-    DialogFormurgent,
-    Patient,
-  },
   data() {
     return {
       desserts: [],
-      notifications: [],
-      showRedBadge: true,
-      notificationsCount: 0,
+      // notifications: [],
+      // showRedBadge: true,
+      // notificationsCount: 0,
       showNotifications: false,
       clipped: false,
       drawer: false,
       darkMode: false,
-      patient: null,
       items: [
 
         {
@@ -159,7 +124,7 @@ export default {
         case '/Calendars':
           return 'ปฏิทินงาน';
         case '/Maps':
-          return 'แผนที่';
+          return 'แผนที่พิกัดรถฉุกเฉิน';
         case '/MapsStaticUrgent':
           return 'แผนที่สถิติเคสฉุกเฉิน';
         case '/MapsStaticAppointment':
@@ -169,27 +134,35 @@ export default {
       }
     },
     mapsSubItems() {
-    // Define sub-items for Maps dropdown
-    return [
-      {
-        icon: 'mdi-map',
-        title: 'พิกัดของรถฉุกเฉิน',
-        to: '/Maps'
-      },
-      {
-        icon: 'mdi-map',
-        title: 'แผนที่สถิติเคสฉุกเฉิน',
-        to: '/MapsStaticUrgent'
-      },
-      {
-        icon: 'mdi-map',
-        title: 'แผนที่สถิติเคสนัดรับ',
-        to: '/MapsStaticAppointment'
-      }
-    ];
-  }
+      // Define sub-items for Maps dropdown
+      return [
+        {
+          icon: 'mdi-map',
+          title: 'พิกัดของรถฉุกเฉิน',
+          to: '/Maps'
+        },
+        {
+          icon: 'mdi-map',
+          title: 'แผนที่สถิติเคสฉุกเฉิน',
+          to: '/MapsStaticUrgent'
+        },
+        {
+          icon: 'mdi-map',
+          title: 'แผนที่สถิติเคสนัดรับ',
+          to: '/MapsStaticAppointment'
+        }
+      ];
+    },
+    isLoggedIn() {
+      return !!localStorage.getItem('user'); // Check if user data exists in localStorage
+    }
   },
   methods: {
+    logout() {
+      localStorage.removeItem('user'); // ลบข้อมูลผู้ใช้จาก localStorage
+      this.$router.push('/'); // นำทางไปยังหน้า login
+      window.location.reload();
+    },
     toggleMode() {
       this.darkMode = !this.darkMode
       this.$vuetify.theme.dark = this.darkMode

@@ -108,9 +108,9 @@ export default {
         { text: 'อายุ', value: 'age', align: 'center' },
         { text: 'ประเภทผู้ป่วย', value: 'status', align: 'center' },
         { text: 'ความรุนแรงของประเภทผู้ป่วย', value: 'violence', align: 'center' },
-        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center', width: 500 },
-        { text: 'Latitude', value: 'lati', align: 'center' },
-        { text: 'Longitude', value: 'longi', align: 'center' },
+        { text: 'กลุ่มอาการฉุกเฉิน', value: 'emergency_group', align: 'center', width: 400 },
+        { text: 'ละติจูด', value: 'lati', align: 'center' },
+        { text: 'ลองติจูด', value: 'longi', align: 'center' },
         { text: 'การติดตามการนำส่งผู้ป่วย', value: 'patient_delivery', align: 'center' },
         { text: '', value: 'action', sortable: false, align: 'center' }
       ],
@@ -175,6 +175,13 @@ export default {
 
       return dateWithoutTime;
     },
+  },
+  created() {
+    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
+    if (!localStorage.getItem('user')) {
+      // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
+      this.$router.push('/');
+    }
   },
   methods: {
     handleSelectedItemsChange(selectedItems) {
@@ -454,7 +461,6 @@ export default {
       this.editedItem = {};
       this.dialogVisible = false;
     },
-
   }
 };
 </script>
@@ -480,7 +486,6 @@ body {
 }
 
 .fail-noti {
-
   margin: 0 0px 5px;
   padding: 10px;
   font-size: 18px;
@@ -497,9 +502,6 @@ body {
   flex-direction: column;
 
 }
-
-
-
 .button {
   height: 45px;
   font-size: 14px;

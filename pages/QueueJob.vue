@@ -20,7 +20,6 @@
                     </v-btn>
                     <v-btn depressed class=" mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
                         ลบสิ่งที่เลือก</v-btn>
-
                 </v-toolbar>
             </template>
             <template v-slot:item.action="{ item }">
@@ -204,6 +203,7 @@ export default {
                 }
             }
         },
+
         async loadData() {
             try {
                 const { data } = await axios.get(this.endpointUrl + '/api/appointments')
@@ -251,7 +251,7 @@ export default {
                 const formattedData = data.map(item => {
                     return {
                         ...item,
-                        service_date: this.formatDate(item.service_date)
+                        service_date: this.formatDate(item.service_date),
                     };
                 });
                 this.desserts = formattedData;
@@ -264,13 +264,11 @@ export default {
             const latitude = item.lati;
             const longitude = item.longi;
             const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-
             window.open(url);
         },
         openAppointmentDialog(item) {
             // Pass the service date along with other item properties
-            this.editedItem = { ...item, service_date: new Date(item.service_date) };
-            this.dateString = item.service_date;
+            this.editedItem = { ...item, service_date: new Date(item.service_date.substr(6, 4) - 543 + "-" + item.service_date.substr(3, 2) + "-" + item.service_date.substr(0, 2)) };
             this.dialogTitle = 'แก้ไขนัดหมายผู้ป่วย';
             this.isAppointmentDialogOpen = true;
         },
@@ -289,13 +287,14 @@ export default {
 
         formatDate(inputDate) {
             const date = new Date(inputDate);
-            const buddhistYear = 2567; // Hardcoded Buddhist year
+            const gregorianYear = date.getFullYear();
+            const buddhistYear = gregorianYear;
             const day = date.getDate().toString().padStart(2, '0');
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            return `${day}-${month}-${buddhistYear}`;
+            return `${ day }-${ month }-${ buddhistYear }`;
         },
 
-        formatDateForMySQL(dateString) {
+        formatDateForsaveItem(dateString) {
             if (!dateString) {
                 return null;
             }
@@ -304,10 +303,7 @@ export default {
             const formattedDate = `${gregorianYear}-${datePart[1]}-${datePart[0]}`;
             return formattedDate;
         },
-        closeDialog() {
-            this.selectedPatient = null;
-            this.isDialogVisible = false;
-        },
+
         async saveItem(editedItem) {
             try {
                 if (!editedItem.status_case_id) {
@@ -315,7 +311,10 @@ export default {
                     return;
                 }
 
-                editedItem.service_date = this.formatDateForMySQL(editedItem.service_date);
+                editedItem.service_date = this.formatDateForsaveItem(editedItem.service_date);
+
+                // Format the time to ensure it follows the HH:MM format
+                editedItem.time = this.formatTime(editedItem.time);
 
                 let response;
                 if (editedItem.id) {
@@ -346,6 +345,10 @@ export default {
                 });
             }
         },
+        closeDialog() {
+            this.selectedPatient = null;
+            this.isDialogVisible = false;
+        },
         getTypeColor(type) {
             return this.statusColorMap[type] || 'defaultColor';
         },
@@ -355,6 +358,13 @@ export default {
     },
     mounted() {
         this.loadData();
-    }
+    },
+    created() {
+        // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
+        if (!localStorage.getItem('user')) {
+            // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
+            this.$router.push('/');
+        }
+    },
 }
 </script>

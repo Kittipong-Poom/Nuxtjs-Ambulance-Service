@@ -58,7 +58,6 @@ export default {
         const lat = parseFloat(markerData.lati);
         const lng = parseFloat(markerData.longi);
         const stat = markerData.status_case_id;
-
         // Create a popup content string with lati and longi values
         const popupContent = `<b>ละติจูด:</b> ${lat}<br><b>ลองติจูด:</b> ${lng}<br><b>สถานะ:</b> ${stat}`;
 

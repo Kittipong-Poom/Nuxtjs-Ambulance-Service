@@ -121,6 +121,16 @@ export default {
           if (!value) return "กรอกเลข HN ";
           return true;
         },
+        lati: (value) => { // Validate latitude if it exists
+          if (!value) return "กรอกละติจูด";
+          // Add additional validation logic if needed
+          return true;
+        },
+        longi: (value) => { // Validate longitude if it exists
+          if (!value) return "กรอกลองติจูด";
+          // Add additional validation logic if needed
+          return true;
+        }
       },
     };
   },

@@ -34,7 +34,7 @@
             <v-col cols="12" md="6">
               <!-- ละติจูด -->
               <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
-                 ref="lati"></v-text-field>
+                ref="lati"></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <!-- ลองจิจูด -->
@@ -44,10 +44,8 @@
           </v-row>
 
           <!-- สถานะ -->
-          <!-- <v-select v-model="editedItem.status_case_id" label="สถานะ" outlined :items="items_status"
-            item-text="casestatus_name" item-value="casestatus_id"></v-select> -->
-            <v-select v-model="editedItem.status_case_id" outlined label="สถานะ"
-                  :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น' ,'ยกเลิก']"></v-select>
+          <v-select v-model="editedItem.status_case_id" outlined label="สถานะ"
+                  :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']"></v-select>
         </v-card-text>
 
         <!-- บันทึก -->
@@ -63,83 +61,97 @@
 
 <script>
 import dayjs from 'dayjs';
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
   props: {
     dialog: Boolean,
-    editedItem: Object,
+    editedItem: {
+      type: Object,
+      default: () => ({
+        service_date: '',
+        time: '',
+        lati: '',
+        longi: '',
+        status_case_id: '',
+        hn: '',
+        number: '',
+        address: '',
+      }),
+    },
     dialogTitle: String,
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
-      items_status: [],
+      endpointUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : process.env.REMOTE_SERVER,
       menu: false,
+      dateString: '',
     };
   },
   computed: {
-    formattedDate() {
+   formattedDate() {
       if (!this.editedItem.service_date) {
         return '';
       }
-      const thaiDate = dayjs(this.editedItem.service_date).year(2567);
-      return thaiDate.format('DD-MM-YYYY');
+      const gregorianDate = dayjs(this.editedItem.service_date);
+      const buddhistYear = gregorianDate.year() + 543;
+      return gregorianDate.year(buddhistYear).format('DD-MM-YYYY');
     },
   },
-  // async created() {
-  //   const { data } = await axios.get(this.endpointUrl + '/api/status');
-  //   this.items_status = data;
-  // },
-
-methods: {
-  
-  async save() {
-    try {
-      if (!this.editedItem.status_case_id) {
-        // แสดงข้อความข้อผิดพลาดหากไม่ได้เลือกสถานะ
-        this.$emit('error', 'โปรดเลือกสถานะ');
-        return; // ออกจากฟังก์ชั่นถ้าไม่ได้เลือกสถานะ
+  watch: {
+    dialog(val) {
+      if (val && !this.editedItem.status_case_id) {
+        this.editedItem.status_case_id = 'รอรับงาน';
       }
-
-      // แปลงวันที่กลับเป็นรูปแบบที่ MySQL เข้าใจ
-      const thaiDate = dayjs(this.editedItem.service_date).year(2567);
-      const mysqlDate = thaiDate.format('YYYY-MM-DD');
-
-      // สร้างข้อมูลที่จะส่งไปยัง API
-      const postData = {
-        service_date: mysqlDate,
-        time: this.editedItem.time,
-        hn: this.editedItem.hn,
-        status_case_id: this.editedItem.status_case_id,
-        lati: this.editedItem.lati,
-        longi: this.editedItem.longi,
-        number: this.editedItem.number,
-        address: this.editedItem.address,
-      };
-      
-      // ทำการ POST ข้อมูลไปยัง API
-      const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);
-      
-      // ทำการปิด dialog หลังจากบันทึกข้อมูลสำเร็จ
-      this.closeDialog();
-      
-      // ส่งข้อมูลที่บันทึกไปยัง component ที่เรียกใช้งาน
-      this.$emit('save', response.data);
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการบันทึก:', error);
-    }
-  },
+    },
   
+  },
+  methods: {
+    async save() {
+      try {
+        if (!this.editedItem.status_case_id) {
+          this.$emit('error', 'โปรดเลือกสถานะ');
+          return;
+        }
+
+        // Convert Thai date back to a format MySQL understands
+        
+        const gregorianDate = dayjs(this.editedItem.service_date);
+        const buddhistYear = gregorianDate.year() + 543;
+        const buddhistDate = gregorianDate.year(buddhistYear).format('YYYY-MM-DD');
+        const postData = {
+          service_date: buddhistDate,
+          time: this.editedItem.time,
+          hn: this.editedItem.hn,
+          status_case_id: this.editedItem.status_case_id,
+          lati: this.editedItem.lati,
+          longi: this.editedItem.longi,
+          number: this.editedItem.number,
+          address: this.editedItem.address,
+        };
+
+        const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);
+        this.closeDialog();
+        this.$emit('save', response.data);
+      } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการบันทึก:', error);
+      }
+    },
 
     closeDialog() {
-      if (this.dialog) {
-    this.$emit('update:dialog', false); // Emit event to update the dialog prop
-    this.dialogVisible = false;
-    this.$emit('close-dialog'); // Emit event to update the dialog prop
-      }
-      
+      this.$emit('update:dialog', false);
+      this.$emit('close-dialog');
     },
   },
+  mounted() {
+    if (!this.editedItem.status_case_id) {
+      this.editedItem.status_case_id = 'รอรับงาน';
+    }
+  }
 };
 </script>
+<style scoped>
+/* Add any styles here */
+</style>
+message.txt
+6 KB

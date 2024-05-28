@@ -4,44 +4,35 @@
     <v-container class="bg-surface-variant">
       <v-row justify="center" align="center">
         <!-- Patient Card 1 -->
-        <DepartmentCard />
-
-        <v-col cols="12" class="ma-2 pa-1 text-uppercase text-center" color="grey-lighten-3">
-          
-          <br>
-
-
-          
-        <h2 class="patient align-center head">สถิติผู้ป่วย</h2>
-          
+        <v-col cols="12" class="ma-2 pa-1 text-center">
+          <DepartmentCard />
         </v-col>
 
-        <!-- BarChart -->
-        <v-col cols="12" md="6">
-          <v-sheet class="pa-12" color="grey-lighten-3">
-            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="500">
-              <BarChartPatient :tableData="desserts" />
+        <v-col cols="12" class="ma-2 pa-1 text-center">
+          <h3 class="patient head">สถิติผู้ป่วย</h3>
+        </v-col>
+
+        <!-- Charts Row -->
+        <v-row justify="center" align="center" class="pa-4">
+          <!-- BarChart -->
+          <v-col cols="12" md="6" class="d-flex justify-center">
+            <v-sheet class="pa-4" color="grey-lighten-3">
+              <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="550px">
+                <BarChartPatient :tableData="desserts" />
+              </v-sheet>
             </v-sheet>
-          </v-sheet>
-        </v-col>
+          </v-col>
 
-        <!-- PieChart -->
-        <v-col cols="12" md="6">
-          <v-sheet class="pa-12" color="grey-lighten-3">
-            <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="500">
-              <PieChartPatient />
+          <!-- PieChart -->
+          <v-col cols="12" md="6" class="d-flex justify-center">
+            <v-sheet class="pa-4" color="grey-lighten-3">
+              <v-sheet :elevation="7" class="mx-auto rounded-xl" height="550" width="550px">
+                <PieChartPatient />
+              </v-sheet>
             </v-sheet>
-          </v-sheet>
-        </v-col>
-
-        
-
-        <!-- LineChart and PieChartJob -->
-        
-
-          <!-- PieChartJob -->
-          
+          </v-col>
         </v-row>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -58,7 +49,14 @@ export default {
     return {
       desserts: [] // Define the "desserts" property as an empty array or initialize it with data
     };
-  }
+  },
+  created() {
+    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
+    if (!localStorage.getItem('user')) {
+      // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
+      this.$router.push('/');
+    }
+  },
 };
 </script>
 

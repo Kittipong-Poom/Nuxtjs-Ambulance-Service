@@ -112,15 +112,11 @@
   </template>
 
 <script>
-import BarChartPatient from '../components/BarChartPatient.vue'
-import PieChartPatient from '../components/PieChartPatient.vue'
+
 import axios from 'axios';
 
 export default {
-    components: {
-        BarChartPatient,
-        PieChartPatient,
-    },
+
     data() {
         return {
             bedCount: '',

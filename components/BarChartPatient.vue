@@ -4,7 +4,7 @@
       :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" v-if="loaded"/>
     <div class="additional-text">
       <p>
-        กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี 2567 <br>
+        กราฟบ่งบอกถึงข้อมูลผู้ป่วยประจำปี {{ currentYear }} <br>
         โดยมีฉุกเฉินเเทนเป็นสีเเดงที่บอกถึงการเกิดอุบัติเหตุ ในเเต่ละเดือน <br>
         เเละให้สีฟ้าเเทนเป็นผู้ป่วยนัดรับ ในเเต่ละเดือน
       </p>
@@ -81,6 +81,7 @@ export default {
           ? "http://localhost:5000"
           : "https://ambulance-fbf9.onrender.com",
       loaded: false, // Define the loaded property
+      currentYear: new Date().getFullYear() + 543,
       chartData: {
         labels: [
           "มกราคม",
@@ -140,7 +141,7 @@ export default {
           },
           title: {
             display: true,
-            text: "ข้อมูลผู้ป่วยประจำปี 2567",
+            text: `ข้อมูลผู้ป่วยประจำปี ${new Date().getFullYear() + 543}`,
             font: {
               size: 16,
             },

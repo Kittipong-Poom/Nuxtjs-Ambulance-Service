@@ -1,135 +1,139 @@
 <template>
-  <div class="main" :style="mainStyle">
-    <h1>ยินดีต้อนรับ</h1>
-    <input
-      type="text"
-      name="username"
-      id="username"
-      placeholder="รหัสประจำตัว"
-      :style="input"
-      class="input-field"
-    />
-    <br />
-    <input
-      type="password"
-      name="password"
-      id="password"
-      placeholder="รหัสผ่าน"
-      :style="input"
-      class="input-field"
-    />
-    <br />
-    <input
-     type="button"
-     value="ยืนยัน"
-     class="button"
-     id="goToDashboard"
-     :style="inputStyle"
-    />
-
-    <br />
-    
+  <div class="login-page-container">
+    <div class="login-page">
+      <h2>Ambulance PBT</h2>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label for="username">รหัสผู้ใช้งาน:</label>
+          <input type="text" id="username" v-model="username">
+        </div>
+        <button type="submit">เข้าสู่ระบบ</button>
+      </form>
+      <p v-if="error" class="error">{{ error }}</p>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
 export default {
-  name: "Login",
-  //Custom style for main and input for make the page responsive:
-  props: {
-    mainStyle: String,
-    inputStyle: String,
+  data() {
+    return {
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      username: '',
+      error: ''
+    };
   },
-  mounted() {
-    // ใช้ mounted() เพื่อรอให้เอกสาร HTML โหลดเสร็จก่อนที่จะเพิ่มการทำงานเมื่อคลิกที่ปุ่ม
-    document.getElementById("goToDashboard").addEventListener("click", function() {
-      window.location.href = "/dashboard";
-    });
+  methods: {
+    async login() {
+      this.error = ''; // Reset error message
+
+      // Check if the username field is empty
+      if (!this.username) {
+        this.error = 'โปรดกรอกรหัสผู้ใช้งาน';
+        return;
+      }
+
+      try {
+        // Encrypt username with CryptoJS
+        const secretKey = '1234'; // Define your secret key
+        const iv = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
+        const encryptedUsername = CryptoJS.AES.encrypt(this.username, secretKey, { iv: iv }).toString();
+
+        // Send request to the server using the encrypted username
+        const response = await axios.get(`${this.endpointUrl}/api/admin/${encodeURIComponent(encryptedUsername)}`);
+
+        // Check if user exists in the database
+        if (response.data.length > 0) {
+          localStorage.setItem('user', JSON.stringify(response.data[0]));  // Store user data in localStorage
+          console.warn('เข้าสู่ระบบสำเร็จ');
+
+          // Navigate to /Dashboard
+          const redirect = this.$route.query.redirect || '/Dashboard';
+          this.$router.push(redirect);
+
+          // Refresh the page once
+          setTimeout(() => {
+            location.reload();
+          }, 100); // Wait for 1 second before reloading
+
+        } else {
+          this.error = 'ไม่พบชื่อผู้ใช้งาน';
+        }
+      } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการเข้าสู่ระบบ:', error);
+        this.error = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
+      }
+    }
   }
-};
+}
 </script>
 
-<style>
-/* Import Poppins font: */
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+<style scoped>
+/* สไตล์ที่ใช้สำหรับหน้าล็อกอิน */
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 
-/* ปรับสไตล์ของส่วนหลัก (.main) เพื่อกำหนดพื้นหลัง, ขนาด, ตำแหน่ง, และเงา */
-.main {
-  background: rgba(255, 255, 255, 0.4); /* ปรับสีพื้นหลังให้มีความโปร่งแสง */
-  position: absolute;
-  top: 20%;
-  left: 30%;
-  width: 40%;
+}
+
+.login-page {
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  width: 100%;
+  /* ให้กว้างสุดเท่าที่ทำได้ แต่ไม่เกิน max-width */
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+h2 {
   text-align: center;
-  padding: 5px;
-  border-radius: 3rem; /* ทำให้มีรูปร่างโค้งมนของกล่อง */
-  box-shadow: 0px 0px 8px -5px #000000; /* เพิ่มเงา */
-  padding-top: 3%;
-  padding-bottom: 5%;
-  font-family: "Poppins", sans-serif;
-
-  border: 2px solid #0da5c7; /* กำหนดสีขอบของ .main */
 }
 
-/* ปรับสไตล์ของหัวเรื่อง (h1) เพื่อเพิ่มขนาดและสีข้อความ */
-h1 {
-  cursor: default; /* ป้องกันการเลือกข้อความ */
-  user-select: none; /* ป้องกันการเลือกข้อความ */
+.form-group {
+  margin-bottom: 20px;
 }
 
-/* ปรับสไตล์ของ input เพื่อกำหนดขนาด, ขอบ, และพื้นหลัง */
-.input-field {
-  border-radius: 3rem; /* ทำให้มีรูปร่างโค้งมนของ input */
-  border: 2px solid #0da5c7; /* กำหนดสีขอบของ input */
-  background-color: white; /* กำหนดสีพื้นหลังของ input */
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
   padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+  border-radius: 15px;
+}
+
+.error {
+  background-color: white;
+  color: white;
+  margin-top: 10px;
   text-align: center;
-  outline: none;
-  margin: 10px;
-  width: 30%;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif; /* ใช้แบบอักษร Poppins */
-  font-weight: 400;
-}
-
-/* ปรับสไตล์ของ input เมื่อ hover หรือ active เพื่อเพิ่มเอฟเฟกต์สำหรับประสบการณ์ใช้งานที่ดีขึ้น */
-.input-field:hover {
-  border-color: #0da5c7; /* เปลี่ยนสีขอบของ input เมื่อ hover */
-}
-
-.input-field:active {
-  border-color: #0da5c7; /* เปลี่ยนสีขอบของ input เมื่อ active */
-}
-
-/* ปรับสไตล์ของปุ่ม (button) เพื่อกำหนดสีพื้นหลังและข้อความ */
-.button {
-  cursor: pointer;
-  user-select: none; /* ป้องกันการเลือกข้อความ */
-  background-color: #0da5c7; /* กำหนดสีพื้นหลังของปุ่ม */
-  color: white; /* กำหนดสีของข้อความของปุ่ม */
-  padding: 10px 20px; /* ปรับขนาดของปุ่ม */
-  border: none; /* ลบเส้นขอบของปุ่ม */
-  border-radius: 3rem; /* ทำให้มีรูปร่างโค้งมนของปุ่ม */
-}
-
-/* ปรับสไตล์ของปุ่ม เมื่อ hover หรือ active เพื่อเพิ่มเอฟเฟกต์สำหรับประสบการณ์ใช้งานที่ดีขึ้น */
-.button:hover {
-  background-color: #0a8bac; /* เปลี่ยนสีพื้นหลังของปุ่มเมื่อ hover */
-}
-
-.button:active {
-  background-color: #0a8bac; /* เปลี่ยนสีพื้นหลังของปุ่มเมื่อ active */
-}
-
-img {
-  height: 2.2rem;
-  margin: 10px;
-  user-select: none; /* ป้องกันการเลือกข้อความ */
-}
-
-img:hover {
-  box-shadow: 0px 0px 8px -5px #000000;
-  cursor: pointer;
-  border-radius: 200rem;
+  padding: 10px;
+  border-radius: 15px;
+  border: 1px solid red;
 }
 </style>

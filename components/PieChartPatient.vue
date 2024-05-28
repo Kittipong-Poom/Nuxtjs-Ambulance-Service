@@ -3,7 +3,7 @@
     <Pie :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
       :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" v-if="loaded"/>
     <div class="additional-text">
-      <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี 2566 ในรูปเเบบไตรมาสโดย
+      <p>กราฟบ่งบอกอัตราการเกิดอุบัติเหตุประจำปี {{ beforeYear }} ในรูปเเบบไตรมาสโดย
         ไตรมาสที่ 1 คือ ช่วงเดือนมกราคม - มีนาคม คือสีม่วงเข้ม <br>
         ไตรมาสที่ 2 คือ ช่วงเดือนเมษายน - มิถุนายน คือสีนํ้าเงิน <br>
         ไตรมาสที่ 3 คือ ช่วงเดือนกรกฎาคม - กันยายน คือสีม่วงแก่<br>
@@ -66,6 +66,7 @@ export default {
     return {
       endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       loaded: false,
+      beforeYear: new Date().getFullYear() + 542,
       chartData: {
         labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4',],
         datasets: [
@@ -123,7 +124,7 @@ export default {
           title: {
             position: 'top',
             display: true,
-            text: 'อัตราการเกิดเหตุประจำปี 2566 ',
+            text: `อัตราการเกิดเหตุประจำปี ${new Date().getFullYear() + 542}`,
             font: {
               size: 16
             }

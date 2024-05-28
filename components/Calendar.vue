@@ -52,9 +52,9 @@
         <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
           <v-card style="border-radius: 15px;" color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-btn icon>
+              <!-- <v-btn icon>
                 <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              </v-btn> -->
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
               <!-- <v-btn icon>
@@ -192,7 +192,6 @@ export default {
     updateRange({ start, end }) {
 
     },
-
     async fetchDesserts() {
       try {
         // Fetch appointments and patients data
@@ -200,7 +199,6 @@ export default {
           axios.get(`${this.endpointUrl}/api/appointments`),
           axios.get(`${this.endpointUrl}/api/patients`)
         ]);
-
         const appointments = appointmentsResponse.data;
         const patients = patientsResponse.data;
 
@@ -213,7 +211,7 @@ export default {
 
           appointments.forEach((appointment, index) => {
             const patient = patients.find(p => p.hn === appointment.hn);
-
+            
             if (patient && appointment.status_case_id !== 'ยกเลิก' && appointment.status_case_id !== 'เสร็จสิ้น') {
               // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
               const gregorianDate = dayjs(appointment.service_date).subtract(543, 'year');
@@ -227,7 +225,7 @@ export default {
               console.log(`Formatted time: ${formattedTime}`);
 
               // Create a Date object for the start time in ISO format
-              const startTime = `${formattedDate}T${formattedTime}:00`;
+              const startTime = `${formattedDate}T${formattedTime}`;
               console.log(`Start time: ${startTime}`);
 
               const colorIndex = index % this.colors.length;

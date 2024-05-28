@@ -33,6 +33,7 @@
     "axios": "^1.6.2",
     "chart.js": "3.8.0",
     "core-js": "^3.25.3",
+    "crypto-js": "^4.2.0",
     "datatables.net-bs5": "^1.13.10",
     "date-fns-tz": "^2.0.0",
     "dayjs": "^1.11.10",
