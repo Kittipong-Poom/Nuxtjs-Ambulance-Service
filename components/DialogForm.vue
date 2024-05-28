@@ -10,7 +10,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <!-- เบอร์โทรศัพท์ -->
-                <v-text-field v-model="editedItem.hn" label="HN (Hospital Number)" outlined :rules="[rules.hn]"
+                <v-text-field v-model="editedItem.hn" label="HN (Hospital Number)*" outlined :rules="[rules.hn]"
                   ref="hn"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">

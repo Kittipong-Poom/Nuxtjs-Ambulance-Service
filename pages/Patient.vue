@@ -94,13 +94,13 @@
         @close="closeDialog" :hide-fields="{ dateAndTime: true }" />
 
       <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
-        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false" />
+        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false"  />
     </v-card>
   </div>
 </template>
 
 <script>
-import Appointment from '~/components/DialogAppointment.vue';
+import DialogAppointment from '~/components/DialogAppointment.vue';
 import DialogForm from '~/components/DialogForm.vue';
 import History from '~/components/History.vue';
 import axios from 'axios'
@@ -109,7 +109,7 @@ import dayjs from 'dayjs';
 export default {
   components: {
     DialogForm,
-    Appointment,
+    DialogAppointment,
     History,
   },
   data() {
@@ -285,22 +285,29 @@ export default {
       this.isHistoryDialogOpen = false;
       // Other logic...
     },
-    openAppointmentDialog(item) {
-      // ก่อนเปิด appointment dialog ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
+    async openAppointmentDialog(item) {
+      // Close other dialogs if open
       if (this.dialog || this.isHistoryDialogOpen) {
         this.dialog = false;
         this.isHistoryDialogOpen = false;
       }
-      // เปิด appointment dialog ใหม่
-      const { data } = axios.get(this.endpointUrl + '/api/status');
-      this.items_status = data;
+      // Fetch status data
+      try {
+        const { data } = await axios.get(this.endpointUrl + '/api/status');
+        this.items_status = data;
+      } catch (error) {
+        console.error('Error fetching status data:', error);
+      }
       // Set editedItem and dialogTitle based on item data
-      this.editedItem = item;
+      this.editedItem = { ...item }; // Clone the item to avoid direct mutation
       console.log(item);
       console.log(this.editedItem.age_name);
-      this.dialogTitle = 'นัดหมายผู้ป่วย'; // Set your dialog title here
+      this.dialogTitle = 'นัดหมายผู้ป่วย';
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
+    },
+    isAppointmentDialogOpen() {
+      this.isAppointmentDialogOpen = false;
     },
     formatDateForMySQL(dateString) {
       // Extract the date parts
