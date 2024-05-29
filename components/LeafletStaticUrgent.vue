@@ -86,6 +86,8 @@ createMarkers(markerDataArray) {
 <style>
 /* Add styles for aesthetics (optional) */
 #map {
-  width: 100%;
+
+  position: relative;
+  z-index: 1;
 }
 </style>
