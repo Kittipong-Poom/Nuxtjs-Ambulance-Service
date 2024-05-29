@@ -88,10 +88,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 export default {
   data: () => ({
-    endpointUrl:
-      process.env.NODE_ENV == "development"
-        ? "http://localhost:5000"
-        : "https://ambulance-fbf9.onrender.com",
+    endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
     focus: "",
     type: "month",
     typeToLabel: {

@@ -76,10 +76,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl:
-        process.env.NODE_ENV == "development"
-          ? "http://localhost:5000"
-          : "https://ambulance-fbf9.onrender.com",
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {

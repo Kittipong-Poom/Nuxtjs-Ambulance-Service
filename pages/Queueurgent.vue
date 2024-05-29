@@ -279,6 +279,7 @@ export default {
         let response;
         editedItem.service_date = this.formatDateForsaveItem(editedItem.service_date);
         editedItem.emergency_group = JSON.stringify(editedItem.emergency_group);
+        console.log('editedItem.emergency_group',editedItem.emergency_group)
         if (!editedItem.caseurgent_id) {
           // Add new patient
           response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
