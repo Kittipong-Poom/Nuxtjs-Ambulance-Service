@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "ambulance555"
-  }
+    "default": "ambulance-beta",
+    "ambualance": "ambulance-beta"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
