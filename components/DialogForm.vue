@@ -40,7 +40,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <!-- เบอร์โทรศัพท์ -->
-                <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
+                <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด*" outlined
                   :rules="[rules.lati]" ref="lati"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">

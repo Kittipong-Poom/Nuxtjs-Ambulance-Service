@@ -39,7 +39,7 @@ export default {
 
     async fetchMarkers() {
       try {
-        const response = await axios.get(`http://localhost:5000/api/latlongappoint`);
+        const response = await axios.get(this.endpointUrl + `/api/latlongappoint`);
         console.log(response.data); // Log API response
         this.createMarkers(response.data); // Pass the correct data format
       } catch (error) {
