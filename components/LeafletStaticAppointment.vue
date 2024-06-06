@@ -59,10 +59,16 @@ export default {
         const lng = parseFloat(markerData.longi);
         const stat = markerData.status_case_id;
         // Create a popup content string with lati and longi values
+        var redIcon = L.icon({
+          iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32]
+        });
         const popupContent = `<b>ละติจูด:</b> ${lat}<br><b>ลองติจูด:</b> ${lng}<br><b>สถานะ:</b> ${stat}`;
 
         // Create a marker with the popup content
-        let markerInstance = L.marker([lat, lng]).bindPopup(popupContent).addTo(this.map);
+        let markerInstance = L.marker([lat, lng], { icon: redIcon }).bindPopup(popupContent).addTo(this.map);
 
         this.markers.push(markerInstance); // Add marker instance to the array
       });
