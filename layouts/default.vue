@@ -29,8 +29,14 @@
     </v-navigation-drawer>
 
     <!-- App Bar -->
+     
     <v-app-bar color="#285CA2" :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon color="#FFFF" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon 
+      :disabled="!created" 
+      color="#FFFF" 
+      @click.stop="drawer = !drawer" 
+    />
+      
       <v-btn color="#FFFF" icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
@@ -61,6 +67,16 @@
 
 
 export default {
+  created() {
+    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
+    if (!localStorage.getItem('user')) {
+        // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
+        this.$router.push('/');
+    } else {
+        // หากมีข้อมูลใน localStorage ให้เปิดใช้งานปุ่ม
+        this.created = true;
+    }
+  },
   name: 'DefaultLayout',
   data() {
     return {
@@ -157,16 +173,7 @@ export default {
       return !!localStorage.getItem('user'); // Check if user data exists in localStorage
     }
   },
-  created() {
-    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
-    if (!localStorage.getItem('user')) {
-        // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
-        this.$router.push('/');
-    } else {
-        // หากมีข้อมูลใน localStorage ให้เปิดใช้งานปุ่ม
-        this.created = true;
-    }
-  },
+
   methods: {
     logout() {
       localStorage.removeItem('user'); // ลบข้อมูลผู้ใช้จาก localStorage

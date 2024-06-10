@@ -64,9 +64,6 @@ export default {
         } else {
           this.error = 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง';
         }
-        setTimeout(() => {
-            location.reload();
-          }, 100);
       } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเข้าสู่ระบบ:', error);
         this.error = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
