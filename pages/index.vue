@@ -7,6 +7,10 @@
           <label for="username">รหัสผู้ใช้งาน:</label>
           <input type="text" id="username" v-model="username">
         </div>
+        <div class="form-group">
+          <label for="password">รหัสผ่าน:</label>
+          <input type="password" id="password" v-model="password">
+        </div>
         <button type="submit">เข้าสู่ระบบ</button>
       </form>
       <p v-if="error" class="error">{{ error }}</p>
@@ -19,53 +23,55 @@ import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
 export default {
+  
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : process.env.REMOTE_SERVER,
       username: '',
+      password: '',
       error: ''
     };
   },
   methods: {
     async login() {
       this.error = ''; // Reset error message
-
-      // Check if the username field is empty
-      if (!this.username) {
-        this.error = 'โปรดกรอกรหัสผู้ใช้งาน';
+      // Check if the username or password field is empty
+      if (!this.username || !this.password) {
+        this.error = 'โปรดกรอกรหัสผู้ใช้งานและรหัสผ่าน';
         return;
       }
-
       try {
-        // Encrypt username with CryptoJS
-        const secretKey = '1234'; // Define your secret key
-        const iv = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
-        const encryptedUsername = CryptoJS.AES.encrypt(this.username, secretKey, { iv: iv }).toString();
-
-        // Send request to the server using the encrypted username
-        const response = await axios.get(`${this.endpointUrl}/api/admin/${encodeURIComponent(encryptedUsername)}`);
-
+        const salt = '$PBT$Lnwza_005#056%101*'; // เปลี่ยนค่า salt ตามที่ต้องการ
+        const saltedPassword = this.password + salt;
+        const hashedUsername = CryptoJS.SHA512(this.username).toString();
+        const hashedPassword = CryptoJS.SHA512(saltedPassword).toString();
+        console.log('รหัสที่ส่งไป', this.username, this.password);
+        console.log('เข้ารหัส', hashedUsername, hashedPassword);
+        // Send request to the server using the hashed username and password
+        const response = await axios.get(`${this.endpointUrl}/api/admin/login`, {
+          params: {
+            username: hashedUsername,
+            password: hashedPassword
+          }
+        });
         // Check if user exists in the database
-        if (response.data.length > 0) {
-          localStorage.setItem('user', JSON.stringify(response.data[0]));  // Store user data in localStorage
+        if (response.data.success) {
+          localStorage.setItem('user', JSON.stringify(response.data.user));  // Store user data in localStorage
           console.warn('เข้าสู่ระบบสำเร็จ');
-
           // Navigate to /Dashboard
           const redirect = this.$route.query.redirect || '/Dashboard';
           this.$router.push(redirect);
-
-          // Refresh the page once
-          setTimeout(() => {
-            location.reload();
-          }, 100); // Wait for 1 second before reloading
-
         } else {
-          this.error = 'ไม่พบชื่อผู้ใช้งาน';
+          this.error = 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง';
         }
+        setTimeout(() => {
+            location.reload();
+          }, 100);
       } catch (error) {
         console.error('เกิดข้อผิดพลาดในการเข้าสู่ระบบ:', error);
         this.error = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
       }
+      
     }
   }
 }
@@ -78,14 +84,12 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-
 }
 
 .login-page {
   font-family: Arial, sans-serif;
   max-width: 400px;
   width: 100%;
-  /* ให้กว้างสุดเท่าที่ทำได้ แต่ไม่เกิน max-width */
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;

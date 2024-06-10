@@ -7,7 +7,7 @@
       {{ otherError }}
     </h1>
     <NuxtLink to="/">
-      Home page
+      เข้าสู่ระบบ
     </NuxtLink>
   </v-app>
 </template>
@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      pageNotFound: '404 Not Found',
+      pageNotFound: 'กรุณาล็อคอินเพื่อเข้าสู่ระบบ',
       otherError: 'An error occurred'
     }
   },
