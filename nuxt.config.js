@@ -1,9 +1,12 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/es5/util/colors';
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
-  // Global page headers: https://go.nuxtjs.dev/config-head
+
+  // Add serverMiddleware to handle API routes or other server-side logic
+  serverMiddleware: [],
+
   head: {
     titleTemplate: '%s ',
     title: 'Ambulance Project',
@@ -22,63 +25,53 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
-  presets:[
+  css: [],
+
+  presets: [
     "@babel/preset-env"
   ],
+
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/vue-notification.js', ssr: false },
-    
     '~/plugins/vuetify.js',
     { src: '~/plugins/chart.js', mode: 'client' },
-    
-    
   ],
 
   notification: {
     options: {
       style: {
-        backgroundColor: 'green', // Change this to the desired background color
-        // Add other styles as needed
+        backgroundColor: 'green',
       }
     }
   },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     '@nuxtjs/google-fonts'
   ],
-  
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     [
       'nuxt-sweetalert2',
       {
         confirmButtonColor: '#FFFFFF',
       }
-       
     ]
-    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
- /* The `vuetify` configuration in the Nuxt.js configuration file is used to customize the Vuetify
- theme for your application. */
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
@@ -97,9 +90,15 @@ export default {
     }
   },
 
+  // Environment variables
+  env: {
+    endpointUrl: process.env.NODE_ENV === 'development'
+      ? process.env.API_URL_DEVELOPMENT
+      : process.env.API_URL_PRODUCTION
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    
     extend(config, ctx) {
       // Add a rule to handle .js files inside the vue-chartjs module
       config.module.rules.push({
@@ -110,6 +109,6 @@ export default {
           plugins: ['@babel/plugin-proposal-class-properties'],
         },
       });
-    }, 
+    }
   }
 }

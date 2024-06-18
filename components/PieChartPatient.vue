@@ -64,7 +64,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       loaded: false,
       beforeYear: new Date().getFullYear() + 542,
       chartData: {
@@ -139,7 +139,7 @@ export default {
   methods:{
     async loadData(){
       try{
-        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
+        const responseUrgent = await axios.get(this.apiUrl + "/api/caseurgents");
         const dataUrgent = responseUrgent.data;
 
         if (Array.isArray(dataUrgent)) {

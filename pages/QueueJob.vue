@@ -72,7 +72,7 @@ export default {
         return {
             isDialogVisible: false,
             isAppointmentDialogOpen: false,
-            endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+            apiUrl: process.env.endpointUrl,
             headers: [
                 { text: 'HN', value: 'hn', align: 'center' },
                 { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
@@ -185,7 +185,7 @@ export default {
                 try {
                     // Delete only the selected items
                     await Promise.all(this.selected.map(async item => {
-                        await axios.delete(`${this.endpointUrl}/api/appointmentsall/${item.id}`);
+                        await axios.delete(`${this.apiUrl}/api/appointmentsall/${item.id}`);
                     }));
 
                     // Remove the selected items from the desserts array
@@ -206,7 +206,7 @@ export default {
 
         async loadData() {
             try {
-                const { data } = await axios.get(this.endpointUrl + '/api/appointments')
+                const { data } = await axios.get(this.apiUrl + '/api/appointments')
                 console.log('data', data);
 
                 const formattedData = data.map(item => {
@@ -247,7 +247,7 @@ export default {
         },
         async fetchDataFromServer() {
             try {
-                const { data } = await axios.get(`${this.endpointUrl}/api/appointments`);
+                const { data } = await axios.get(`${this.apiUrl}/api/appointments`);
                 const formattedData = data.map(item => {
                     return {
                         ...item,
@@ -318,7 +318,7 @@ export default {
 
                 let response;
                 if (editedItem.id) {
-                    response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, editedItem);
+                    response = await axios.put(`${this.apiUrl}/api/appointments/${this.editedItem.id}`, editedItem);
                 }
                 const savedAppointment = response.data;
 

@@ -36,18 +36,18 @@ ChartJS.register(
 );
 
 export default {
-  name: "BarChartPatient",
+  name: 'BarChartPatient',
   components: {
     Bar,
   },
   props: {
     chartId: {
       type: String,
-      default: "bar-chart",
+      default: 'bar-chart',
     },
     datasetIdKey: {
       type: String,
-      default: "label",
+      default: 'label',
     },
     width: {
       type: Number,
@@ -58,7 +58,7 @@ export default {
       default: 400,
     },
     cssClasses: {
-      default: "",
+      default: '',
       type: String,
     },
     styles: {
@@ -76,7 +76,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {
@@ -154,7 +154,7 @@ export default {
     async loadData() {
       try {
         // Fetch data for emergency patients from /api/caseurgents
-        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
+        const responseUrgent = await axios.get(this.apiUrl + "/api/caseurgents");
         const dataUrgent = responseUrgent.data;
 
         // Check if data is an array
@@ -166,7 +166,7 @@ export default {
         }
 
         // Fetch data for scheduled patients from /api/appointments
-        const responseScheduled = await axios.get(this.endpointUrl + "/api/appointments");
+        const responseScheduled = await axios.get(this.apiUrl + "/api/appointments");
         const dataScheduled = responseScheduled.data;
 
         // Check if data is an array

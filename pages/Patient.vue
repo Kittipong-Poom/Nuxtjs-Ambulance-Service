@@ -15,8 +15,7 @@
       </v-card-title>
 
       <v-data-table v-model="selected" show-select depressed :headers="headers" item-key="hn_id" :items="desserts"
-        :search="search"  @input="handleSelectedItemsChange"
-        @click:show-select="deleteSelectedItems">
+        :search="search"  @input="handleSelectedItemsChange">
         <template v-slot:item.hn="{ item }">
           <span @click="openHistoryDialog(item.hn)" style="cursor: pointer; font-weight: bold;">{{ item.hn }}</span>
         </template>
@@ -33,7 +32,6 @@
           </v-toolbar>
         </template>
 
-
         <template v-slot:item.action="{ item }">
           <v-btn color="#4CAF50" class="mr-2  white--text" @click="openDialog('edit', item)">
             <v-icon>mdi-pencil-box-multiple-outline</v-icon>
@@ -49,26 +47,15 @@
           </v-btn>
         </template>
 
-
         <template v-slot:item.type_patient_name="{ item }">
           <v-chip :color="getTypeColor(item.type_patient_name)" class="my-chip" dark
             :class="{ 'black--text': item.type_patient_name === 'ผู้ป่วยติดเตียง', }">
             {{ item.type_patient_name }}
           </v-chip>
         </template>
-
-        <!-- <template v-slot:item.casestatus="{ item }">
-          <v-chip :color="getStatusColor(item.casestatus_name)" class="my-chip" dark
-            :class="{ 'black--text': item.casestatus_name === 'กำลังดำเนินงาน', }"
-            :dark="item.casestatus_name === 'รอรับงาน' || item.casestatus_name === 'เสร็จสิ้น'">
-            {{ item.casestatus_name }}
-          </v-chip>
-        </template> -->
       </v-data-table>
 
-
-      <!---ปุ่มลบ-->
-
+      <!-- Confirmation Dialog -->
       <v-dialog v-model="confirm" max-width="350">
         <v-card>
           <v-card-title class="headline">
@@ -128,7 +115,7 @@ export default {
       search: '',
       action: '',
       isAppointmentDialogOpen: false,
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       headers: [
         { text: 'HN', value: 'hn', align: 'center' },
         { text: 'อายุ', value: 'age_name', align: 'center' },
@@ -172,7 +159,7 @@ export default {
     this.loadData()
   },
   mounted() {
-    console.log('ENV', this.endpointUrl)
+    console.log('ENV', this.apiUrl)
     this.loadData();
   },
   computed: {
@@ -254,7 +241,7 @@ export default {
         try {
           // Delete only the selected items
           await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
+            await axios.delete(`${this.apiUrl}/api/patients/${item.hn_id}`);
           }));
 
           // Remove the selected items from the desserts array
@@ -273,17 +260,12 @@ export default {
       }
     },
     closeDialog() {
-      // Close the dialog
-      this.dialog = false;
-      this.dialogTitle = '';
-      this.editedItem = {};
-      this.dialogVisible = false;
-    },
-    closeDialog() {
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
       this.isHistoryDialogOpen = false;
-      // Other logic...
+      this.dialogTitle = '';
+      this.editedItem = {};
+      this.dialogVisible = false;
     },
     async openAppointmentDialog(item) {
       // Close other dialogs if open
@@ -293,7 +275,7 @@ export default {
       }
       // Fetch status data
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/status');
+        const { data } = await axios.get(this.apiUrl + '/api/status');
         this.items_status = data;
       } catch (error) {
         console.error('Error fetching status data:', error);
@@ -306,9 +288,6 @@ export default {
       // Show the appointment dialog
       this.isAppointmentDialogOpen = true;
     },
-    isAppointmentDialogOpen() {
-      this.isAppointmentDialogOpen = false;
-    },
     formatDateForMySQL(dateString) {
       // Extract the date parts
       if (!dateString) {
@@ -318,14 +297,10 @@ export default {
       // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
-
     },
     getTypeColor(type) {
       return this.statusColorMap[type] || 'defaultColor';
     },
-    // getStatusColor(type) {
-    //   return this.statusColorMap[type] || 'defaultColor';
-    // },
     
     openDialog(action, item = null) {
       // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
@@ -339,7 +314,6 @@ export default {
       this.editedItem = action === 'add' ? {} : { ...item };
       this.dialog = true;
     },
-
 
     async saveItem(editedItem) {
       try {
@@ -358,7 +332,7 @@ export default {
           console.log('Adding new patient', editedItem);
 
           try {
-            response = await axios.post(`${this.endpointUrl}/api/patients`, {
+            response = await axios.post(`${this.apiUrl}/api/patients`, {
               hn: editedItem.hn,
               ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
               gender: editedItem.gender,
@@ -395,7 +369,7 @@ export default {
           console.log('Updating appointment', editedItem);
 
           try {
-            response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
+            response = await axios.put(`${this.apiUrl}/api/patients/${editedItem.hn_id}`, {
               status_case_id: editedItem.status_case_id,
               service_date: editedItem.service_date,
               time: editedItem.time
@@ -423,7 +397,7 @@ export default {
           console.log('Updating patient info', editedItem);
 
           try {
-            response = await axios.put(`${this.endpointUrl}/api/patientsedit/${editedItem.hn_id}`, {
+            response = await axios.put(`${this.apiUrl}/api/patientsedit/${editedItem.hn_id}`, {
               hn: editedItem.hn,
               ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
               gender: editedItem.gender,
@@ -510,8 +484,8 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn_id}`);
-            await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
+            const response = await axios.delete(this.apiUrl + `/api/patients/${item.hn_id}`);
+            await axios.delete(this.apiUrl + `/api/appointments/${item.hn}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.hn !== item.hn);
@@ -549,7 +523,7 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients')
+        const { data } = await axios.get(this.apiUrl + '/api/patients')
         // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
@@ -562,7 +536,7 @@ export default {
     },
     async fetchDataFromServer() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients');
+        const { data } = await axios.get(this.apiUrl + '/api/patients');
 
         return data;
       } catch (error) {
@@ -592,7 +566,6 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
 }
 
 .dashboardtext {

@@ -83,7 +83,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       menu: false,
       dateString: '',
     };
@@ -130,7 +130,7 @@ export default {
           address: this.editedItem.address,
         };
 
-        const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);
+        const response = await axios.post(`${this.apiUrl}/api/appointments`, postData);
         this.closeDialog();
         this.$emit('save', response.data);
       } catch (error) {

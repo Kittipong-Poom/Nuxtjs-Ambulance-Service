@@ -11,7 +11,7 @@
         <v-col cols="12" class="ma-2 pa-1 text-center">
           <h3 class="patient head">สถิติผู้ป่วย</h3>
         </v-col>
-
+ 
         <!-- Charts Row -->
         <v-row justify="center" align="center" class="pa-4">
           <!-- BarChart -->
@@ -68,7 +68,7 @@ export default {
 }
 
 .head {
-  font-size: 24px;
+  font-size: 34px;
   background-color: #4169E1;
   margin: 0;
   padding: 10px;

@@ -75,7 +75,7 @@
     },
     data() {
       return {
-        endpointUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : process.env.REMOTE_SERVER,
+        apiUrl: process.env.endpointUrl,
         menu: false,
         loading: false
       };
@@ -138,7 +138,7 @@
       },
       async fetchAppointmentDate() {
         try {
-          const response = await axios.get(`${this.endpointUrl}/api/appointment/${this.editedItem.hn}`);
+          const response = await axios.get(`${this.apiUrl}/api/appointment/${this.editedItem.hn}`);
           if (response.data && response.data.service_date) {
             this.dateString = response.data.service_date;
             this.editedItem.service_date = response.data.service_date;
@@ -154,7 +154,7 @@
           const buddhistYear = gregorianDate.year() + 543;
           const buddhistDate = gregorianDate.year(buddhistYear).format('YYYY-MM-DD');
           console.log('Date check',buddhistDate)
-          const response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, { ...this.editedItem, service_date: buddhistDate });
+          const response = await axios.put(`${this.apiUrl}/api/appointments/${this.editedItem.id}`, { ...this.editedItem, service_date: buddhistDate });
   
           this.editedItem.status_case_id = response.data.status_case_id;
   

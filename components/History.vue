@@ -11,7 +11,7 @@
               <v-col cols="12">
                 <v-list dense>
                   <v-card-subtitle class="text-center font-weight-bold">ประวัติการนัดหมาย</v-card-subtitle>
-                  <v-list-item v-for="appointment in appointments" :key="appointment.id" class="appointment-item">
+                  <v-list-item v-for="(appointment) in appointments" :key="appointment.id" class="appointment-item">
                     <v-card outlined>
                       <v-card-text>
                         <v-list-item-content>
@@ -31,7 +31,7 @@
                       </v-card-text>
                     </v-card>
                   </v-list-item>
-                  <v-divider v-if="appointments.length > 1 && index < appointments.length - 1" :key="'divider-' + appointment.id"></v-divider>
+                  <!-- <v-divider v-if="index < appointments.length - 1" :key="'divider-' + appointment.id"></v-divider> -->
                 </v-list>
               </v-col>
             </v-row>
@@ -58,7 +58,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       appointments: [],
     };
   },
@@ -66,7 +66,7 @@ export default {
     async fetchAppointments(hn) {
       console.log('Fetching appointments for:', hn);
       try {
-        const { data } = await axios.get(`${this.endpointUrl}/api/appointment/${hn}`);
+        const { data } = await axios.get(`${this.apiUrl}/api/appointment/${hn}`);
         this.appointments = data;
       } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -77,7 +77,9 @@ export default {
     },
     closeDialog() {
       this.$emit('update:dialog', false);
-      window.location.reload();
+      setTimeout(() => {
+            location.reload();
+          }, 10);
     },
   },
   mounted() {

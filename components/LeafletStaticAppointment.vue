@@ -11,7 +11,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       map: null,
       markers: []
     };
@@ -39,7 +39,7 @@ export default {
 
     async fetchMarkers() {
       try {
-        const response = await axios.get(this.endpointUrl + `/api/latlongappoint`);
+        const response = await axios.get(this.apiUrl + `/api/latlongappoint`);
         console.log(response.data); // Log API response
         this.createMarkers(response.data); // Pass the correct data format
       } catch (error) {

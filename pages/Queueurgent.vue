@@ -99,7 +99,7 @@ export default {
       selectedItems: [],
       selected: [],
       search: '',
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+      apiUrl: process.env.endpointUrl,
       headers: [
         { text: 'เลขออกเหตุ', value: 'eventnum', align: 'center' },
         { text: 'วัน/เดือน/ปี', value: 'service_date', align: 'center' },
@@ -143,7 +143,7 @@ export default {
   //   this.loadData()
   // },
   mounted() {
-    console.log('ENV', this.endpointUrl)
+    console.log('ENV', this.apiUrl)
     this.loadData();
   },
   computed: {
@@ -211,7 +211,7 @@ export default {
         try {
           // Delete only the selected items
           await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id}`);
+            await axios.delete(`${this.apiUrl}/api/caseurgents/${item.caseurgent_id}`);
           }));
 
           // Remove the selected items from the desserts array
@@ -282,7 +282,7 @@ export default {
         console.log('editedItem.emergency_group',editedItem.emergency_group)
         if (!editedItem.caseurgent_id) {
           // Add new patient
-          response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
+          response = await axios.post(`${this.apiUrl}/api/caseurgents`, editedItem);
           this.$notify({
             'group': 'success',
             'title': 'กรอกข้อมูลสำเร็จ',
@@ -301,7 +301,7 @@ export default {
 
         } else {
           // Update existing patient
-          response = await axios.put(`${this.endpointUrl}/api/caseurgents/${editedItem.caseurgent_id}`, editedItem);
+          response = await axios.put(`${this.apiUrl}/api/caseurgents/${editedItem.caseurgent_id}`, editedItem);
           this.$notify({
             'group': 'success',
             'title': 'แก้ไขข้อมูลสำเร็จ',
@@ -377,7 +377,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.endpointUrl + `/api/caseurgents/${item.caseurgent_id}`);
+            const response = await axios.delete(this.apiUrl + `/api/caseurgents/${item.caseurgent_id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.caseurgent_id !== item.caseurgent_id);
@@ -417,7 +417,7 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/caseurgents')
+        const { data } = await axios.get(this.apiUrl + '/api/caseurgents')
 
         // this.desserts = data;
         console.log("This data", data)
@@ -441,7 +441,7 @@ export default {
     },
     async fetchDataFromServer() {
       try {
-        const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
+        const { data } = await axios.get(this.apiUrl + '/api/caseurgents');
         const formattedData = data.map(item => {
           // Assuming the service_date field contains the date to be formatted
           return {

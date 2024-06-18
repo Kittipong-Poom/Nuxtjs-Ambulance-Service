@@ -9,8 +9,8 @@
           <v-container>
             <v-row>
               <v-col cols="12" md="6">
-                <v-text-field v-model="editedItem.eventnum" label="เลขออกเหตุ" outlined :rules="[rules.number]"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.eventnum" label="เลขออกเหตุ" outlined
+                  :rules="[rules.number]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- วันที่ -->
@@ -33,8 +33,8 @@
                 </v-menu>
               </v-col>
               <!-- เวลา -->
-              <v-col cols="12" md="6">
-                <v-text-field v-model="formattedTime" outlined label="เวลา" type="time" ></v-text-field>
+              <v-col cols="12" md="12">
+                <v-text-field v-model="formattedTime" outlined label="เวลา" type="time"></v-text-field>
               </v-col>
             </v-row>
             <!-- เพิ่มปุ่ม Current Location -->
@@ -48,7 +48,8 @@
               <!-- อายุ -->
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.age" outlined label="อายุ*"
-                  :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']" :rules="[rules.age]"></v-select>
+                  :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
+                  :rules="[rules.age]"></v-select>
               </v-col>
             </v-row>
 
@@ -56,12 +57,14 @@
               <!-- ประเภทผู้ป่วย -->
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.status" outlined label="ประเภทผู้ป่วย"
-                  :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'ผู้ป่วยฉุกเฉิน']" :rules="[rules.status]"></v-select>
+                  :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'ผู้ป่วยฉุกเฉิน']"
+                  :rules="[rules.status]"></v-select>
               </v-col>
               <!-- ความรุนแรงของประเภทผู้ป่วย -->
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.violence" outlined label="ความรุนแรงของประเภทผู้ป่วย*"
-                  :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']" :rules="[rules.violence]">
+                  :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']"
+                  :rules="[rules.violence]">
 
                   <template #item="{ item, on }">
                     <v-list-item v-on="on">
@@ -76,32 +79,34 @@
               </v-col>
             </v-row>
             <!-- กลุ่มอาการฉุกเฉิน -->
-            <v-combobox v-model="editedItem.emergency_group" :rules="[rules.grouper]" prepend-inner-icon="mdi-select-group" outlined :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
-              "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
-              "3.สัตว์กัด",
-              "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
-              "5.หายใจยากลำบาก",
-              "6.หัวใจหยุดเต้น",
-              "7.เจ็บแน่นทรวงอก/หัวใจ",
-              "8.สำลักอุดทางหายใจ",
-              "9.เบาหวาน",
-              "10.ภยันตรายจากสภาพแวดล้อม",
-              "11.(เว้นว่าง)",
-              "12 ปวดศีรษะ/ลำคอ",
-              "13.คลุ้มคลั่ง/จิตประสาท อารมณ์",
-              "14.ยาเกินขนาด/ได้รับพิษ",
-              "15.มีครรภ์/คลอด/นรีเวช",
-              "16.ชัก",
-              "17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)",
-              "18. โรคหลอดเลือดสมองตีบตัน",
-              "19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ",
-              "20.เด็ก/ทารก",
-              "21.ถูกทำร้าย/บาดเจ็บ",
-              "22.บาดแผลไฟไหม้/ลวก",
-              "23.อุบัติเหตุทางน้ำ",
-              "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
-              "25.อุบัติเหตุยานยนต์",
-              "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน" multiple clearable chips >
+            <v-combobox v-model="editedItem.emergency_group" :rules="[rules.grouper]"
+              prepend-inner-icon="mdi-select-group" outlined :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
+                "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
+                "3.สัตว์กัด",
+                "4.เลือดออก (ไร้เหตุบาดเจ็บ)",
+                "5.หายใจยากลำบาก",
+                "6.หัวใจหยุดเต้น",
+                "7.เจ็บแน่นทรวงอก/หัวใจ",
+                "8.สำลักอุดทางหายใจ",
+                "9.เบาหวาน",
+                "10.ภยันตรายจากสภาพแวดล้อม",
+                "11.(เว้นว่าง)",
+                "12 ปวดศีรษะ/ลำคอ",
+                "13.คลุ้มคลั่ง/จิตประสาท อารมณ์",
+                "14.ยาเกินขนาด/ได้รับพิษ",
+                "15.มีครรภ์/คลอด/นรีเวช",
+                "16.ชัก",
+                "17.ป่วย/อ่อนเพลีย (ไม่จำเพาะ)",
+                "18. โรคหลอดเลือดสมองตีบตัน",
+                "19.หมดสติ/ไม่ตอบสนอง/หมดสติชั่ววูบ",
+                "20.เด็ก/ทารก",
+                "21.ถูกทำร้าย/บาดเจ็บ",
+                "22.บาดแผลไฟไหม้/ลวก",
+                "23.อุบัติเหตุทางน้ำ",
+                "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
+                "25.อุบัติเหตุยานยนต์",
+                "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน" multiple
+              clearable chips>
             </v-combobox>
 
             <!-- ส่วนของการกรอก Latitude และ Longitude -->
@@ -109,20 +114,21 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field v-model="editedItem.lati" label="ละติจูด" outlined
-                prepend-inner-icon="mdi-map-marker"></v-text-field>              
+                  prepend-inner-icon="mdi-map-marker"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field v-model="editedItem.longi" label="ลองจิจูด" outlined
-                prepend-inner-icon="mdi-map-marker"></v-text-field>
+                  prepend-inner-icon="mdi-map-marker"></v-text-field>
 
               </v-col>
             </v-row>
             <v-btn color="green" class="mb-5 align-center justify-center" @click="getCurrentLocation" text
-                  :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
+              :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
 
             <!-- การติดตามการนำส่งผู้ป่วย -->
             <v-select v-model="editedItem.patient_delivery" prepend-inner-icon="mdi-truck-plus" outlined
-              label="การติดตามการนำส่งผู้ป่วย" :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']" :rules="[rules.delivery]">
+              label="การติดตามการนำส่งผู้ป่วย" :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"
+              :rules="[rules.delivery]">
             </v-select>
 
           </v-container>
@@ -167,27 +173,27 @@ export default {
           if (!/^\d+$/.test(value)) return "กรอกเลขออกเหตุให้ครบเป็นตัวเลขเท่านั้น";
           return true;
         },
-        age: (value) =>{
+        age: (value) => {
           if (!value) return "กรุณาเลือกอายุให้ถูกต้อง";
           return true;
         },
-        gender: (value) =>{
+        gender: (value) => {
           if (!value) return "กรุณาเลือกเพศ";
           return true;
         },
-        violence: (value) =>{
+        violence: (value) => {
           if (!value) return "กรุณาเลือกความรุนแรงของประเภทผู้ป่วย";
           return true;
         },
-        status: (value) =>{
+        status: (value) => {
           if (!value) return "กรุณาเลือกประเภทผู้ป่วย";
           return true;
         },
-        grouper: (value) =>{
+        grouper: (value) => {
           if (!value) return "ต้องเลือกกลุ่มอาการฉุกเฉิน";
           return true;
         },
-        delivery:(value) =>{
+        delivery: (value) => {
           if (!value) return "ต้องเลือกการติดตามการนำส่งผู้ป่วย";
           return true;
         },
@@ -232,8 +238,6 @@ export default {
           });
           return;
         }
-        
-        
 
         if (this.validateForm()) {
           this.editedItem.service_date = this.formattedDate;
@@ -249,23 +253,23 @@ export default {
       this.$emit('close');
     },
     validateForm() {
-  for (const key in this.editedItem) {
-    if (key === 'eventnum') { // Check if the field is 'eventnum'
-      if (this.editedItem[key].length !== 12) {
-        return false; // Return false if length is not 12
-      }
-    } else { // For other fields, validate as before
-      const fieldRef = this.$refs[key];
-      if (fieldRef && fieldRef.validate) {
-        fieldRef.validate();
-        if (fieldRef.hasError) {
-          return false;
+      for (const key in this.editedItem) {
+        if (key === 'eventnum') { // Check if the field is 'eventnum'
+          if (this.editedItem[key].length !== 12) {
+            return false; // Return false if length is not 12
+          }
+        } else { // For other fields, validate as before
+          const fieldRef = this.$refs[key];
+          if (fieldRef && fieldRef.validate) {
+            fieldRef.validate();
+            if (fieldRef.hasError) {
+              return false;
+            }
+          }
         }
       }
-    }
-  }
-  return true;
-},
+      return true;
+    },
     updateTime() {
       this.formattedTime = dayjs().format('HH:mm');
     },

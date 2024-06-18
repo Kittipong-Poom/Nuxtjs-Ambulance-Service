@@ -132,7 +132,7 @@ export default {
             emergencyCount: '',
             lastUpdateMonth: null,
             lastUpdateYear: null,
-            endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'https://ambulance-fbf9.onrender.com',
+            apiUrl: process.env.endpointUrl,
         }
     },
 
@@ -164,8 +164,8 @@ export default {
         },
         async getpatient() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/patients`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/patients`);
+                console.log(this.apiUrl);
                 console.log('getpatient:', response.data);
                 if (Array.isArray(response.data)) {
                     this.patientsCount = response.data.length;
@@ -180,8 +180,8 @@ export default {
 
         async getemergency() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/caseurgents`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/caseurgents`);
+                console.log(this.apiUrl);
                 console.log('getemergency:', response.data);
                 this.emergencyCount = response.data.length;
                 console.log('Data count:', this.emergencyCount);
@@ -191,8 +191,8 @@ export default {
         },
         // async getbedpatient() {
         //     try {
-        //         const response = await axios.get(`${this.endpointUrl}/api/gettype`);
-        //         console.log(this.endpointUrl);
+        //         const response = await axios.get(`${this.apiUrl}/api/gettype`);
+        //         console.log(this.apiUrl);
         //         console.log('getData:', response.data);
         //         this.bedCount = response.data.length;
         //         console.log('Data count:', this.bedCount);
@@ -202,8 +202,8 @@ export default {
         // },
         async getservicepatient() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/serviceCount`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/serviceCount`);
+                console.log(this.apiUrl);
                 console.log('getservicepatient:', response.data);
                 this.serviceCount = response.data.length;
                 console.log('Data count:', this.serviceCount);
@@ -214,8 +214,8 @@ export default {
 
         async getservicepatientOther() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/gettype/service/other`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/gettype/service/other`);
+                console.log(this.apiUrl);
                 console.log('getservicepatientOther:', response.data);
                 this.serviceCountOther = response.data.length;
                 console.log('Data count:', this.serviceCountOther);
@@ -226,8 +226,8 @@ export default {
 
         async getservicepatientBed() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/bedCount`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/bedCount`);
+                console.log(this.apiUrl);
                 console.log('getservicepatientBed:', response.data);
                 this.serviceBedCount = response.data.length;
                 console.log('Data count:', this.serviceBedCount);
@@ -239,8 +239,8 @@ export default {
 
         async getAllservicepatient() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/patients`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/patients`);
+                console.log(this.apiUrl);
                 console.log('getAllservicepatient:', response.data);
                 this.AllserviceCount = response.data.length;
                 console.log('Data count:', this.AllserviceCount);
@@ -251,8 +251,8 @@ export default {
 
         async getredemergency() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/getviolence`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/getviolence`);
+                console.log(this.apiUrl);
                 console.log('getredemergency:', response.data);
                 this.redCount = response.data.length;
                 console.log('Data count:', this.redCount);
@@ -262,8 +262,8 @@ export default {
         },
         async getyellowemergency() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/getviolence/yellow`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/getviolence/yellow`);
+                console.log(this.apiUrl);
                 console.log('getyellowemergency:', response.data);
                 this.yellowCount = response.data.length;
                 console.log('Data count:', this.yellowCount);
@@ -273,8 +273,8 @@ export default {
         },
         async getgreenemergency() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/getviolence/green`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/getviolence/green`);
+                console.log(this.apiUrl);
                 console.log('getgreenemergency:', response.data);
                 this.greenCount = response.data.length;
                 console.log('Data count:', this.greenCount);
@@ -284,8 +284,8 @@ export default {
         },
         async getwhiteemergency() {
             try {
-                const response = await axios.get(`${this.endpointUrl}/api/getviolence/white`);
-                console.log(this.endpointUrl);
+                const response = await axios.get(`${this.apiUrl}/api/getviolence/white`);
+                console.log(this.apiUrl);
                 console.log('getwhiteemergency:', response.data);
                 this.whiteCount = response.data.length;
                 console.log('Data count:', this.whiteCount);
@@ -296,7 +296,7 @@ export default {
     },
 
     created() {
-        console.log('ENV', this.endpointUrl)
+        console.log('ENV', this.apiUrl)
         // this.getbedpatient();
         this.resetDataIfNeeded();
         this.getservicepatient();
