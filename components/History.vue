@@ -11,7 +11,10 @@
               <v-col cols="12">
                 <v-list dense>
                   <v-card-subtitle class="text-center font-weight-bold">ประวัติการนัดหมาย</v-card-subtitle>
-                  <v-list-item v-for="(appointment) in appointments" :key="appointment.id" class="appointment-item">
+                  <div v-if="appointments.length === 0" class="text-center mt-5 not-appointment">
+                    ยังไม่มีรายการนัดหมาย
+                  </div>
+                  <v-list-item v-else v-for="(appointment, index) in appointments" :key="appointment.id" class="appointment-item">
                     <v-card outlined>
                       <v-card-text>
                         <v-list-item-content>
@@ -45,7 +48,6 @@
   </div>
 </template>
 
-
 <script>
 import dayjs from 'dayjs';
 import axios from 'axios';
@@ -58,7 +60,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       appointments: [],
     };
   },
@@ -66,7 +68,7 @@ export default {
     async fetchAppointments(hn) {
       console.log('Fetching appointments for:', hn);
       try {
-        const { data } = await axios.get(`${this.apiUrl}/api/appointment/${hn}`);
+        const { data } = await axios.get(`${this.endpointUrl}/api/appointment/${hn}`);
         this.appointments = data;
       } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -78,8 +80,8 @@ export default {
     closeDialog() {
       this.$emit('update:dialog', false);
       setTimeout(() => {
-            location.reload();
-          }, 10);
+        location.reload();
+      }, 10);
     },
   },
   mounted() {
@@ -88,8 +90,11 @@ export default {
 };
 </script>
 
-
 <style scoped>
+.not-appointment{
+  font-weight: 500;
+  font-size: 22px;
+}
 .v-card-title {
   background-color: #f5f5f5;
   font-size: 1.2em;

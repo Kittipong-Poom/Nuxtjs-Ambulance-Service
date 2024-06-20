@@ -72,7 +72,7 @@ export default {
         return {
             isDialogVisible: false,
             isAppointmentDialogOpen: false,
-            apiUrl: process.env.endpointUrl,
+            endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'http://localhost:5000',
             headers: [
                 { text: 'HN', value: 'hn', align: 'center' },
                 { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
@@ -141,15 +141,24 @@ export default {
         }
     },
     methods: {
-        exportToExcel() {
+        async exportToExcel() {
             import('xlsx').then(XLSX => {
                 // Use the selected items if there are any, otherwise, use filtered desserts
-                const itemsToExport = this.selected.length > 0 ? this.selected : this.filteredDesserts;
-
-                // Map the items for export
-                const dataToExport = itemsToExport.map(({ service_date, time, ...rest }) => rest);
-
-                const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+                const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
+                const exportData = dataToExport.map(item => {
+                    return {
+                        'appointment_id': item.id,
+                        'HN': item.hn,
+                        'เบอร์โทรศัพท์': item.number,
+                        'ที่อยู่': item.address,
+                        'ละติจูด': item.lati,
+                        'ลองติจูด': item.longi,
+                        'วันที่นัดหมาย': item.service_date,
+                        'เวลา': item.time,
+                        'สถานะ': item.status_case_id,
+                    };
+                });
+                const worksheet = XLSX.utils.json_to_sheet(exportData);
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
                 XLSX.writeFile(workbook, 'จัดการตารางคิวงาน.xlsx');
@@ -185,7 +194,7 @@ export default {
                 try {
                     // Delete only the selected items
                     await Promise.all(this.selected.map(async item => {
-                        await axios.delete(`${this.apiUrl}/api/appointmentsall/${item.id}`);
+                        await axios.delete(`${this.endpointUrl}/api/appointmentsall/${item.id}`);
                     }));
 
                     // Remove the selected items from the desserts array
@@ -206,7 +215,7 @@ export default {
 
         async loadData() {
             try {
-                const { data } = await axios.get(this.apiUrl + '/api/appointments')
+                const { data } = await axios.get(this.endpointUrl + '/api/appointments')
                 console.log('data', data);
 
                 const formattedData = data.map(item => {
@@ -247,7 +256,7 @@ export default {
         },
         async fetchDataFromServer() {
             try {
-                const { data } = await axios.get(`${this.apiUrl}/api/appointments`);
+                const { data } = await axios.get(`${this.endpointUrl}/api/appointments`);
                 const formattedData = data.map(item => {
                     return {
                         ...item,
@@ -318,7 +327,7 @@ export default {
 
                 let response;
                 if (editedItem.id) {
-                    response = await axios.put(`${this.apiUrl}/api/appointments/${this.editedItem.id}`, editedItem);
+                    response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, editedItem);
                 }
                 const savedAppointment = response.data;
 

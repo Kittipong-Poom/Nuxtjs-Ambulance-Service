@@ -69,7 +69,8 @@ export default {
 /* เพิ่มสไตล์เพื่อความสวยงาม (ไม่จำเป็น) */
 #map {
   width: 100%;
-
+  position: relative;
+  z-index: 1;
 }
 </style>
 

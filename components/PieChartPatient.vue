@@ -64,7 +64,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       loaded: false,
       beforeYear: new Date().getFullYear() + 542,
       chartData: {
@@ -139,7 +139,7 @@ export default {
   methods:{
     async loadData(){
       try{
-        const responseUrgent = await axios.get(this.apiUrl + "/api/caseurgents");
+        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
         const dataUrgent = responseUrgent.data;
 
         if (Array.isArray(dataUrgent)) {

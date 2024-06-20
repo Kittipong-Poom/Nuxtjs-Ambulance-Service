@@ -88,7 +88,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 export default {
   data: () => ({
-    apiUrl: process.env.endpointUrl,
+    endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
     focus: "",
     type: "month",
     typeToLabel: {
@@ -193,8 +193,8 @@ export default {
       try {
         // Fetch appointments and patients data
         const [appointmentsResponse, patientsResponse] = await Promise.all([
-          axios.get(`${this.apiUrl}/api/appointments`),
-          axios.get(`${this.apiUrl}/api/patients`)
+          axios.get(`${this.endpointUrl}/api/appointments`),
+          axios.get(`${this.endpointUrl}/api/patients`)
         ]);
         const appointments = appointmentsResponse.data;
         const patients = patientsResponse.data;

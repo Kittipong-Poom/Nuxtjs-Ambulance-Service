@@ -6,6 +6,7 @@
       </v-card-title>
       <form @submit.prevent="save">
         <v-card-text>
+          <v-text-field v-model="editedItem.hn" disabled  outlined label="HN (Hospital Number)*"></v-text-field>
           <!-- วันที่ -->
           <v-row>
             <v-col cols="12" md="6">
@@ -83,7 +84,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       menu: false,
       dateString: '',
     };
@@ -130,7 +131,7 @@ export default {
           address: this.editedItem.address,
         };
 
-        const response = await axios.post(`${this.apiUrl}/api/appointments`, postData);
+        const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);
         this.closeDialog();
         this.$emit('save', response.data);
       } catch (error) {

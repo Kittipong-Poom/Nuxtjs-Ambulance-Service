@@ -11,7 +11,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       map: null,
       markers: []
     };
@@ -39,7 +39,7 @@ export default {
 
     async fetchMarkers() {
       try {
-        const response = await axios.get(this.apiUrl + `/api/latlongappoint`);
+        const response = await axios.get(this.endpointUrl + `/api/latlongappoint`);
         console.log(response.data); // Log API response
         this.createMarkers(response.data); // Pass the correct data format
       } catch (error) {
@@ -88,5 +88,7 @@ export default {
 /* Add styles for aesthetics (optional) */
 #map {
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 </style>

@@ -95,7 +95,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       items_ages: [],
       loading: false,
       items_tracking: [],
@@ -222,15 +222,15 @@ export default {
       return true;
     },
     async loaddata() {
-      const { data } = await axios.get(this.apiUrl + '/api/ages');
+      const { data } = await axios.get(this.endpointUrl + '/api/ages');
       this.items_ages = data
     },
     async loaddatatraking() {
-      const { data } = await axios.get(this.apiUrl + '/api/tracking_patient');
+      const { data } = await axios.get(this.endpointUrl + '/api/tracking_patient');
       this.items_tracking = data
     },
     async loaddatatype() {
-      const { data } = await axios.get(this.apiUrl + '/api/type_patient');
+      const { data } = await axios.get(this.endpointUrl + '/api/type_patient');
       this.items_type = data
     }
   }

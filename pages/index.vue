@@ -1,7 +1,7 @@
 <template>
   <div class="login-page-container">
     <div class="login-page">
-      <h2>Ambulance PBT</h2>
+      <h2>Ambulance Nanglae</h2>
       <form @submit.prevent="login">
         <div class="form-group">
           <label for="username">รหัสผู้ใช้งาน:</label>
@@ -26,14 +26,20 @@ import Swal from 'sweetalert2'; // Import SweetAlert library
 export default {
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       username: '',
       password: '',
-      error: ''
+      error: '',
+
     };
+  },
+
+  mounted(){
+    console.log('ENV : '+ process.env.NODE_ENV)
   },
   methods: {
     async login() {
+      
       this.error = ''; // Reset error message
 
       if (!this.username || !this.password) {
@@ -46,18 +52,19 @@ export default {
         const saltedPassword = this.password + salt;
         const hashedUsername = CryptoJS.SHA512(this.username).toString();
         const hashedPassword = CryptoJS.SHA512(saltedPassword).toString();
-
-        const response = await axios.get(`${this.apiUrl}/api/admin/login`, {
+        console.log('ENV : '+ process.env.NODE_ENV)
+        const response = await axios.get(`${this.endpointUrl}/api/admin/login`, {
           params: {
+            
             username: hashedUsername,
             password: hashedPassword
           }
+          
         });
 
         if (response.data.success) {
           localStorage.setItem('user', JSON.stringify(response.data.user));
           console.warn('เข้าสู่ระบบสำเร็จ');
-          
           // Display SweetAlert notification
           Swal.fire({
             icon: 'success',
@@ -65,13 +72,13 @@ export default {
             showConfirmButton: false,
             timer: 1500 // Close after 1.5 seconds
           });
-
+         
           const redirect = this.$route.query.redirect || '/Dashboard';
           this.$router.push(redirect);
         } else {
           this.error = 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง';
         }
-
+ 
         setTimeout(() => {
           location.reload();
         }, 100);

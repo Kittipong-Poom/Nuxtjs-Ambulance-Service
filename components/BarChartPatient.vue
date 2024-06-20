@@ -76,7 +76,7 @@ export default {
   },
   data() {
     return {
-      apiUrl: process.env.endpointUrl,
+endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' :  'http://localhost:5000',
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {
@@ -154,7 +154,7 @@ export default {
     async loadData() {
       try {
         // Fetch data for emergency patients from /api/caseurgents
-        const responseUrgent = await axios.get(this.apiUrl + "/api/caseurgents");
+        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
         const dataUrgent = responseUrgent.data;
 
         // Check if data is an array
@@ -166,7 +166,7 @@ export default {
         }
 
         // Fetch data for scheduled patients from /api/appointments
-        const responseScheduled = await axios.get(this.apiUrl + "/api/appointments");
+        const responseScheduled = await axios.get(this.endpointUrl + "/api/appointments");
         const dataScheduled = responseScheduled.data;
 
         // Check if data is an array

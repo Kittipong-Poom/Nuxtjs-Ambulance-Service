@@ -13,7 +13,7 @@
 
     </v-card-title>
 
-    <v-data-table :headers="headers" :items="desserts"  :search="search" item-key="caseurgent_id" show-select
+    <v-data-table :headers="headers" :items="desserts" :search="search" item-key="caseurgent_id" show-select
       v-model="selected" @input="handleSelectedItemsChange" @click:show-select="deleteSelectedItems">
       <template v-slot:top>
         <v-toolbar flat>
@@ -99,7 +99,7 @@ export default {
       selectedItems: [],
       selected: [],
       search: '',
-      apiUrl: process.env.endpointUrl,
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'http://localhost:5000',
       headers: [
         { text: 'เลขออกเหตุ', value: 'eventnum', align: 'center' },
         { text: 'วัน/เดือน/ปี', value: 'service_date', align: 'center' },
@@ -143,7 +143,7 @@ export default {
   //   this.loadData()
   // },
   mounted() {
-    console.log('ENV', this.apiUrl)
+    console.log('ENV', this.endpointUrl)
     this.loadData();
   },
   computed: {
@@ -211,7 +211,7 @@ export default {
         try {
           // Delete only the selected items
           await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.apiUrl}/api/caseurgents/${item.caseurgent_id}`);
+            await axios.delete(`${this.endpointUrl}/api/caseurgents/${item.caseurgent_id}`);
           }));
 
           // Remove the selected items from the desserts array
@@ -229,22 +229,44 @@ export default {
         }
       }
     },
-    exportToExcel() {
-      import('xlsx').then(XLSX => {
+    async exportToExcel() {
+      try {
+        console.log('Fetching XLSX module...');
+        const XLSX = await import('xlsx');
+        console.log('XLSX module loaded:', XLSX);
+
         const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
-        const exportData = dataToExport.map(item => {
-          return {
-            ...item,
-            emergency_group: Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group
-          };
-        });
+        console.log('Data to export:', dataToExport);
+
+        if (!dataToExport.length) {
+          console.error('No data to export');
+          return;
+        }
+
+        const exportData = dataToExport.map(item => ({
+          'เลขออกเหตุ': item.eventnum,
+          'วัน/เดือน/ปี': item.service_date,
+          'เวลา': item.time,
+          'เพศ': item.gender,
+          'อายุ': item.age,
+          'ประเภทผู้ป่วย': item.status,
+          'ความรุนแรงของประเภทผู้ป่วย': item.violence,
+          'กลุ่มอาการฉุกเฉิน': Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group,
+          'ละติจูด': item.lati,
+          'ลองติจูด': item.longi,
+          'การติดตามการนำส่งผู้ป่วย': item.patient_delivery
+        }));
+
+        console.log('Export data formatted:', exportData);
+
         const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
         XLSX.writeFile(workbook, 'เคสฉุกเฉิน.xlsx');
-      }).catch(error => {
-        console.error('Error importing xlsx:', error);
-      });
+        console.log('Export completed');
+      } catch (error) {
+        console.error('Error exporting data:', error);
+      }
     },
 
 
@@ -279,10 +301,10 @@ export default {
         let response;
         editedItem.service_date = this.formatDateForsaveItem(editedItem.service_date);
         editedItem.emergency_group = JSON.stringify(editedItem.emergency_group);
-        console.log('editedItem.emergency_group',editedItem.emergency_group)
+        console.log('editedItem.emergency_group', editedItem.emergency_group)
         if (!editedItem.caseurgent_id) {
           // Add new patient
-          response = await axios.post(`${this.apiUrl}/api/caseurgents`, editedItem);
+          response = await axios.post(`${this.endpointUrl}/api/caseurgents`, editedItem);
           this.$notify({
             'group': 'success',
             'title': 'กรอกข้อมูลสำเร็จ',
@@ -301,7 +323,7 @@ export default {
 
         } else {
           // Update existing patient
-          response = await axios.put(`${this.apiUrl}/api/caseurgents/${editedItem.caseurgent_id}`, editedItem);
+          response = await axios.put(`${this.endpointUrl}/api/caseurgents/${editedItem.caseurgent_id}`, editedItem);
           this.$notify({
             'group': 'success',
             'title': 'แก้ไขข้อมูลสำเร็จ',
@@ -377,7 +399,7 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.apiUrl + `/api/caseurgents/${item.caseurgent_id}`);
+            const response = await axios.delete(this.endpointUrl + `/api/caseurgents/${item.caseurgent_id}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.caseurgent_id !== item.caseurgent_id);
@@ -417,7 +439,7 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.apiUrl + '/api/caseurgents')
+        const { data } = await axios.get(this.endpointUrl + '/api/caseurgents')
 
         // this.desserts = data;
         console.log("This data", data)
@@ -441,7 +463,7 @@ export default {
     },
     async fetchDataFromServer() {
       try {
-        const { data } = await axios.get(this.apiUrl + '/api/caseurgents');
+        const { data } = await axios.get(this.endpointUrl + '/api/caseurgents');
         const formattedData = data.map(item => {
           // Assuming the service_date field contains the date to be formatted
           return {
@@ -503,6 +525,7 @@ body {
   flex-direction: column;
 
 }
+
 .button {
   height: 45px;
   font-size: 14px;

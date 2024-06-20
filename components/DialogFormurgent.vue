@@ -20,8 +20,7 @@
                     <v-text-field v-model="formattedDate" label="วันที่เกิดเหตุ" outlined
                       prepend-inner-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" no-title scrollable locale="th"
-                    :min="new Date().toISOString().substr(0, 10)">
+                  <v-date-picker v-model="date" no-title scrollable locale="th">
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       ยกเลิก
@@ -147,7 +146,6 @@
 <script>
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
-import Swal from 'sweetalert2';
 export default {
   props: {
     dialog: Boolean,
@@ -224,21 +222,6 @@ export default {
     },
     async save() {
       try {
-        const selectedDate = new Date(this.date);
-        const currentDate = new Date();
-
-        selectedDate.setHours(0, 0, 0, 0);
-        currentDate.setHours(0, 0, 0, 0);
-
-        if (selectedDate < currentDate) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'ไม่สามารถเลือกวันที่ย้อนหลังได้',
-          });
-          return;
-        }
-
         if (this.validateForm()) {
           this.editedItem.service_date = this.formattedDate;
           this.editedItem.time = this.formattedTime; // Set the time to the formatted time

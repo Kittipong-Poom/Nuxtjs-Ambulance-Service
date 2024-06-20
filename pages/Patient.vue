@@ -9,13 +9,13 @@
         <v-btn depressed class="button mb-2 mr-3" color="primary" @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
-        
+
         <v-spacer />
         <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
       </v-card-title>
 
       <v-data-table v-model="selected" show-select depressed :headers="headers" item-key="hn_id" :items="desserts"
-        :search="search"  @input="handleSelectedItemsChange">
+        :search="search" @input="handleSelectedItemsChange">
         <template v-slot:item.hn="{ item }">
           <span @click="openHistoryDialog(item.hn)" style="cursor: pointer; font-weight: bold;">{{ item.hn }}</span>
         </template>
@@ -81,7 +81,7 @@
         @close="closeDialog" :hide-fields="{ dateAndTime: true }" />
 
       <dialog-appointment v-if="isAppointmentDialogOpen" :dialog="isAppointmentDialogOpen" :edited-item="editedItem"
-        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false"  />
+        :dialog-title="dialogTitle" @save="saveItem" @close-dialog="isAppointmentDialogOpen = false" />
     </v-card>
   </div>
 </template>
@@ -115,7 +115,7 @@ export default {
       search: '',
       action: '',
       isAppointmentDialogOpen: false,
-      apiUrl: process.env.endpointUrl,
+      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'http://localhost:5000',
       headers: [
         { text: 'HN', value: 'hn', align: 'center' },
         { text: 'อายุ', value: 'age_name', align: 'center' },
@@ -159,7 +159,7 @@ export default {
     this.loadData()
   },
   mounted() {
-    console.log('ENV', this.apiUrl)
+    console.log('ENV', this.endpointUrl)
     this.loadData();
   },
   computed: {
@@ -191,21 +191,32 @@ export default {
         this.dialog = false;
       }
       this.selectedHN = hn;
-      console.log('เลขhn',hn)
+      console.log('เลขhn', hn)
       this.isHistoryDialogOpen = true;
       console.log('opennnn');
       this.$emit('open-history', hn);
     },
 
-    exportToExcel() {
+   async exportToExcel() {
       import('xlsx').then(XLSX => {
         const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
+
         const exportData = dataToExport.map(item => {
           return {
-            ...item,
-            emergency_group: Array.isArray(item.emergency_group) ? item.emergency_group.join(', ') : item.emergency_group
+            'hn_id': item.hn_id,
+            'HN': item.hn,
+            'อายุ': item.age_name,
+            'เพศ': item.gender,
+            'เบอร์โทรศัพท์': item.number,
+            'ประเภทผู้ป่วย': item.type_patient_name,
+            'การติดตามการนำส่งผู้ป่วย': item.tracking_name,
+            'ที่อยู่': item.address,
+            'ละติจูด': item.lati,
+            'ลองติจูด': item.longi,
+            'เพิ่มเติม': item.other
           };
         });
+
         const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
@@ -241,7 +252,8 @@ export default {
         try {
           // Delete only the selected items
           await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.apiUrl}/api/patients/${item.hn_id}`);
+            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
+            await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
           }));
 
           // Remove the selected items from the desserts array
@@ -275,7 +287,7 @@ export default {
       }
       // Fetch status data
       try {
-        const { data } = await axios.get(this.apiUrl + '/api/status');
+        const { data } = await axios.get(this.endpointUrl + '/api/status');
         this.items_status = data;
       } catch (error) {
         console.error('Error fetching status data:', error);
@@ -301,7 +313,7 @@ export default {
     getTypeColor(type) {
       return this.statusColorMap[type] || 'defaultColor';
     },
-    
+
     openDialog(action, item = null) {
       // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
       if (this.isAppointmentDialogOpen || this.isHistoryDialogOpen) {
@@ -332,7 +344,7 @@ export default {
           console.log('Adding new patient', editedItem);
 
           try {
-            response = await axios.post(`${this.apiUrl}/api/patients`, {
+            response = await axios.post(`${this.endpointUrl}/api/patients`, {
               hn: editedItem.hn,
               ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
               gender: editedItem.gender,
@@ -369,7 +381,7 @@ export default {
           console.log('Updating appointment', editedItem);
 
           try {
-            response = await axios.put(`${this.apiUrl}/api/patients/${editedItem.hn_id}`, {
+            response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
               status_case_id: editedItem.status_case_id,
               service_date: editedItem.service_date,
               time: editedItem.time
@@ -397,7 +409,7 @@ export default {
           console.log('Updating patient info', editedItem);
 
           try {
-            response = await axios.put(`${this.apiUrl}/api/patientsedit/${editedItem.hn_id}`, {
+            response = await axios.put(`${this.endpointUrl}/api/patientsedit/${editedItem.hn_id}`, {
               hn: editedItem.hn,
               ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
               gender: editedItem.gender,
@@ -484,8 +496,8 @@ export default {
         if (result.isConfirmed) {
           // If the user confirms, proceed with the deletion
           try {
-            const response = await axios.delete(this.apiUrl + `/api/patients/${item.hn_id}`);
-            await axios.delete(this.apiUrl + `/api/appointments/${item.hn}`);
+            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn_id}`);
+            await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
             if (response.status === 200) {
               // Remove the deleted patient from the local state
               this.desserts = this.desserts.filter(p => p.hn !== item.hn);
@@ -523,7 +535,7 @@ export default {
     },
     async loadData() {
       try {
-        const { data } = await axios.get(this.apiUrl + '/api/patients')
+        const { data } = await axios.get(this.endpointUrl + '/api/patients')
         // this.desserts = data;
         console.log("This data", data)
         this.$emit('data-loaded', data);
@@ -536,7 +548,7 @@ export default {
     },
     async fetchDataFromServer() {
       try {
-        const { data } = await axios.get(this.apiUrl + '/api/patients');
+        const { data } = await axios.get(this.endpointUrl + '/api/patients');
 
         return data;
       } catch (error) {
