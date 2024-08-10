@@ -1,60 +1,75 @@
 <template>
-  <v-app dark>
-    <!-- Navigation Drawer -->
-    <v-navigation-drawer color="#1A437B" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
-      <v-list>
-        <!-- Main menu items -->
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-          <v-list-item-action>
-            <v-icon :style="{ color: 'white' }">{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title :style="{ color: 'white' }">{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <!-- Dropdown for Maps sub-items -->
-        <v-list-group no-action>
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title :style="{ color: 'white' }">Maps</v-list-item-title>
-            </v-list-item-content>
-          </template>
-          <v-list-item v-for="(subItem, index) in mapsSubItems" :key="index" :to="subItem.to" router exact>
-            <v-list-item-content>
-              <v-list-item-title :style="{ color: 'white' }">{{ subItem.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-navigation-drawer>
-
-    <!-- App Bar -->
-     
-    <v-app-bar color="#285CA2" :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon 
-      :disabled="!created" 
-      color="#FFFF" 
-      @click.stop="drawer = !drawer" 
-    />
-      
-      <v-btn color="#FFFF" icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn color="#FFFF" icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-
-      <v-toolbar-title class="white--text">{{ pageTitle }}</v-toolbar-title>
-
-      <v-spacer />
-
-      <!-- Conditional rendering of logout button -->
-      <v-btn v-if="isLoggedIn" @click="logout" icon>
-        <v-icon color="#FFFF">mdi-logout</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <!-- Main Content -->
+  <v-app>
+    <header>
+      <nav scroll-behavior="elevate" class="navbar navbar-expand-custom navbar-mainbg">
+        <button class="navbar-toggler" :class="{ disabled: isNavbarDisabled }" type="button" @click="toggleNavbar">
+          <i class="fas fa-bars text-white"></i>
+        </button>
+        <div class="collapse navbar-collapse" :class="{ show: isNavbarOpen }" id="navbarSupportedContent">
+          <ul class="navbar-nav d-flex w-100">
+            <div class="hori-selector">
+              <div class="left"></div>
+              <div class="right"></div>
+            </div>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/Dashboard' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin"><i
+                  class="fas fa-chart-bar"></i>Dashboard</router-link>
+            </li>
+            <li class="nav-item active">
+              <router-link class="nav-link" :to="isLoggedIn ? '/Patient' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin"><i
+                  class="far fa-address-book"></i>ผู้ป่วยทั่วไป</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/QueueJob' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin"><i
+                  class="fa-solid fa-users"></i>จัดการคิวงาน</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/Calendars' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin"><i
+                  class="far fa-calendar-alt"></i>ปฏิทิน</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/Queueurgent' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
+                <i class="fas fa-ambulance"></i>ผู้ป่วยฉุกเฉิน
+              </router-link>
+            </li>
+            <li class="nav-item dropdown">
+              <router-link class="nav-link" :to="isLoggedIn ? '/Maps' : '/'" :class="{ 'disabled-link': !isLoggedIn }"
+                @click.prevent="!isLoggedIn && redirectToLogin">
+                <i class="fas fa-map"></i>แผนที่พิกัดรถฉุกเฉิน
+              </router-link>
+              <div class="dropdown-menu">
+                <router-link class="dropdown-item" :to="isLoggedIn ? '/MapsStaticAppointment' : '/'"
+                  :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
+                  แผนที่การนัดหมาย
+                </router-link>
+                <router-link class="dropdown-item" :to="isLoggedIn ? '/MapsStaticUrgent' : '/'"
+                  :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
+                  แผนที่ฉุกเฉิน
+                </router-link>
+              </div>
+            </li>
+            <v-tooltip>
+              <template v-slot:activator="{ on, attrs }">
+                <button class="ml-auto mt-2 Btn-logout mr-3" v-if="isLoggedIn" @click="logout" icon v-bind="attrs" >
+                  <div class="sign"><svg viewBox="0 0 512 512">
+                      <path
+                        d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                      </path>
+                    </svg></div>
+                    <div class="text">ออกจากระบบ</div>
+                </button>
+              </template>
+              
+            </v-tooltip>
+          </ul>
+        </div>
+      </nav>
+    </header>
     <v-main>
       <v-container fluid>
         <Nuxt />
@@ -64,150 +79,10 @@
 </template>
 
 <script>
+import DefaultJs from '../scripts/Default.js';
 
 
-export default {
-  created() {
-    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
-    if (!localStorage.getItem('user')) {
-        // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
-        this.$router.push('/');
-    } else {
-        // หากมีข้อมูลใน localStorage ให้เปิดใช้งานปุ่ม
-        this.created = true;
-    }
-  },
-  name: 'DefaultLayout',
-  data() {
-    return {
-      desserts: [],
-      // notifications: [],
-      // showRedBadge: true,
-      // notificationsCount: 0,
-      showNotifications: false,
-      clipped: false,
-      drawer: false,
-      darkMode: false,
-      items: [
+import '../styles/Default.css'; // Import the CSS file
 
-        {
-          icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
-          to: '/Dashboard'
-        },
-        {
-          icon: 'mdi-table',
-          title: 'จัดการข้อมูลผู้ป่วยทั่วไป',
-          to: '/Patient'
-        },
-        {
-          icon: 'mdi-table',
-          title: 'ตารางจัดการคิวงาน',
-          to: '/QueueJob'
-        },
-        {
-          icon: 'mdi-calendar',
-          title: 'ปฏิทินงาน',
-          to: '/Calendars'
-        },
-        {
-          icon: 'mdi-doctor',
-          title: 'จัดการข้อมูลผู้ป่วยฉุกเฉิน',
-          to: '/Queueurgent'
-        },
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Ambulance-Service',
-
-    }
-
-  },
-
-  computed: {
-    pageTitle() {
-      const route = this.$route;
-      switch (route.path) {
-        case '/Dashboard':
-          return 'Dashboard';
-        case '/Patient':
-          return 'จัดการข้อมูลผู้ป่วยทั่วไป';
-        case '/Queueurgent':
-          return 'จัดการข้อมูลผู้ป่วยฉุกเฉิน';
-        case '/QueueJob':
-          return 'ตารางจัดการคิวงาน';
-        case '/Calendars':
-          return 'ปฏิทินงาน';
-        case '/Maps':
-          return 'แผนที่พิกัดรถฉุกเฉิน';
-        case '/MapsStaticUrgent':
-          return 'แผนที่สถิติเคสฉุกเฉิน';
-        case '/MapsStaticAppointment':
-          return 'แผนที่สถิติเคสนัดรับ';
-        default:
-          return 'Ambulance-Service';
-      }
-    },
-    mapsSubItems() {
-      // Define sub-items for Maps dropdown
-      return [
-        {
-          icon: 'mdi-map',
-          title: 'พิกัดของรถฉุกเฉิน',
-          to: '/Maps'
-        },
-        {
-          icon: 'mdi-map',
-          title: 'แผนที่สถิติเคสฉุกเฉิน',
-          to: '/MapsStaticUrgent'
-        },
-        {
-          icon: 'mdi-map',
-          title: 'แผนที่สถิติเคสนัดรับ',
-          to: '/MapsStaticAppointment'
-        }
-      ];
-    },
-    isLoggedIn() {
-      return !!localStorage.getItem('user'); // Check if user data exists in localStorage
-    }
-  },
-
-  methods: {
-    logout() {
-      localStorage.removeItem('user'); // ลบข้อมูลผู้ใช้จาก localStorage
-      this.$router.push('/'); // นำทางไปยังหน้า login
-      window.location.reload();
-    },
-    toggleMode() {
-      this.darkMode = !this.darkMode
-      this.$vuetify.theme.dark = this.darkMode
-    },
-    markNotificationsAsRead() {
-      // Clear the notifications array
-      this.notifications = [];
-      // Hide the red badge
-      this.showRedBadge = false;
-    },
-
-  },
-}
+export default DefaultJs;
 </script>
-
-<style scoped>
-/* Add hover effect for v-list-item */
-.v-list-item:hover,
-.v-list-item--active {
-  background-color: #3A87E3;
-  /* Change to your desired hover color */
-  cursor: pointer;
-}
-
-/* Add hover effect for v-btn inside v-list-item */
-.v-list-item:hover .v-btn,
-.v-list-item--active .v-btn {
-  color: #3A87E3;
-  /* Change to your desired button hover color */
-}
-</style>

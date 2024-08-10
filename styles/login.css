@@ -1,0 +1,64 @@
+/* styles/login.css */
+
+/* สไตล์ที่ใช้สำหรับหน้าล็อกอิน */
+.login-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .login-page {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+    border-radius: 15px;
+  }
+  
+  .error {
+    background-color: white;
+    color: white;
+    margin-top: 10px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid red;
+  }

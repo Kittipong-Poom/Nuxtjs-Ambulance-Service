@@ -1,6 +1,6 @@
 <template>
     <v-card >
-      <h1 class="justify-center align-center d-flex">ปฏิทิน ปฏิบัติงาน</h1>
+      <span class="justify-center align-center d-flex text-2xl">ปฏิทิน ปฏิบัติงาน</span>
       <Calendar />
     </v-card>
   </template>

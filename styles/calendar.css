@@ -1,0 +1,9 @@
+.mini-calendar {
+    max-width: 300px;
+  }
+.v-calendar,
+.v-date-picker,
+.v-date-picker-table--date {
+  font-family: 'TH SarabunPSK', sans-serif !important;
+  font-size: 1.2rem;
+}

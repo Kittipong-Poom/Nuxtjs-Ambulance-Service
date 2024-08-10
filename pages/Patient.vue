@@ -2,16 +2,23 @@
   <div>
     <v-card>
       <v-card-title justify="center" class="center-container1">
-        <h2>ตารางข้อมูลผู้ป่วยทั่วไป</h2>
+        <span class="text-2xl">ตารางข้อมูลผู้ป่วยทั่วไป</span>
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
-        <v-btn depressed class="button mb-2 mr-3" color="primary" @click="openDialog('add')">
+        <v-btn depressed class="button1 mb-2 mr-3 " @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
 
         <v-spacer />
-        <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
+        <div class="container-input">
+          <input type="text" placeholder="ค้นหา" name="text" class="input" v-model="search">
+          <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
+              fill-rule="evenodd"></path>
+          </svg>
+        </div>
       </v-card-title>
 
       <v-data-table v-model="selected" show-select depressed :headers="headers" item-key="hn_id" :items="desserts"
@@ -22,29 +29,69 @@
 
         <template v-slot:top>
           <v-toolbar flat>
-            <h3>เลือกทั้งหมด</h3>
+            <h5>เลือกทั้งหมด</h5>
             <v-spacer></v-spacer>
-            <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
-              Export to Excel
+
+            <v-btn style="--clr: #4CAF50" class="button-excel mr-2 white--text" color="#4CAF50" @click="exportToExcel">
+              <span class="button__icon-wrapper mr-2">
+                <svg width="10" class="button__icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 14 15">
+                  <path fill="currentColor"
+                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z">
+                  </path>
+                </svg>
+
+                <svg class="button__icon-svg  button__icon-svg--copy" xmlns="http://www.w3.org/2000/svg" width="10"
+                  fill="none" viewBox="0 0 14 15">
+                  <path fill="currentColor"
+                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z">
+                  </path>
+                </svg>
+              </span>
+              Export Excel
             </v-btn>
-            <v-btn depressed class=" mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
+            <v-btn depressed class=" mb-0 mr-3 btn-all-delete" color="red" dark @click="deleteSelectedItems">
               ลบสิ่งที่เลือก</v-btn>
           </v-toolbar>
         </template>
 
         <template v-slot:item.action="{ item }">
-          <v-btn color="#4CAF50" class="mr-2  white--text" @click="openDialog('edit', item)">
-            <v-icon>mdi-pencil-box-multiple-outline</v-icon>
-            แก้ไข
-          </v-btn>
-          <v-btn class="mr-2 ma-2" color="primary" @click="openAppointmentDialog(item)">
-            <v-icon>mdi-account-search-outline</v-icon>
-            นัดหมาย
-          </v-btn>
-          <v-btn color="red" class="white--text mb-2 " @click="deleteItem(item)">
-            <v-icon>mdi-delete</v-icon>
-            ลบ
-          </v-btn>
+          <!--ปุ่มแก้ไข-->
+          <div class="d-flex">
+            <div class="button-container  mb-1 mr-2">
+              <button class=" mt-2 edit-button" @click="openDialog('edit', item)">
+                <svg class="edit-svgIcon" viewBox="0 0 512 512">
+                  <path
+                    d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z">
+                  </path>
+                </svg>
+              </button>
+            </div>
+            <!--ปุ่มนัดหมาย-->
+            <div class="button-container-appoint mb-1 mr-2">
+              <button class=" mt-2 edit-button-appoint" @click="openAppointmentDialog(item)">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white edit-svgIcon-appoint" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z"
+                    clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            <!--ปุ่มลบ-->
+            <v-btn color="red " @click="deleteItem(item)"
+              class="mt-2.5 flex justify-center items-center gap-2 w-11 h-12 cursor-pointer rounded-md shadow-2xl text-white font-semibold bg-gradient-to-r from-[#fb7185] via-[#e11d48] to-[#be123c] hover:shadow-xl hover:shadow-red-500 hover:scale-105 duration-300 hover:from-[#be123c] hover:to-[#fb7185]">
+              <svg viewBox="0 0 15 15" class="w-5 fill-white">
+                <svg class="w-6 h-6" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    stroke-linejoin="round" stroke-linecap="round"></path>
+                </svg>
+                Button
+              </svg>
+            </v-btn>
+          </div>
         </template>
 
         <template v-slot:item.type_patient_name="{ item }">
@@ -87,532 +134,10 @@
 </template>
 
 <script>
-import DialogAppointment from '~/components/DialogAppointment.vue';
-import DialogForm from '~/components/DialogForm.vue';
-import History from '~/components/History.vue';
-import axios from 'axios'
-import Swal from 'sweetalert2';
-import dayjs from 'dayjs';
-export default {
-  components: {
-    DialogForm,
-    DialogAppointment,
-    History,
-  },
-  data() {
-    return {
-      openHistoryCard: false,
-      selectedHN: null,
-      hn: '',
-      isHistoryDialogOpen: false,
-      newDate: "",
-      confirm: false,
-      confirmItem: null,
-      dialogVisible: false,
-      events: [],
-      selected: [], // selected items
-      selectedForDeletion: [], // items selected for deletion
-      search: '',
-      action: '',
-      isAppointmentDialogOpen: false,
-      endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'http://localhost:5000',
-      headers: [
-        { text: 'HN', value: 'hn', align: 'center' },
-        { text: 'อายุ', value: 'age_name', align: 'center' },
-        { text: 'เพศ', value: 'gender', align: 'center' },
-        { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
-        { text: 'ประเภทผู้ป่วย', value: 'type_patient_name', align: 'center' },
-        { text: 'การติดตามการนำส่งผู้ป่วย', value: 'tracking_name', align: 'center' },
-        { text: 'ที่อยู่', value: 'address', align: 'center' },
-        { text: 'ละติจูด', value: 'lati', align: 'center' },
-        { text: 'ลองติจูด', value: 'longi', align: 'center' },
-        { text: 'เพิ่มเติม', value: 'other', align: 'center' },
-        { text: '', value: 'action', sortable: false, align: 'center' }
-      ],
-      //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
-      desserts: [],
-      items_status: [],
-      statusColorMap: {
-        'งานบริการ': 'green',
-        'ผู้ป่วยติดเตียง': 'yellow',
-        'อื่นๆ': 'blue'
-      },
-      dialog: false,
-      dialogTitle: '',
-      editedItem: {
-        hn: '',
-        ages_id: '',
-        gender: '',
-        number: '',
-        tracking_patient_id: '',
-        address: '',
-        lati: '',
-        longi: '',
-        type_patient_id: '',
-        other: '',
-        service_date: null,
-        time: null,
-      },
-    };
-  },
-  fetch() {
-    this.loadData()
-  },
-  mounted() {
-    console.log('ENV', this.endpointUrl)
-    this.loadData();
-  },
-  computed: {
-    filteredDesserts() {
-      if (!this.search) {
-        return this.desserts;
-      }
-      const searchLower = this.search.toLowerCase();
-      return this.desserts.filter(item => {
-        return Object.values(item).some(value =>
-          String(value).toLowerCase().includes(searchLower)
-        );
-      });
-    },
-    formattedDate() {
-      // Parse the Thai date string and subtract 543 years to get the correct year
-      const thaiDate = dayjs(this.date, 'DD-MM-YYYY');
-      // เพิ่ม 543 ปีเพื่อเปลี่ยนเป็นปีไทย
-      const thaiYearDate = thaiDate.add(543, 'year');
-      // กำหนดรูปแบบของวันที่ในรูปแบบ YYYY-MM-DD เพื่อให้สามารถจัดเก็บในฐานข้อมูลได้
-      const formattedDate = thaiYearDate.format('YYYY-MM-DD');
-      return formattedDate;
-    },
-  },
-  methods: {
-    openHistoryDialog(hn) {
-      if (this.isAppointmentDialogOpen || this.dialog) {
-        this.isAppointmentDialogOpen = false;
-        this.dialog = false;
-      }
-      this.selectedHN = hn;
-      console.log('เลขhn', hn)
-      this.isHistoryDialogOpen = true;
-      console.log('opennnn');
-      this.$emit('open-history', hn);
-    },
 
-   async exportToExcel() {
-      import('xlsx').then(XLSX => {
-        const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
+import '../styles/patient.css'; // Import the CSS file
 
-        const exportData = dataToExport.map(item => {
-          return {
-            'hn_id': item.hn_id,
-            'HN': item.hn,
-            'อายุ': item.age_name,
-            'เพศ': item.gender,
-            'เบอร์โทรศัพท์': item.number,
-            'ประเภทผู้ป่วย': item.type_patient_name,
-            'การติดตามการนำส่งผู้ป่วย': item.tracking_name,
-            'ที่อยู่': item.address,
-            'ละติจูด': item.lati,
-            'ลองติจูด': item.longi,
-            'เพิ่มเติม': item.other
-          };
-        });
+import PatientJs from '../scripts/patient.js';
 
-        const worksheet = XLSX.utils.json_to_sheet(exportData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-        XLSX.writeFile(workbook, 'ข้อมูลผู้ป่วยทั่วไป.xlsx');
-      }).catch(error => {
-        console.error('Error importing xlsx:', error);
-      });
-    },
-    handleSelectedItemsChange(selectedItems) {
-      // Update selectedForDeletion array when items are selected/unselected
-      this.selected = selectedItems;
-    },
-    async deleteSelectedItems() {
-      if (this.selected.length === 0) {
-        // Show warning message if no item is selected
-        Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
-        return; // Exit the function if no item is selected
-      }
-
-      // Perform deletion confirmation
-      const result = await Swal.fire({
-        title: 'ยืนยันการลบ',
-        text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'แน่นอน ลบ!'
-      });
-
-      // Proceed with deletion if confirmed
-      if (result.isConfirmed) {
-        try {
-          // Delete only the selected items
-          await Promise.all(this.selected.map(async item => {
-            await axios.delete(`${this.endpointUrl}/api/patients/${item.hn_id}`);
-            await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
-          }));
-
-          // Remove the selected items from the desserts array
-          this.desserts = this.desserts.filter(dessert => !this.selected.includes(dessert));
-
-          // Clear the selected items array
-          this.selected = [];
-
-          // Show deletion success message
-          Swal.fire('ลบแล้ว!', 'รายการที่เลือกได้ถูกลบแล้ว', 'success');
-        } catch (error) {
-          console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
-          // Show error message if deletion fails
-          Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการที่เลือกได้', 'error');
-        }
-      }
-    },
-    closeDialog() {
-      this.dialog = false;
-      this.isAppointmentDialogOpen = false;
-      this.isHistoryDialogOpen = false;
-      this.dialogTitle = '';
-      this.editedItem = {};
-      this.dialogVisible = false;
-    },
-    async openAppointmentDialog(item) {
-      // Close other dialogs if open
-      if (this.dialog || this.isHistoryDialogOpen) {
-        this.dialog = false;
-        this.isHistoryDialogOpen = false;
-      }
-      // Fetch status data
-      try {
-        const { data } = await axios.get(this.endpointUrl + '/api/status');
-        this.items_status = data;
-      } catch (error) {
-        console.error('Error fetching status data:', error);
-      }
-      // Set editedItem and dialogTitle based on item data
-      this.editedItem = { ...item }; // Clone the item to avoid direct mutation
-      console.log(item);
-      console.log(this.editedItem.age_name);
-      this.dialogTitle = 'นัดหมายผู้ป่วย';
-      // Show the appointment dialog
-      this.isAppointmentDialogOpen = true;
-    },
-    formatDateForMySQL(dateString) {
-      // Extract the date parts
-      if (!dateString) {
-        return null; // Return an empty string if dateString is undefined or null
-      }
-      const datePart = dateString.split('-');
-      // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
-      const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
-      return formattedDate;
-    },
-    getTypeColor(type) {
-      return this.statusColorMap[type] || 'defaultColor';
-    },
-
-    openDialog(action, item = null) {
-      // ก่อนเปิด dialog ใหม่ ตรวจสอบสถานะของ dialog อื่น ๆ และปิดทุกตัวที่เปิดอยู่
-      if (this.isAppointmentDialogOpen || this.isHistoryDialogOpen) {
-        this.isAppointmentDialogOpen = false;
-        this.isHistoryDialogOpen = false;
-      }
-
-      // เปิด dialog ใหม่
-      this.dialogTitle = action === 'add' ? 'จัดการผู้ป่วยใหม่' : 'แก้ไขข้อมูลผู้ป่วย';
-      this.editedItem = action === 'add' ? {} : { ...item };
-      this.dialog = true;
-    },
-
-    async saveItem(editedItem) {
-      try {
-        let response;
-
-        const isAddNewPatient = !editedItem.hn_id;
-        const isUpdatePatientInfo = editedItem.hn_id && !editedItem.time;
-        const isUpdateAppointment = editedItem.hn_id && editedItem.time;
-
-        console.log('isAddNewPatient:', isAddNewPatient);
-        console.log('isUpdatePatientInfo:', isUpdatePatientInfo);
-        console.log('isUpdateAppointment:', isUpdateAppointment);
-
-        if (isAddNewPatient) {
-          // Add new patient
-          console.log('Adding new patient', editedItem);
-
-          try {
-            response = await axios.post(`${this.endpointUrl}/api/patients`, {
-              hn: editedItem.hn,
-              ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
-              gender: editedItem.gender,
-              number: editedItem.number,
-              tracking_patient_id: editedItem.tracking_patient_id,
-              address: editedItem.address,
-              lati: editedItem.lati,
-              longi: editedItem.longi,
-              type_patient_id: editedItem.type_patient_id,
-              other: editedItem.other,
-              service_date: null,
-              time: null,
-            });
-            console.log('response:', response);
-
-            Swal.fire({
-              icon: 'success',
-              title: 'สำเร็จ',
-              text: 'กรอกข้อมูลสำเร็จ',
-            });
-          } catch (error) {
-            console.error('Error in axios.post:', error.response || error);
-
-            Swal.fire({
-              icon: 'success',
-              title: 'สำเร็จ',
-              text: 'นัดหมายสำเร็จ',
-            });
-            return;
-          }
-
-        } else if (isUpdateAppointment) {
-          // Update appointment
-          console.log('Updating appointment', editedItem);
-
-          try {
-            response = await axios.put(`${this.endpointUrl}/api/patients/${editedItem.hn_id}`, {
-              status_case_id: editedItem.status_case_id,
-              service_date: editedItem.service_date,
-              time: editedItem.time
-            });
-            console.log('response:', response);
-
-            Swal.fire({
-              icon: 'success',
-              title: 'สำเร็จ',
-              text: 'อัพเดตการนัดหมายสำเร็จ',
-            });
-          } catch (error) {
-            console.error('Error in axios.put (appointment):', error.response || error);
-
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'ไม่สามารถนัดหมายผู้ป่วยได้:11111 ' + (error.response.data.message || error.message),
-            });
-            return;
-          }
-
-        } else if (isUpdatePatientInfo) {
-          // Update patient information
-          console.log('Updating patient info', editedItem);
-
-          try {
-            response = await axios.put(`${this.endpointUrl}/api/patientsedit/${editedItem.hn_id}`, {
-              hn: editedItem.hn,
-              ages_id: editedItem.ages_id ? editedItem.ages_id.age_id : null,
-              gender: editedItem.gender,
-              number: editedItem.number,
-              tracking_patient_id: editedItem.tracking_patient_id,
-              address: editedItem.address,
-              lati: editedItem.lati,
-              longi: editedItem.longi,
-              type_patient_id: editedItem.type_patient_id,
-              other: editedItem.other,
-            });
-            console.log('response:', response);
-
-            Swal.fire({
-              icon: 'success',
-              title: 'สำเร็จ',
-              text: 'แก้ไขข้อมูลสำเร็จ',
-            });
-          } catch (error) {
-            console.error('Error in axios.put (patient info):', error.response || error);
-
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'ไม่สามารถแก้ไขข้อมูลได้:5555 ' + (error.response.data.message || error.message),
-            });
-            return;
-          }
-        }
-
-        console.log('response', response);
-
-        const savedPatient = response.data;
-
-        this.$nextTick(() => {
-          if (isAddNewPatient) {
-            this.desserts.push(savedPatient);
-          } else {
-            const index = this.desserts.findIndex(item => item.hn_id === savedPatient.hn_id);
-            this.$set(this.desserts, index, savedPatient);
-          }
-          this.closeDialog();
-        });
-        this.desserts = await this.fetchDataFromServer();
-
-      } catch (error) {
-        console.error('Error saving item:', error.response || error);
-
-        // Show an error notification
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'ไม่สามารถบันทึกข้อมูลได้: 66666' + (error.response.data.message || error.message),
-        });
-      }
-    },
-
-    async deleteItem(item) {
-      this.confirmItem = item;
-      this.confirm = true;
-    },
-    cancelDelete() {
-      // Reset the confirm dialog and clear the confirmItem
-      this.confirm = false;
-      this.confirmItem = null;
-    },
-    async submitDelete() {
-      // Check if there is a confirmed item for deletion
-      if (this.confirmItem) {
-        const item = this.confirmItem;
-
-        // Show a confirmation dialog using SweetAlert2
-        const result = await Swal.fire({
-          title: 'ยืนยันการลบ?',
-          text: 'เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'ตกลง',
-          cancelButtonText: 'ยกเลิก',
-        });
-
-        if (result.isConfirmed) {
-          // If the user confirms, proceed with the deletion
-          try {
-            const response = await axios.delete(this.endpointUrl + `/api/patients/${item.hn_id}`);
-            await axios.delete(this.endpointUrl + `/api/appointments/${item.hn}`);
-            if (response.status === 200) {
-              // Remove the deleted patient from the local state
-              this.desserts = this.desserts.filter(p => p.hn !== item.hn);
-              // Show success notification
-              Swal.fire({
-                icon: 'success',
-                title: 'ลบข้อมูลสำเร็จ',
-              });
-              console.warn('This data delete already')
-            } else {
-              // Show an error notification
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'เกิดข้อผิดพลาดในการลบข้อมูล',
-              });
-            }
-            this.desserts = await this.fetchDataFromServer();
-          } catch (error) {
-            console.error('Error deleting item:', error);
-
-            // Show an error notification
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Error deleting item',
-            });
-          }
-
-          // Reset the confirm dialog and clear the confirmItem
-          this.confirm = false;
-          this.confirmItem = null;
-        }
-      }
-    },
-    async loadData() {
-      try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients')
-        // this.desserts = data;
-        console.log("This data", data)
-        this.$emit('data-loaded', data);
-        this.desserts = data;
-        console.log(this.desserts);
-
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    },
-    async fetchDataFromServer() {
-      try {
-        const { data } = await axios.get(this.endpointUrl + '/api/patients');
-
-        return data;
-      } catch (error) {
-        console.error('Error fetching data from server:', error);
-        throw error; // Propagate the error to the caller
-      }
-    },
-  },
-  created() {
-    // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
-    if (!localStorage.getItem('user')) {
-      // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
-      this.$router.push('/error');
-    }
-  },
-};
+export default PatientJs;
 </script>
-
-<style>
-body {
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.center-container1 {
-  padding-top: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.dashboardtext {
-  display: inline;
-  font-size: 35px;
-  color: #000000;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.button {
-  height: 45px;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 500;
-  color: #000;
-  background-color: #fff;
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease 0s;
-  cursor: pointer;
-  outline: none;
-}
-
-.button:hover {
-  background-color: #285CA2;
-  box-shadow: 0px 15px 20px rgba(0, 47, 255, 0.4);
-  color: #ffffff;
-  transform: translateY(-7px);
-}
-
-.my-chip {
-  width: 120px;
-  justify-content: center;
-}
-</style>

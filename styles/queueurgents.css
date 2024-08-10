@@ -1,0 +1,140 @@
+body {
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+
+.truncate {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.custom-notification {
+  margin: 0 5px 5px;
+  padding: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  background: #68cd86;
+  border-left: 5px solid #42a85f;
+}
+
+.fail-noti {
+  margin: 0 0px 5px;
+  padding: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  background: #e54d42;
+  border-left-color: #b82e24;
+}
+
+.center-container1 {
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.button1 {
+  padding: 15px 25px;
+  border: unset;
+  border-radius: 15px;
+  color: #212121;
+  z-index: 1;
+  background: #212121;
+  position: relative;
+  font-weight: 1000;
+  font-size: 17px;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+  overflow: hidden;
+}
+
+.button1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 15px;
+  background-color: #212121;
+  z-index: -1;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+}
+
+.button1:hover {
+  color: #212121;
+}
+
+.button1:hover::before {
+  width: 100%;
+}
+
+.my-chip {
+  width: 130px;
+  justify-content: center;
+}
+
+.v-notification {
+  background-color: green;
+  color: white;
+}
+
+.button-excel {
+  
+  line-height: 1;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  background-color: var(--clr);
+  color: #fff;
+  border-radius: 10rem;
+  font-weight: 600;
+  padding: .75rem 1.5rem;
+  padding-left: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color .3s;
+}
+
+.button__icon-wrapper {
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  color: var(--clr);
+  background-color: #fff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.button-excel:hover {
+  background-color: #000;
+}
+
+.button-excel:hover .button__icon-wrapper {
+  color: #000;
+}
+
+.button__icon-svg--copy {
+  position: absolute;
+  transform: translate(-150%, 150%);
+}
+
+.button-excel:hover .button__icon-svg:first-child {
+  transition: transform .3s ease-in-out;
+  transform: translate(150%, -150%);
+}
+
+.button-excel:hover .button__icon-svg--copy {
+  transition: transform .3s ease-in-out .1s;
+  transform: translate(0);
+}

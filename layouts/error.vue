@@ -6,8 +6,8 @@
     <h1 v-else>
       {{ otherError }}
     </h1>
-    <NuxtLink to="/">
-      เข้าสู่ระบบ
+    <NuxtLink to="/Dashboard">
+      หน้าแรก
     </NuxtLink>
   </v-app>
 </template>

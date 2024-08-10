@@ -1,34 +1,63 @@
 <template>
     <v-card>
         <v-card-title class="d-flex justify-center align-center head1">
-            <h2>ตารางจัดการคิว</h2>
+            <span class="text-2xl">ตารางจัดการคิวงาน</span>
         </v-card-title>
 
         <v-card-title>
             <v-spacer />
-            <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" single-line hide-details />
+            <div class="container-input">
+          <input type="text" placeholder="ค้นหา" name="text" class="input" v-model="search">
+          <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
+              fill-rule="evenodd"></path>
+          </svg>
+        </div>
         </v-card-title>
 
         <v-data-table :headers="headers" :items="filteredDesserts" :search="search" item-key="id" show-select
             v-model="selected" @input="handleSelectedItemsChange">
             <template v-slot:top>
                 <v-toolbar flat>
-                    <h3>เลือกทั้งหมด</h3>
+                    <h5>เลือกทั้งหมด </h5>
                     <v-spacer></v-spacer>
-                    <v-btn depressed class="button mb-0 mr-3" color="primary" @click="exportToExcel">
-                        Export to Excel
+                    <v-btn style="--clr: #4CAF50" class="button-excel mr-2 white--text" color="#4CAF50"
+                        @click="exportToExcel">
+                        <span class="button__icon-wrapper mr-2">
+                            <svg width="10" class="button__icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 15">
+                                <path fill="currentColor"
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z">
+                                </path>
+                            </svg>
+
+                            <svg class="button__icon-svg  button__icon-svg--copy" xmlns="http://www.w3.org/2000/svg"
+                                width="10" fill="none" viewBox="0 0 14 15">
+                                <path fill="currentColor"
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z">
+                                </path>
+                            </svg>
+                        </span>
+                        Export Excel
                     </v-btn>
-                    <v-btn depressed class=" mb-0 mr-3" color="red" dark @click="deleteSelectedItems">
+                    <v-btn depressed class=" mb-0 mr-3 btn-all-delete" color="red" dark @click="deleteSelectedItems">
                         ลบสิ่งที่เลือก</v-btn>
                 </v-toolbar>
             </template>
+            <!--ปุ่มแก้ไขนัดหมายผู้ป่วย-->
             <template v-slot:item.action="{ item }">
                 <div class="d-flex">
-                    <v-btn color="#4CAF50" class="mr-2 white--text" @click="openAppointmentDialog(item)">
-                        <v-icon>mdi-pencil-box-multiple-outline</v-icon>
-                        แก้ไขข้อมูลนัดหมาย
-                    </v-btn>
-                    <v-btn color="blue" class="mr-2 white--text" @click="openGoogleMaps(item)">
+                    <div class="button-container-queue mr-2 mb-2 ">
+                        <button class=" mt-2 edit-button-queue" @click="openAppointmentDialog(item)">
+                            <svg class="edit-svgIcon-queue" viewBox="0 0 512 512">
+                                <path
+                                    d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <v-btn color="blue" class="mr-2 mt-2.5 white--text" @click="openGoogleMaps(item)">
                         <v-icon>mdi-map-marker</v-icon>
                         เริ่มการนำทาง
                     </v-btn>
@@ -60,320 +89,7 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2';
-import dayjs from 'dayjs';
-import Appointment from '~/components/DialogQueueManage.vue';
-import axios from 'axios';
-export default {
-    components: {
-        Appointment,
-    },
-    data() {
-        return {
-            isDialogVisible: false,
-            isAppointmentDialogOpen: false,
-            endpointUrl: process.env.NODE_ENV == 'development' ? 'http://localhost:5000' : 'http://localhost:5000',
-            headers: [
-                { text: 'HN', value: 'hn', align: 'center' },
-                { text: 'เบอร์โทรศัพท์', value: 'number', align: 'center' },
-                { text: 'ที่อยู่', value: 'address', align: 'center' },
-                { text: 'ละติจูด', value: 'lati', align: 'center' },
-                { text: 'ลองติจูด', value: 'longi', align: 'center' },
-                { text: 'วันที่นัดหมาย', value: 'service_date', align: 'center' },
-                { text: 'เวลานัดหมาย', value: 'time', align: 'center' },
-                { text: 'สถานะ', value: 'status_case_id', align: 'center' },
-                { text: '', value: 'action', sortable: false, align: 'center' }
-            ],
-            selectedPatient: null,
-            selectedItem: null,
-            selected: [], // selected items
-            dialog: false,
-            dialogTitle: '',
-            desserts: [],
-            search: '',
-            editedItem: {
-                hn: '',
-                age_name: '',
-                gender: '',
-                tracking_name: '',
-                service_date: new Date(),
-                status_case_id: '',
-                number: '',
-                time: '',
-                address: '',
-                lati: '',
-                longi: '',
-                other: '',
-                type_patient_name: ''
-            },
-            statusColorMap: {
-                'งานบริการ': 'green',
-                'รอรับงาน': 'red',
-                'กำลังดำเนินงาน': 'yellow',
-                'ยกเลิก': 'gray',
-                'เสร็จสิ้น': 'green',
-                'ผู้ป่วยติดเตียง': 'yellow',
-                'อื่นๆ': 'blue',
-            },
-        }
-    },
-    computed: {
-        filteredDesserts() {
-            const search = this.search.toLowerCase();
-            return this.desserts
-                .filter(item => {
-                    return Object.keys(item).some(key => {
-                        return String(item[key]).toLowerCase().includes(search);
-                    });
-                })
-                .sort((a, b) => {
-                    const statusOrder = { 'รอรับงาน': 1, 'กำลังดำเนินงาน': 2, 'เสร็จสิ้น': 3 };
-                    const statusComparison = statusOrder[a.status_case_id] - statusOrder[b.status_case_id];
-
-                    if (statusComparison !== 0) {
-                        return statusComparison;
-                    }
-
-                    const dateA = dayjs(a.service_date, 'YYYY-MM-DD');
-                    const dateB = dayjs(b.service_date, 'YYYY-MM-DD');
-                    return dateA.isAfter(dateB) ? 1 : -1;
-                });
-        }
-    },
-    methods: {
-        async exportToExcel() {
-            import('xlsx').then(XLSX => {
-                // Use the selected items if there are any, otherwise, use filtered desserts
-                const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
-                const exportData = dataToExport.map(item => {
-                    return {
-                        'appointment_id': item.id,
-                        'HN': item.hn,
-                        'เบอร์โทรศัพท์': item.number,
-                        'ที่อยู่': item.address,
-                        'ละติจูด': item.lati,
-                        'ลองติจูด': item.longi,
-                        'วันที่นัดหมาย': item.service_date,
-                        'เวลา': item.time,
-                        'สถานะ': item.status_case_id,
-                    };
-                });
-                const worksheet = XLSX.utils.json_to_sheet(exportData);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-                XLSX.writeFile(workbook, 'จัดการตารางคิวงาน.xlsx');
-            }).catch(error => {
-                console.error('Error importing xlsx:', error);
-                // Handle error if xlsx library fails to load
-            });
-        },
-        handleSelectedItemsChange(selectedItems) {
-            // Update selectedForDeletion array when items are selected/unselected
-            this.selected = selectedItems;
-        },
-        async deleteSelectedItems() {
-            if (this.selected.length === 0) {
-                // Show warning message if no item is selected
-                Swal.fire('แจ้งเตือน', 'กรุณาเลือกรายการที่ต้องการลบ', 'warning');
-                return; // Exit the function if no item is selected
-            }
-
-            // Perform deletion confirmation
-            const result = await Swal.fire({
-                title: 'ยืนยันการลบ',
-                text: 'ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'แน่นอน ลบ!'
-            });
-
-            // Proceed with deletion if confirmed
-            if (result.isConfirmed) {
-                try {
-                    // Delete only the selected items
-                    await Promise.all(this.selected.map(async item => {
-                        await axios.delete(`${this.endpointUrl}/api/appointmentsall/${item.id}`);
-                    }));
-
-                    // Remove the selected items from the desserts array
-                    this.desserts = this.desserts.filter(dessert => !this.selected.includes(dessert));
-
-                    // Clear the selected items array
-                    this.selected = [];
-
-                    // Show deletion success message
-                    Swal.fire('ลบแล้ว!', 'รายการที่เลือกได้ถูกลบแล้ว', 'success');
-                } catch (error) {
-                    console.error('เกิดข้อผิดพลาดในการลบรายการ:', error);
-                    // Show error message if deletion fails
-                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถลบรายการที่เลือกได้', 'error');
-                }
-            }
-        },
-
-        async loadData() {
-            try {
-                const { data } = await axios.get(this.endpointUrl + '/api/appointments')
-                console.log('data', data);
-
-                const formattedData = data.map(item => {
-                    if (item.time && typeof item.time === 'string') {
-                        const [hours, minutes] = item.time.split(':');
-                        return {
-                            ...item,
-                            service_date: this.formatDate(item.service_date),
-                            time: `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`
-                        };
-                    } else {
-                        console.error('Invalid time format:', item.time);
-                        return item;
-                    }
-                });
-
-                this.desserts = formattedData;
-                console.log(this.desserts);
-
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        },
-        updateStatuses() {
-            console.log('Updating statuses');
-            const now = dayjs();
-
-            this.desserts.forEach((item, index) => {
-                console.log('Processing item:', item);
-                const appointmentDateTime = dayjs(item.service_date + ' ' + item.time, 'DD-MM-YYYY HH:mm');
-
-                if (item.status_case_id === 'รอรับงาน' && now.isAfter(appointmentDateTime)) {
-                    this.$set(this.desserts, index, { ...item, status_case_id: 'กำลังดำเนินงาน' });
-                } else if (item.status_case_id === 'กำลังดำเนินงาน' && now.isAfter(appointmentDateTime.add(1, 'hour'))) {
-                    this.$set(this.desserts, index, { ...item, status_case_id: 'เสร็จสิ้น' });
-                }
-            });
-        },
-        async fetchDataFromServer() {
-            try {
-                const { data } = await axios.get(`${this.endpointUrl}/api/appointments`);
-                const formattedData = data.map(item => {
-                    return {
-                        ...item,
-                        service_date: this.formatDate(item.service_date),
-                    };
-                });
-                this.desserts = formattedData;
-            } catch (error) {
-                console.error('Error fetching data from server:', error);
-                throw error;
-            }
-        },
-        openGoogleMaps(item) {
-            const latitude = item.lati;
-            const longitude = item.longi;
-            const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-            window.open(url);
-        },
-        openAppointmentDialog(item) {
-            // Pass the service date along with other item properties
-            this.editedItem = { ...item, service_date: new Date(item.service_date.substr(6, 4) - 543 + "-" + item.service_date.substr(3, 2) + "-" + item.service_date.substr(0, 2)) };
-            this.dialogTitle = 'แก้ไขนัดหมายผู้ป่วย';
-            this.isAppointmentDialogOpen = true;
-        },
-        handleUpdateSuccess() {
-            this.isAppointmentDialogOpen = false;
-            console.log('Update was successful');
-            this.fetchDataFromServer();  // Fetch data to get the latest updates
-        },
-        formatTime(time) {
-            if (!time) return '';
-            const timeObj = new Date(time);
-            const hours = timeObj.getHours().toString().padStart(2, '0');
-            const minutes = timeObj.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
-        },
-
-        formatDate(inputDate) {
-            const date = new Date(inputDate);
-            const gregorianYear = date.getFullYear();
-            const buddhistYear = gregorianYear;
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            return `${day}-${month}-${buddhistYear}`;
-        },
-
-        formatDateForsaveItem(dateString) {
-            if (!dateString) {
-                return null;
-            }
-            const datePart = dateString.split('-');
-            const gregorianYear = parseInt(datePart[2]) - 543; // Convert Buddhist year to Gregorian calendar
-            const formattedDate = `${gregorianYear}-${datePart[1]}-${datePart[0]}`;
-            return formattedDate;
-        },
-
-        async saveItem(editedItem) {
-            try {
-                if (!editedItem.status_case_id) {
-                    this.$emit('error', 'โปรดเลือกสถานะ');
-                    return;
-                }
-
-                editedItem.service_date = this.formatDateForsaveItem(editedItem.service_date);
-
-                // Format the time to ensure it follows the HH:MM format
-                editedItem.time = this.formatTime(editedItem.time);
-
-                let response;
-                if (editedItem.id) {
-                    response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, editedItem);
-                }
-                const savedAppointment = response.data;
-
-                if (!editedItem.id) {
-                    this.desserts.push(savedAppointment);
-                } else {
-                    const index = this.desserts.findIndex(item => item.id === savedAppointment.id);
-                    if (index !== -1) {
-                        this.$set(this.desserts, index, savedAppointment);
-                    }
-                }
-                this.closeDialog();
-                this.$emit('item-saved');
-                const index = this.desserts.findIndex(item => item.id === savedAppointment.id);
-                if (index !== -1) {
-                    this.$set(this.desserts[index], 'status_case_id', savedAppointment.status_case_id);
-                }
-            } catch (error) {
-                console.error('Error saving item:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'ไม่สามารถเพิ่มข้อมูลได้',
-                });
-            }
-        },
-        closeDialog() {
-            this.selectedPatient = null;
-            this.isDialogVisible = false;
-        },
-        getTypeColor(type) {
-            return this.statusColorMap[type] || 'defaultColor';
-        },
-        getStatusColor(type) {
-            return this.statusColorMap[type] || 'defaultColor';
-        }
-    },
-    mounted() {
-        this.loadData();
-    },
-    created() {
-        // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่
-        if (!localStorage.getItem('user')) {
-            // ถ้าไม่มีข้อมูลใน localStorage ให้กลับไปหน้า Login
-            this.$router.push('/error');
-        }
-    },
-}
+import QueueJobJs from '../scripts/queuejob.js'
+import '../styles/queuejob.css'
+export default QueueJobJs
 </script>

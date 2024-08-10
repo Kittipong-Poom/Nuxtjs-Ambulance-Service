@@ -1,0 +1,26 @@
+.patientmonth,
+.emergencymonth {
+    text-align: center;
+    margin-top: -40px;
+}
+
+.all {
+    font-size: 1rem;
+    color: green;
+}
+
+.head-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+.img-select {
+    width: 70%;
+}
+
+.mx-auto {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

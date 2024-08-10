@@ -1,0 +1,5 @@
+/* Add styles for aesthetics (optional) */
+#map {
+    position: relative;
+    z-index: 1;
+  }
