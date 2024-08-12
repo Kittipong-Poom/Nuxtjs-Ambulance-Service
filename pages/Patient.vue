@@ -2,21 +2,23 @@
   <div>
     <v-card>
       <v-card-title justify="center" class="center-container1">
-        <span class="text-2xl">ตารางข้อมูลผู้ป่วยทั่วไป</span>
+        <span class="text-2xl font-semibold">ตารางข้อมูลผู้ป่วยทั่วไป</span>
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
-        <v-btn depressed class="button1 mb-2 mr-3 " @click="openDialog('add')">
+        <v-btn depressed color="#1171b5" class="button1 mb-2 mr-3 white--text" @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
 
         <v-spacer />
-        <div class="container-input">
-          <input type="text" placeholder="ค้นหา" name="text" class="input" v-model="search">
-          <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
-              fill-rule="evenodd"></path>
+        <div class="relative">
+          <input v-model="search"  placeholder="ค้นหา..."
+            class="input shadow-lg focus:border-2 border-gray-300 px-5 py-3 rounded-xl w-56 transition-all focus:w-64 outline-none"
+            name="search" type="search" />
+          <svg class="size-6 absolute top-4 right-3 text-gray-500 w-6" stroke="currentColor" stroke-width="1.5"
+            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              stroke-linejoin="round" stroke-linecap="round"></path>
           </svg>
         </div>
       </v-card-title>
@@ -29,7 +31,8 @@
 
         <template v-slot:top>
           <v-toolbar flat>
-            <h5>เลือกทั้งหมด</h5>
+            <h5>👇เลือกทั้งหมด</h5>
+
             <v-spacer></v-spacer>
 
             <v-btn style="--clr: #4CAF50" class="button-excel mr-2 white--text" color="#4CAF50" @click="exportToExcel">
@@ -70,7 +73,7 @@
             <!--ปุ่มนัดหมาย-->
             <div class="button-container-appoint mb-1 mr-2">
               <button class=" mt-2 edit-button-appoint" @click="openAppointmentDialog(item)">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white edit-svgIcon-appoint" aria-hidden="true"
+                <svg class="w-6 h-6 text-gray-800 dark:text-white edit-svgIcon-appoint"
                   xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path fill-rule="evenodd"
                     d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z"

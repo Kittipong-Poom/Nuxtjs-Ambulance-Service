@@ -120,21 +120,30 @@ export default {
   mounted(){
     this.loadData();
   },
-  methods:{
-    async loadData(){
-      try{
+  methods: {
+    async loadData() {
+      try {
+        const currentYear = new Date().getFullYear() + 542;
+  
+        // Reset chart data if it's a new year
+        if (this.beforeYear !== currentYear) {
+          this.beforeYear = currentYear;
+          this.chartData.datasets[0].data = [0, 0, 0, 0];
+        }
+  
+        // Fetch data for emergency patients from /api/caseurgents
         const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
         const dataUrgent = responseUrgent.data;
-
+  
         if (Array.isArray(dataUrgent)) {
           this.chartData.datasets[0].data = this.countTypes(dataUrgent);
         } else {
           console.error("Response data from /api/caseurgents is not an array:", dataUrgent);
         }
-        console.log('Get api caseurgents', this.countTypes(dataUrgent))
+        console.log('Get Pie Chart Api Caseurgents', this.countTypes(dataUrgent));
         this.loaded = true;
-      }catch(error){
-        console.log('Error Fetching Data : ',error)
+      } catch (error) {
+        console.log('Error Fetching Data:', error);
       }
     },
     countTypes(data) {

@@ -63,8 +63,7 @@
                     </svg></div>
                     <div class="text">ออกจากระบบ</div>
                 </button>
-              </template>
-              
+              </template>       
             </v-tooltip>
           </ul>
         </div>

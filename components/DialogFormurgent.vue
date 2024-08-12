@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="650">
+  <v-dialog v-model="dialog" max-width="650" @click:outside="close">
     <v-card class="rounded-xl">
       <v-card-title class="text-center d-flex justify-center align-center">
         <span class="headline">{{ dialogTitle1 }}</span>
@@ -9,8 +9,8 @@
           <v-container>
             <v-row>
               <v-col cols="12" md="6">
-                <v-text-field v-model="editedItem.eventnum" label="เลขออกเหตุ" outlined
-                  :rules="[rules.number]"></v-text-field>
+                <v-text-field v-model="editedItem.eventnum" prepend-inner-icon="mdi-numeric" label="เลขออกเหตุ 12 ตัว*"
+                  outlined :rules="[rules.number]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- วันที่ -->
@@ -46,7 +46,7 @@
               </v-col>
               <!-- อายุ -->
               <v-col cols="12" md="6">
-                <v-select v-model="editedItem.age" outlined label="อายุ*"
+                <v-select v-model="editedItem.age" prepend-inner-icon="mdi-account-group" outlined label="อายุ*"
                   :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
                   :rules="[rules.age]"></v-select>
               </v-col>
@@ -55,13 +55,14 @@
             <v-row>
               <!-- ประเภทผู้ป่วย -->
               <v-col cols="12" md="6">
-                <v-select v-model="editedItem.status" outlined label="ประเภทผู้ป่วย"
-                  :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'ผู้ป่วยฉุกเฉิน']"
+                <v-select v-model="editedItem.status" prepend-inner-icon="mdi-clipboard-list-outline" outlined
+                  label="ประเภทผู้ป่วย*" :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'ผู้ป่วยฉุกเฉิน']"
                   :rules="[rules.status]"></v-select>
               </v-col>
               <!-- ความรุนแรงของประเภทผู้ป่วย -->
               <v-col cols="12" md="6">
-                <v-select v-model="editedItem.violence" outlined label="ความรุนแรงของประเภทผู้ป่วย*"
+                <v-select v-model="editedItem.violence" outlined prepend-inner-icon="mdi-alert-outline"
+                  label="ความรุนแรงของประเภทผู้ป่วย*"
                   :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']"
                   :rules="[rules.violence]">
 
@@ -78,7 +79,7 @@
               </v-col>
             </v-row>
             <!-- กลุ่มอาการฉุกเฉิน -->
-            <v-combobox v-model="editedItem.emergency_group" :rules="[rules.grouper]"
+            <v-combobox v-model="editedItem.emergency_group" :rules="[rules.emergency_group]"
               prepend-inner-icon="mdi-select-group" outlined :items='["1.ปวดท้อง/หลัง / เชิงกรานและขาหนีบ",
                 "2.แอนาฟิแล็กลิส/ปฏิกิริยาภูมิแพ้",
                 "3.สัตว์กัด",
@@ -104,7 +105,7 @@
                 "23.อุบัติเหตุทางน้ำ",
                 "24.พลัดตกหกล้ม/อุบัติเหตุ/เจ็บปวด",
                 "25.อุบัติเหตุยานยนต์",
-                "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน" multiple
+                "26.โรคอุบัติใหม่ - โควิท 19"]' hint="เลือกกลุ่มอาการฉุกเฉิน" label="กลุ่มอาการฉุกเฉิน*" multiple
               clearable chips>
             </v-combobox>
 
@@ -112,11 +113,11 @@
 
             <v-row>
               <v-col cols="12" md="6">
-                <v-text-field v-model="editedItem.lati" label="ละติจูด" outlined
+                <v-text-field class="custom-icon-color" v-model="editedItem.lati" label="ละติจูด" outlined
                   prepend-inner-icon="mdi-map-marker"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="editedItem.longi" label="ลองจิจูด" outlined
+                <v-text-field class="custom-icon-color" v-model="editedItem.longi" label="ลองจิจูด"  outlined
                   prepend-inner-icon="mdi-map-marker"></v-text-field>
 
               </v-col>
@@ -149,4 +150,9 @@ import DialogFormurgentsJs from '../scripts/diglogformurgents.js'
 export default DialogFormurgentsJs
 </script>
 
-<style></style>
+<style scoped>
+.custom-icon-color ::v-deep .v-input__prepend-inner .v-icon {
+  color: red;
+  /* เปลี่ยนสีไอคอนเป็นสีแดง */
+}
+</style>

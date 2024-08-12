@@ -1,38 +1,26 @@
 <template>
-<div class="container-input">
-  <input type="text" placeholder="Search" name="text" class="input">
-  <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-    <path d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z" fill-rule="evenodd"></path>
-</svg>
-</div>
+    <div class="space-y-2 p-4">
+        <div role="alert"
+            class="bg-green-100 dark:bg-green-900 border-l-4 border-green-500 dark:border-green-700 text-green-900 dark:text-green-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-green-200 dark:hover:bg-green-800 transform hover:scale-105">
+            <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-green-600"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"
+                    stroke-linejoin="round" stroke-linecap="round"></path>
+            </svg>
+            <p class="text-xs font-semibold">Success - Everything went smoothly!</p>
+        </div>
+        <div role="alert"
+            class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
+            <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-red-600"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"
+                    stroke-linejoin="round" stroke-linecap="round"></path>
+            </svg>
+            <p class="text-xs font-semibold">Error - Something went wrong.</p>
+        </div>
+    </div>
+
+
 
 
 </template>
-
-<style>
-.container-input {
-  position: relative;
-}
-
-.input {
-  width: 150px;
-  padding: 10px 0px 10px 40px;
-  border-radius: 9999px;
-  border: solid 1px #333;
-  transition: all .2s ease-in-out;
-  outline: none;
-  opacity: 0.8;
-}
-
-.container-input svg {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translate(0, -50%);
-}
-
-.input:focus {
-  opacity: 1;
-  width: 250px;
-}
-</style>

@@ -80,8 +80,17 @@ export default {
     },
     methods: {
         async exportToExcel() {
+            if (this.filteredDesserts.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่มีข้อมูล',
+                    text: 'ไม่มีข้อมูลในตารางที่สามารถ Export Excel ได้',
+                });
+                return;
+            }
+        
             import('xlsx').then(XLSX => {
-                // Use the selected items if there are any, otherwise, use filtered desserts
+                // ใช้ข้อมูลที่เลือกถ้ามี ถ้าไม่มีให้ใช้ข้อมูลที่กรองไว้
                 const dataToExport = this.selected.length ? this.selected : this.filteredDesserts;
                 const exportData = dataToExport.map(item => {
                     return {
@@ -102,7 +111,11 @@ export default {
                 XLSX.writeFile(workbook, 'จัดการตารางคิวงาน.xlsx');
             }).catch(error => {
                 console.error('Error importing xlsx:', error);
-                // Handle error if xlsx library fails to load
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถส่งออกข้อมูลได้',
+                });
             });
         },
         handleSelectedItemsChange(selectedItems) {
@@ -154,7 +167,7 @@ export default {
         async loadData() {
             try {
                 const { data } = await axios.get(this.endpointUrl + '/api/appointments')
-                console.log('data', data);
+                console.log('This Data QueueJob', data);
 
                 const formattedData = data.map(item => {
                     if (item.time && typeof item.time === 'string') {
@@ -171,7 +184,6 @@ export default {
                 });
 
                 this.desserts = formattedData;
-                console.log(this.desserts);
 
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -304,6 +316,7 @@ export default {
         }
     },
     mounted() {
+        console.log('ENV :',process.env.NODE_ENV, this.endpointUrl)
         this.loadData();
     },
     created() {

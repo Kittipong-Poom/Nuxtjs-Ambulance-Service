@@ -1,3 +1,9 @@
+
+.my-chip {
+  width: 120px;
+  justify-content: center;
+}
+
 .button-container-queue {
     display: flex;
     justify-content: center;

@@ -1,5 +1,6 @@
 import 'dayjs/locale/th';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 export default {
   props: {
     dialog: Boolean,
@@ -56,24 +57,42 @@ export default {
   methods: {
     async save() {
       try {
-        this.$emit('notificationSaved');
         // Validate the form fields
         const isValid = await this.validateForm();
+        
         // Validate the phone number
         const phoneField = this.$refs.number;
         phoneField.validate();
-        if (isValid && !phoneField.hasError) {
-          // Check if the phone number has exactly 10 digits
-          if (this.editedItem.number.length === 10) {
-            // Save the edited item and close the dialog
-            this.$emit('save', this.editedItem);
-            this.close();
-          } else {
-            this.$emit('error', 'กรอกเบอร์โทรศัพท์ให้เป็น 10 ตัว');
-          }
+    
+        if (!isValid || phoneField.hasError) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+            text: 'มีข้อมูลที่จำเป็นต้องกรอกแต่ยังไม่ได้กรอก',
+          });
+          return;
         }
+    
+        // Check if the phone number has exactly 10 digits
+        if (this.editedItem.number.length !== 10) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'กรอกเบอร์โทรศัพท์ไม่ถูกต้อง',
+            text: 'กรอกเบอร์โทรศัพท์ให้เป็น 10 ตัว',
+          });
+          return;
+        }
+    
+        // Save the edited item and close the dialog
+        this.$emit('save', this.editedItem);
+        this.close();
       } catch (error) {
         console.error('Error saving item:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'ไม่สามารถบันทึกข้อมูลได้: ' + (error.response?.data?.message || error.message),
+        });
       }
     },
     async getCurrentLocation() {
@@ -124,16 +143,17 @@ export default {
       this.$emit('close');
     },
     validateForm() {
+      let isValid = true;
       for (const key in this.editedItem) {
         const fieldRef = this.$refs[key];
         if (fieldRef && fieldRef.validate) {
           fieldRef.validate();
           if (fieldRef.hasError) {
-            return false;
+            isValid = false;
           }
         }
       }
-      return true;
+      return isValid;
     },
     async loaddata() {
       const { data } = await axios.get(this.endpointUrl + '/api/ages');

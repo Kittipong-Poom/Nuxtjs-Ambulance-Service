@@ -2,7 +2,6 @@ export default {
   data() {
     return {
       isNavbarOpen: false,
-      showDropdown: false,
       navItems: [
         { title: 'Dashboard', link: '/Dashboard', icon: 'mdi-view-dashboard' },
         { title: 'ผู้ป่วยทั่วไป', link: '/Patient', icon: 'mdi-account-group' },

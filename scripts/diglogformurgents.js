@@ -49,6 +49,10 @@ export default {
           if (!value) return "ต้องเลือกการติดตามการนำส่งผู้ป่วย";
           return true;
         },
+        emergency_group: (value) => {
+          if (!value) return "ต้องเลือกกลุ่มอาการฉุกเฉิน";
+          return true;
+        }
       },
     };
   },

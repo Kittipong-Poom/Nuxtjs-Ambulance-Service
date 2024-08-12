@@ -9,24 +9,6 @@ body {
   overflow: hidden;
 }
 
-.custom-notification {
-  margin: 0 5px 5px;
-  padding: 10px;
-  font-size: 18px;
-  color: #ffffff;
-  background: #68cd86;
-  border-left: 5px solid #42a85f;
-}
-
-.fail-noti {
-  margin: 0 0px 5px;
-  padding: 10px;
-  font-size: 18px;
-  color: #ffffff;
-  background: #e54d42;
-  border-left-color: #b82e24;
-}
-
 .center-container1 {
   padding-top: 22px;
   display: flex;
@@ -75,17 +57,11 @@ body {
 }
 
 .my-chip {
-  width: 130px;
+  width: 120px;
   justify-content: center;
 }
 
-.v-notification {
-  background-color: green;
-  color: white;
-}
-
 .button-excel {
-  
   line-height: 1;
   text-decoration: none;
   display: inline-flex;
@@ -138,3 +114,4 @@ body {
   transition: transform .3s ease-in-out .1s;
   transform: translate(0);
 }
+

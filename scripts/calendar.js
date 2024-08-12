@@ -30,6 +30,7 @@ export default {
   async mounted() {
     await this.fetchDesserts();
     // this.loadEventsFromPatients();
+    console.log('ENV :',process.env.NODE_ENV, this.endpointUrl)
     console.log("my data event", this.events);
   },
   computed: {
@@ -56,13 +57,14 @@ export default {
       this.formattedDate = date; // Sync the date picker with the calendar
       this.type = "day";
     },
+    setToday() {
+      const today = new Date();
+      this.focus = today; // ตั้ง focus ให้แสดงวันที่ปัจจุบัน
+      this.formattedDate = today.toISOString().substr(0, 10); // อัปเดต formattedDate ด้วย
+      this.type = "day"; // เปลี่ยนการแสดงผลเป็นรายวัน
+    },
     getEventColor(event) {
       return event.color;
-    },
-    setToday() {
-      const today = new Date().toISOString().substr(0, 10); // สร้างวันที่ปัจจุบันในรูปแบบ 'YYYY-MM-DD'
-      this.formattedDate = today; // อัปเดต formattedDate
-      this.focus = new Date(); // อัปเดต focus หากต้องการให้ปฏิทินแสดงวันที่ปัจจุบัน
     },
     prev() {
       this.$refs.calendar.prev();
@@ -105,7 +107,6 @@ export default {
         const patients = patientsResponse.data;
 
         console.log("appointments", appointments);
-        console.log("patients", patients);
 
         if (Array.isArray(appointments) && Array.isArray(patients)) {
           // Clear existing events

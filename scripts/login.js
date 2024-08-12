@@ -25,7 +25,6 @@ export default {
         this.error = 'โปรดกรอกรหัสผู้ใช้งานและรหัสผ่าน';
         return;
       }
-
       try {
         const salt = '$PBT$Lnwza_005#056%101*';
         const saltedPassword = this.password + salt;

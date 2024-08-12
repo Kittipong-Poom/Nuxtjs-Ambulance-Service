@@ -21,18 +21,18 @@ ChartJS.register(
 );
 
 export default {
-  name: 'BarChartPatient',
+  name: "BarChartPatient",
   components: {
     Bar,
   },
   props: {
     chartId: {
       type: String,
-      default: 'bar-chart',
+      default: "bar-chart",
     },
     datasetIdKey: {
       type: String,
-      default: 'label',
+      default: "label",
     },
     width: {
       type: Number,
@@ -43,7 +43,7 @@ export default {
       default: 400,
     },
     cssClasses: {
-      default: '',
+      default: "",
       type: String,
     },
     styles: {
@@ -61,7 +61,10 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
+      endpointUrl:
+        process.env.NODE_ENV === "development"
+          ? process.env.API_URL_DEVELOPMENT
+          : process.env.API_URL_PRODUCTION,
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {
@@ -138,8 +141,20 @@ export default {
   methods: {
     async loadData() {
       try {
+        const currentYear = new Date().getFullYear() + 543;
+
+        // Reset chart data if it's a new year
+        if (this.currentYear !== currentYear) {
+          this.currentYear = currentYear;
+          this.chartData.datasets.forEach(
+            (dataset) => (dataset.data = Array(12).fill(0))
+          );
+        }
+
         // Fetch data for emergency patients from /api/caseurgents
-        const responseUrgent = await axios.get(this.endpointUrl + "/api/caseurgents");
+        const responseUrgent = await axios.get(
+          this.endpointUrl + "/api/caseurgents"
+        );
         const dataUrgent = responseUrgent.data;
 
         // Check if data is an array
@@ -147,11 +162,16 @@ export default {
           // Process data for emergency patients
           this.chartData.datasets[0].data = this.countTypes(dataUrgent);
         } else {
-          console.error("Response data from /api/caseurgents is not an array:", dataUrgent);
+          console.error(
+            "Response data from /api/caseurgents is not an array:",
+            dataUrgent
+          );
         }
 
         // Fetch data for scheduled patients from /api/appointments
-        const responseScheduled = await axios.get(this.endpointUrl + "/api/appointments");
+        const responseScheduled = await axios.get(
+          this.endpointUrl + "/api/appointments"
+        );
         const dataScheduled = responseScheduled.data;
 
         // Check if data is an array
@@ -159,11 +179,14 @@ export default {
           // Process data for scheduled patients
           this.chartData.datasets[1].data = this.countTypes(dataScheduled);
         } else {
-          console.error("Response data from /api/appointments is not an array:", dataScheduled);
+          console.error(
+            "Response data from /api/appointments is not an array:",
+            dataScheduled
+          );
         }
 
         this.loaded = true; // Set loaded to true after data is loaded
-
+        console.log("Get Bar Chart Api Patient", this.countTypes(dataUrgent));
       } catch (error) {
         console.error("Error loading data:", error);
       }

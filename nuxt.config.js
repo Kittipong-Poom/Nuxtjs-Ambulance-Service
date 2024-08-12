@@ -22,16 +22,10 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/ambulancecar.ico' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto' },
-      { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.8.2/css/all.css' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap'},
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.8.12/tailwind-experimental.min.css'}
     ],
     script: [
       { src: 'https://code.jquery.com/jquery-3.4.1.min.js', body: true },
-      { src: 'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js', body: true },
-      { src: 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js', body: true }
     ]
   },
 
@@ -44,18 +38,10 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/vue-notification.js', ssr: false },
     '~/plugins/vuetify.js',
     { src: '~/plugins/chart.js', mode: 'client' },
   ],
 
-  notification: {
-    options: {
-      style: {
-        backgroundColor: 'green',
-      }
-    }
-  },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

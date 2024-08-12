@@ -1,26 +1,22 @@
 <template>
     <v-card>
         <v-card-title class="d-flex justify-center align-center head1">
-            <span class="text-2xl">ตารางจัดการคิวงาน</span>
+            <span class="text-2xl font-semibold">ตารางจัดการคิวงาน</span>
         </v-card-title>
 
         <v-card-title>
             <v-spacer />
-            <div class="container-input">
-          <input type="text" placeholder="ค้นหา" name="text" class="input" v-model="search">
-          <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
-              fill-rule="evenodd"></path>
-          </svg>
-        </div>
+            <v-spacer />
+            <v-spacer />
+            <v-spacer />
+            <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" class="w-0" hide-details />
         </v-card-title>
 
         <v-data-table :headers="headers" :items="filteredDesserts" :search="search" item-key="id" show-select
             v-model="selected" @input="handleSelectedItemsChange">
             <template v-slot:top>
                 <v-toolbar flat>
-                    <h5>เลือกทั้งหมด </h5>
+                    <h5>👇เลือกทั้งหมด </h5>
                     <v-spacer></v-spacer>
                     <v-btn style="--clr: #4CAF50" class="button-excel mr-2 white--text" color="#4CAF50"
                         @click="exportToExcel">

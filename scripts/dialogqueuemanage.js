@@ -12,7 +12,8 @@ export default {
     return {
       endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
       menu: false,
-      loading: false
+      loading: false,
+      dateString: '',
     };
   },
   computed: {

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="800" @open="fetchAppointmentDate">
+  <v-dialog v-model="dialog" max-width="800" @open="fetchAppointmentDate"@click:outside="closeDialog">
     <v-card>
       <v-card-title class="text-center d-flex justify-center align-center">
         <span class="headline">{{ dialogTitle }}</span>
@@ -36,12 +36,12 @@
           <v-row>
             <v-col cols="12" md="6">
               <!-- ละติจูด -->
-              <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
+              <v-text-field class="custom-icon-color" v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
                 ref="lati"></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <!-- ลองจิจูด -->
-              <v-text-field v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker" label="ลองจิจูด*" outlined
+              <v-text-field class="custom-icon-color" v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker"  label="ลองจิจูด*" outlined
                 ref="longi"></v-text-field>
             </v-col>
           </v-row>
@@ -49,7 +49,7 @@
             :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
 
           <!-- สถานะ -->
-          <v-select v-model="editedItem.status_case_id" outlined label="สถานะ"
+          <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
             :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']"></v-select>
         </v-card-text>
 
@@ -68,3 +68,10 @@ import DialogQueueManageJs from '../scripts/dialogqueuemanage.js'
 
 export default DialogQueueManageJs
 </script>
+
+<style scoped>
+.custom-icon-color ::v-deep .v-input__prepend-inner .v-icon {
+    color: red; /* เปลี่ยนสีไอคอนเป็นสีแดง */
+  }
+
+</style>

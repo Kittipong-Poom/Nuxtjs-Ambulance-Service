@@ -10,7 +10,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat>
-          <v-btn class="mr-4 " :style="{ backgroundColor: '#5161ce', color: '#ffffff' }" @click="setToday">
+          <v-btn class="mr-4 " :style="{ backgroundColor: 'blue', color: '#ffffff' }" @click="setToday">
             วันนี้
           </v-btn>
           <v-btn  @click="prev">
@@ -49,7 +49,7 @@
       </v-sheet>
       <v-sheet height="650">
         <!-- แสดง ปฏิทิน -->
-        <v-calendar ref="calendar" v-model="focus" color="#5161ce" locale="th" :events="events"
+        <v-calendar ref="calendar" v-model="focus" color="primary" locale="th" :events="events"
           :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
           @change="updateRange" :overlap-threshold="15" :overlap-limit="5"></v-calendar>
         <!-- แสดง กดดูรายละเอียด -->
