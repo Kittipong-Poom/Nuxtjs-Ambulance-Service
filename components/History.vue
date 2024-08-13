@@ -15,7 +15,18 @@
               <span>รหัสผู้ป่วย <span class="font-bold">:</span> <span class="font-semibold">{{ appointment.hn }}</span></span>
               <span>วันที่     <span class="font-bold">:</span> <span class="font-semibold">{{ formatDate(appointment.service_date) }}</span></span>
               <span>เวลา     <span class="font-bold">:</span> <span class="font-semibold">{{ appointment.time }}</span></span>
-              <span>สถานะ   <span class="font-bold">:</span> <span class="font-semibold">{{ appointment.status_case_id }}</span></span>
+              <span>สถานะ   <span class="font-bold">:</span> 
+              <span 
+                :class="{
+                  'status-waiting': appointment.status_case_id === 'รอรับงาน',
+                  'status-in-progress': appointment.status_case_id === 'กำลังดำเนินงาน',
+                  'status-completed': appointment.status_case_id === 'เสร็จสิ้น',
+                  'status-cancelled': appointment.status_case_id === 'ยกเลิก'
+                }"
+              >
+                {{ appointment.status_case_id }}
+              </span>
+            </span>
               <h2>➖➖➖➖➖➖➖➖➖➖➖</h2>
               <v-divider v-if="appointments.length > 1 && index < paginatedAppointments.length - 1"
                 :key="'divider-' + appointment.id"></v-divider>

@@ -1,8 +1,4 @@
-.custom-icon-color ::v-deep .v-input__prepend-inner .v-icon {
-    color: red; /* เปลี่ยนสีไอคอนเป็นสีแดง */
-  }
-
-  .button {
+.button {
     padding: 15px 20px;
     border: none;
     outline: none;

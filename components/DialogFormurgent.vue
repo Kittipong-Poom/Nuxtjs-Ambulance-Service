@@ -130,15 +130,15 @@
               label="การติดตามการนำส่งผู้ป่วย" :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"
               :rules="[rules.delivery]" clearable>
             </v-select>
-
+            
           </v-container>
-        </v-card-text>
-        <v-card-actions>
           <!-- บันทึก -->
-          <v-btn v-if="(dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
-            color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
-          <v-btn color="blue darken-1" class="white--text" @click="close">ยกเลิก</v-btn>
-        </v-card-actions>
+          <v-card-actions>
+            <v-btn v-if="(dialogTitle1.includes('แก้ไข') || dialogTitle1.includes('จัดการผู้ป่วยใหม่'))"
+              color="green" class="white--text button pa-6 rounded-xl " @click="save">บันทึก</v-btn>
+            <v-btn color="red" class="white--text button-cancel pa-6 rounded-xl " @click="close">ยกเลิก</v-btn>
+          </v-card-actions>
+        </v-card-text>
       </form>
     </v-card>
   </v-dialog>

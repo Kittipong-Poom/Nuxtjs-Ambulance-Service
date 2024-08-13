@@ -37,6 +37,7 @@ export default {
     },
   },
   methods: {
+
     async fetchAppointments(hn) {
       console.log('Fetching appointments for:', hn);
       

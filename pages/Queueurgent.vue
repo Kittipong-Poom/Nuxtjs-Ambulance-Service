@@ -12,7 +12,9 @@
       <v-spacer />
       <v-spacer />
       <v-spacer />
-      <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" class="w-12" hide-details />
+      <v-text-field v-model="search" append-icon="mdi-magnify" outlined label="ค้นหา" class="rounded-pill"
+        :class="{ 'text-field-expanded ': isFocused || search, 'text-field-collapsed': !isFocused && !search }"
+        @focus="isFocused = true" @blur="isFocused = false" hide-details />
     </v-card-title>
 
     <v-data-table :headers="headers" :items="desserts" :search="search" item-key="caseurgent_id" show-select

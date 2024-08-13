@@ -11,7 +11,8 @@
               <v-col cols="12" md="6">
                 <!-- เบอร์โทรศัพท์ -->
                 <v-text-field v-model="editedItem.hn" label="HN (Hospital Number)*"
-                  prepend-inner-icon="mdi-hospital-building" outlined :rules="[rules.hn]" ref="hn" clearable></v-text-field>
+                  prepend-inner-icon="mdi-hospital-building" outlined :rules="[rules.hn]" ref="hn"
+                  clearable></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <div class="input-container">
@@ -73,14 +74,15 @@
                 <v-text-field v-model="editedItem.other" prepend-inner-icon="mdi-information"
                   label="กรอกรายละเอียดเพิ่มเติม" outlined :rules="[rules.other]" clearable></v-text-field>
               </v-col>
+              <v-card-actions>
+                <v-btn v-if="(dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
+                  color="green" class="white--text button pa-6" @click.prevent="save">บันทึก</v-btn>
+                <v-btn color="red" class="white--text button-cancel pa-6" @click="close">ยกเลิก</v-btn>
+
+              </v-card-actions>
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn v-if="(dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))" color="#5161ce"
-            class="white--text" @click.prevent="save">บันทึก</v-btn>
-          <v-btn color="#5161ce" class="white--text" @click="close">ยกเลิก</v-btn>
-        </v-card-actions>
       </form>
     </v-card>
   </v-dialog>

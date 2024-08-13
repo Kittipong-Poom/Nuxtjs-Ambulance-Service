@@ -48,13 +48,13 @@
           <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
             :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
-        </v-card-text>
+            <!-- บันทึก -->
+            <v-card-actions>
+              <v-btn color="green" class="white--text button pa-6" @click="save">บันทึก</v-btn>
+              <v-btn color="red" class="white--text button-cancel pa-6" @click="closeDialog">ยกเลิก</v-btn>
+            </v-card-actions>
+          </v-card-text>
 
-        <!-- บันทึก -->
-        <v-card-actions>
-          <v-btn color="blue darken-1" class="white--text" @click="save">บันทึก</v-btn>
-          <v-btn color="blue darken-1" class="white--text" @click="closeDialog">ยกเลิก</v-btn>
-        </v-card-actions>
 
       </form>
     </v-card>

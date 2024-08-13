@@ -13,6 +13,7 @@ export default {
       selectedItems: [],
       selected: [],
       search: "",
+      isFocused: false,
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT

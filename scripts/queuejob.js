@@ -29,6 +29,7 @@ export default {
             dialogTitle: '',
             desserts: [],
             search: '',
+            isFocused: false,
             editedItem: {
                 hn: '',
                 age_name: '',
