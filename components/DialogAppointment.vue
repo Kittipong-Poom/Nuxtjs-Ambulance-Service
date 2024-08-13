@@ -31,23 +31,23 @@
 
             <!-- เวลา -->
             <v-col cols="12" md="6">
-              <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time"></v-text-field>
+              <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time" clearable></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <!-- ละติจูด -->
               <v-text-field v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" class="custom-icon-color"
-                label="ละติจูด" outlined ref="lati"></v-text-field>
+                label="ละติจูด" outlined ref="lati" clearable></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <!-- ลองจิจูด -->
               <v-text-field v-model="editedItem.longi" class="custom-icon-color" prepend-inner-icon="mdi-map-marker"
-                label="ลองติจูด*" outlined ref="longi"></v-text-field>
+                label="ลองติจูด*" outlined ref="longi" clearable></v-text-field>
             </v-col>
           </v-row>
 
           <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
-            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']"></v-select>
+            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
         </v-card-text>
 
         <!-- บันทึก -->

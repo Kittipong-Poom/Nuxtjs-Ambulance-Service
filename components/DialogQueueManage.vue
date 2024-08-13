@@ -29,7 +29,7 @@
             </v-col>
             <!-- เวลา -->
             <v-col cols="12" md="6">
-              <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time"></v-text-field>
+              <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time" clearable></v-text-field>
             </v-col>
           </v-row>
 
@@ -37,12 +37,12 @@
             <v-col cols="12" md="6">
               <!-- ละติจูด -->
               <v-text-field class="custom-icon-color" v-model="editedItem.lati" prepend-inner-icon="mdi-map-marker" label="ละติจูด" outlined
-                ref="lati"></v-text-field>
+                ref="lati" clearable></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <!-- ลองจิจูด -->
               <v-text-field class="custom-icon-color" v-model="editedItem.longi" prepend-inner-icon="mdi-map-marker"  label="ลองจิจูด*" outlined
-                ref="longi"></v-text-field>
+                ref="longi" clearable></v-text-field>
             </v-col>
           </v-row>
           <v-btn color="green" class="mb-5 align-center justify-center" @click="getCurrentLocation" text
@@ -50,7 +50,7 @@
 
           <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
-            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']"></v-select>
+            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
         </v-card-text>
 
         <!-- บันทึก -->

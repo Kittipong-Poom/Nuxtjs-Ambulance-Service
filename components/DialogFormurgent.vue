@@ -10,7 +10,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field v-model="editedItem.eventnum" prepend-inner-icon="mdi-numeric" label="เลขออกเหตุ 12 ตัว*"
-                  outlined :rules="[rules.number]"></v-text-field>
+                  outlined :rules="[rules.number]" clearable></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <!-- วันที่ -->
@@ -18,9 +18,9 @@
                   :return-value.sync="editedItem.service_date" transition="scale-transition" offset-y min-width="auto">
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field v-model="formattedDate" label="วันที่เกิดเหตุ" outlined
-                      prepend-inner-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
+                      prepend-inner-icon="mdi-calendar" readonly v-bind="attrs" v-on="on" clearable></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" show-adjacent-months no-title scrollable locale="th">
+                  <v-date-picker  v-model="date" show-adjacent-months no-title scrollable locale="th">
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       ยกเลิก
@@ -33,7 +33,7 @@
               </v-col>
               <!-- เวลา -->
               <v-col cols="12" md="12">
-                <v-text-field v-model="formattedTime" outlined label="เวลา" type="time"></v-text-field>
+                <v-text-field v-model="formattedTime" outlined label="เวลา" type="time" clearable></v-text-field>
               </v-col>
             </v-row>
             <!-- เพิ่มปุ่ม Current Location -->
@@ -42,13 +42,13 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.gender" outlined label="เพศ*" prepend-inner-icon="mdi-gender-male-female"
-                  :items="['ชาย', 'หญิง', 'อื่นๆ']" :rules="[rules.gender]"></v-select>
+                  :items="['ชาย', 'หญิง', 'อื่นๆ']" :rules="[rules.gender]" clearable></v-select>
               </v-col>
               <!-- อายุ -->
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.age" prepend-inner-icon="mdi-account-group" outlined label="อายุ*"
                   :items="['ต่ำกว่า 1 ปี', '1 - 12 ปี', '13 - 19 ปี', '20 - 39 ปี', '40 - 59 ปี', '60 ปีขึ้นไป']"
-                  :rules="[rules.age]"></v-select>
+                  :rules="[rules.age]" clearable></v-select>
               </v-col>
             </v-row>
 
@@ -57,14 +57,14 @@
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.status" prepend-inner-icon="mdi-clipboard-list-outline" outlined
                   label="ประเภทผู้ป่วย*" :items="['อุบัติเหตุยานพาหนะ', 'อุบัติเหตุทั่วไป', 'ผู้ป่วยฉุกเฉิน']"
-                  :rules="[rules.status]"></v-select>
+                  :rules="[rules.status]" clearable></v-select>
               </v-col>
               <!-- ความรุนแรงของประเภทผู้ป่วย -->
               <v-col cols="12" md="6">
                 <v-select v-model="editedItem.violence" outlined prepend-inner-icon="mdi-alert-outline"
                   label="ความรุนแรงของประเภทผู้ป่วย*"
                   :items="['ผู้ป่วยฉุกเฉินวิกฤติ', 'ผู้ป่วยฉุกเฉินเร่งด่วน', 'ผู้ป่วยไม่ฉุกเฉิน', 'ผู้ป่วยทั่วไป']"
-                  :rules="[rules.violence]">
+                  :rules="[rules.violence]" clearable>
 
                   <template #item="{ item, on }">
                     <v-list-item v-on="on">
@@ -114,11 +114,11 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field class="custom-icon-color" v-model="editedItem.lati" label="ละติจูด" outlined
-                  prepend-inner-icon="mdi-map-marker"></v-text-field>
+                  prepend-inner-icon="mdi-map-marker" clearable></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field class="custom-icon-color" v-model="editedItem.longi" label="ลองจิจูด"  outlined
-                  prepend-inner-icon="mdi-map-marker"></v-text-field>
+                  prepend-inner-icon="mdi-map-marker" clearable></v-text-field>
 
               </v-col>
             </v-row>
@@ -128,7 +128,7 @@
             <!-- การติดตามการนำส่งผู้ป่วย -->
             <v-select v-model="editedItem.patient_delivery" prepend-inner-icon="mdi-truck-plus" outlined
               label="การติดตามการนำส่งผู้ป่วย" :items="['เสียชีวิต', 'ส่งต่อโรงพยาบาล', 'ไม่ประสงค์ส่งต่อโรงพยาบาล']"
-              :rules="[rules.delivery]">
+              :rules="[rules.delivery]" clearable>
             </v-select>
 
           </v-container>
