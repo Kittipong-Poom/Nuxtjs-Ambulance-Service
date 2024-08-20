@@ -50,12 +50,12 @@ export default {
     return {
       endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
       loaded: false,
-      beforeYear: new Date().getFullYear() + 542,
+      beforeYear: new Date().getFullYear() + 543,
       chartData: {
         labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'],
         datasets: [
           {
-            backgroundColor: ['#8481DD', '#8BC1F7', '#B2B0EA', '#FFCAC9'],
+            backgroundColor: ['#4fea5b', '#e8b41e', '#b628ef', '#21eaed'],
             data: []
           }
         ]
@@ -71,32 +71,32 @@ export default {
                 const labels = [];
                 labels.push({
                   text: 'ไตรมาส 1',
-                  fillStyle: '#8481DD',
-                  strokeStyle: '#8481DD',
+                  fillStyle: '#4fea5b',
+                  strokeStyle: '#4fea5b',
                   lineWidth: 2,
                   hidden: false,
                   index: 0
                 });
                 labels.push({
                   text: 'ไตรมาส 2',
-                  fillStyle: '#8BC1F7',
-                  strokeStyle: '#8BC1F7',
+                  fillStyle: '#e8b41e',
+                  strokeStyle: '#e8b41e',
                   lineWidth: 2,
                   hidden: false,
                   index: 1
                 });
                 labels.push({
                   text: 'ไตรมาส 3',
-                  fillStyle: '#B2B0EA',
-                  strokeStyle: '#B2B0EA',
+                  fillStyle: '#b628ef',
+                  strokeStyle: '#b628ef',
                   lineWidth: 2,
                   hidden: false,
                   index: 2
                 });
                 labels.push({
                   text: 'ไตรมาส 4',
-                  fillStyle: '#FFCAC9',
-                  strokeStyle: '#FFCAC9',
+                  fillStyle: '#21eaed',
+                  strokeStyle: '#21eaed',
                   lineWidth: 2,
                   hidden: false,
                   index: 3
@@ -108,7 +108,7 @@ export default {
           title: {
             position: 'top',
             display: true,
-            text: `อัตราการเกิดเหตุประจำปี ${new Date().getFullYear() + 542}`,
+            text: `อัตราการเกิดเหตุประจำปี ${new Date().getFullYear() + 543}`,
             font: {
               size: 16
             }

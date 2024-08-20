@@ -156,8 +156,8 @@
                   </g>
                 </svg>
               </div>
-              <div>
-                <span class="block text-2xl font-medium ">ผู้ป่วยฉุกเฉินของเดือนนี้</span>
+              <div class="">
+                <span class="block text-2xl font-medium  ">ผู้ป่วยฉุกเฉินของเดือนปัจจุบัน</span>
                 <!-- <span class="block text-gray-500">ผู้ป่วยทั่วไปของเดือนนี้</span> -->
               </div>
             </div>

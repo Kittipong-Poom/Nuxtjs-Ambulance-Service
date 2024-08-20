@@ -16,7 +16,7 @@
                   <v-text-field v-model="formattedDate" label="วันที่นัดหมาย" outlined prepend-inner-icon="mdi-calendar"
                     readonly v-bind="attrs" v-on="on" clearable></v-text-field>
                 </template>
-                <v-date-picker v-model="dateString" no-title scrollable locale="th" show-adjacent-months :min="new Date().toISOString()">
+                <v-date-picker v-model="dateString" no-title scrollable locale="th" show-adjacent-months >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
                     ยกเลิก

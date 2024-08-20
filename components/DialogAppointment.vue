@@ -17,7 +17,7 @@
                     readonly v-bind="attrs" v-on="on" clearable></v-text-field>
                 </template>
                 <v-date-picker v-model="dateString" no-title scrollable locale="th" show-adjacent-months
-                  :min="new Date().toISOString()">
+                  >
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
                     ยกเลิก
