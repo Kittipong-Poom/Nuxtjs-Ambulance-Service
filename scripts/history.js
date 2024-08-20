@@ -43,7 +43,10 @@ export default {
       
       try {
         const { data } = await axios.get(`${this.endpointUrl}/api/appointment/${hn}`);
-        this.appointments = data;
+       
+        this.appointments = data.sort((a, b) => {
+          return new Date(a.service_date) - new Date(b.service_date);
+        });
       } catch (error) {
         console.error('Error fetching appointments:', error);
       }
