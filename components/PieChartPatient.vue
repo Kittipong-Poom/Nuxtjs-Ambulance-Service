@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="chart-container">
     <Doughnut :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
               :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" v-if="loaded"/>
     <div class="additional-text mt-4 text-sm md:text-base">

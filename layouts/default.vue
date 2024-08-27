@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <header>
-      <nav scroll-behavior="elevate" class="navbar navbar-expand-custom navbar-mainbg">
+      <nav scroll-behavior="elevate" class="navbar navbar-expand-custom navbar-mainbg mx-auto">
         <button class="navbar-toggler" :class="{ disabled: isNavbarDisabled }" type="button" @click="toggleNavbar">
           <i class="fas fa-bars text-white"></i>
         </button>

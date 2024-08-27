@@ -14,6 +14,11 @@ export default {
       menu: false,
       loading: false,
       dateString: '',
+      timeMenu: false, // Add this line
+      hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')),
+      minutes: Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0')),
+      selectedHour: '',
+      selectedMinute: '',
     };
   },
   computed: {
@@ -24,6 +29,11 @@ export default {
       const gregorianDate = dayjs(this.editedItem.service_date);
       const buddhistYear = gregorianDate.year() + 543;
       return gregorianDate.year(buddhistYear).format('DD-MM-YYYY');
+    },
+    timeDisplay() {
+      return this.selectedHour && this.selectedMinute
+        ? `${this.selectedHour}:${this.selectedMinute}`
+        : this.editedItem.time;
     },
   },
   watch: {
@@ -36,6 +46,12 @@ export default {
     }
   },
   methods: {
+    updateTime() {
+      if (this.selectedHour && this.selectedMinute) {
+        this.editedItem.time = `${this.selectedHour}:${this.selectedMinute}`;
+        this.timeMenu = false; // Close the menu after selecting time
+      }
+    },
     async getCurrentLocation() {
       this.loading = true;
       try {

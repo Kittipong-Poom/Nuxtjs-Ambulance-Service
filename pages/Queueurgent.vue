@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card-title>
       <!-- Add new information -->
-      <v-btn color="#1171b5" depressed class="button1 white--text" @click="openDialogurgent('add')">
+      <v-btn color="#2B2C33" depressed class="button1 white--text" @click="openDialogurgent('add')">
         เพิ่มเคสผู้ป่วยฉุกเฉิน
       </v-btn>
       <v-spacer />

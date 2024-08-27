@@ -16,8 +16,7 @@
                   <v-text-field v-model="formattedDate" label="วันที่นัดหมาย" outlined prepend-inner-icon="mdi-calendar"
                     readonly v-bind="attrs" v-on="on" clearable></v-text-field>
                 </template>
-                <v-date-picker v-model="dateString" no-title scrollable locale="th" show-adjacent-months
-                  >
+                <v-date-picker v-model="dateString" no-title scrollable locale="th" show-adjacent-months>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="menu = false">
                     ยกเลิก
@@ -31,7 +30,19 @@
 
             <!-- เวลา -->
             <v-col cols="12" md="6">
-              <v-text-field v-model="editedItem.time" label="เวลา" outlined type="time" clearable></v-text-field>
+              <v-menu v-model="timeMenu" :close-on-content-click="false" transition="scale-transition" offset-y
+                min-width="auto">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field v-model="timeDisplay" label="เวลา" outlined clearable readonly v-bind="attrs"
+                    v-on="on"></v-text-field>
+                </template>
+                <v-card class="pa-3" elevation="2" tile flat color="#ffffff">
+                  <v-select v-model="selectedHour" :items="hours" label="ชั่วโมง" outlined clearable
+                    @change="updateHour" class="mb-2"></v-select>
+                  <v-select v-model="selectedMinute" :items="minutes" label="นาที" outlined clearable
+                    @change="updateTime" class="mb-2"></v-select>
+                </v-card>
+              </v-menu>
             </v-col>
             <v-col cols="12" md="6">
               <!-- ละติจูด -->
@@ -48,12 +59,12 @@
           <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
             :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
-            <!-- บันทึก -->
-            <v-card-actions>
-              <v-btn color="green" class="white--text button pa-6" @click="save">บันทึก</v-btn>
-              <v-btn color="red" class="white--text button-cancel pa-6" @click="closeDialog">ยกเลิก</v-btn>
-            </v-card-actions>
-          </v-card-text>
+          <!-- บันทึก -->
+          <v-card-actions>
+            <v-btn color="green" class="white--text button pa-6" @click="save">บันทึก</v-btn>
+            <v-btn color="red" class="white--text button-cancel pa-6" @click="closeDialog">ยกเลิก</v-btn>
+          </v-card-actions>
+        </v-card-text>
 
 
       </form>

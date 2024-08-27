@@ -2,7 +2,7 @@
   <v-row class="fill-height">
 
     <v-col cols="auto" class="mini-calendar pl-5 hidden-sm-and-down"> <!-- Hide on small screens -->
-      <v-date-picker class="white" color="blue" v-model="formattedDate" @change="updateMainCalendar" show-adjacent-months
+      <v-date-picker class="white" color="#2B2C33" v-model="formattedDate" @change="updateMainCalendar" show-adjacent-months
         locale="th">
       </v-date-picker>
     </v-col>
@@ -50,19 +50,18 @@
       <v-sheet height="650">
         <!-- แสดง ปฏิทิน -->
         <v-calendar ref="calendar" v-model="focus" color="primary" locale="th" :events="events"
-          :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
+          :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
           @change="updateRange" :overlap-threshold="15" :overlap-limit="5"></v-calendar>
         <!-- แสดง กดดูรายละเอียด -->
         <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
           <v-card style="border-radius: 15px;" color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+              <v-toolbar-title v-html="selectedEvent.hn"></v-toolbar-title> <!-- เปลี่ยนเป็น HN -->
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
               <v-icon>mdi-map-marker</v-icon> <span v-html="selectedEvent.address"></span>
-              <br><strong> <v-icon>mdi-clock-time-four-outline</v-icon> <span
-                  v-html="selectedEvent.time"></span></strong>
+              <br><strong> <v-icon>mdi-clock-time-four-outline</v-icon> <span v-html="selectedEvent.time"></span></strong>
               <br><v-icon>mdi-medical-bag</v-icon> <span v-html="selectedEvent.type"></span>
               <br><v-icon>mdi-ambulance</v-icon><strong> <span v-html="selectedEvent.trackpatient"></span></strong>
               <br><v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.other"></span></strong>

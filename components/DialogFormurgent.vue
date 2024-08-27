@@ -33,7 +33,15 @@
               </v-col>
               <!-- เวลา -->
               <v-col cols="12" md="12">
-                <v-text-field v-model="formattedTime" outlined label="เวลา" type="time" clearable></v-text-field>
+                <v-menu v-model="timeMenu" :close-on-content-click="false" transition="scale-transition" offset-y min-width="auto">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field v-model="timeDisplay" label="เวลา" outlined clearable readonly v-bind="attrs" v-on="on"></v-text-field>
+                  </template>
+                  <v-card class="pa-3" elevation="2" tile flat color="#ffffff">
+                    <v-select v-model="selectedHour" :items="hours" label="ชั่วโมง" outlined clearable @change="updateHour" class="mb-2"></v-select>
+                    <v-select v-model="selectedMinute" :items="minutes" label="นาที" outlined clearable @change="updateMinute" class="mb-2"></v-select>
+                  </v-card>
+                </v-menu>
               </v-col>
             </v-row>
             <!-- เพิ่มปุ่ม Current Location -->

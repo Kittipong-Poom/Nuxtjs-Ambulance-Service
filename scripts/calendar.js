@@ -16,21 +16,12 @@ export default {
     selectedOpen: false,
     events: [],
     desserts: [],
-    colors: [
-      "#2450E0",
-      "#7224E0",
-      "#24E099",
-      "#E0DE24",
-      "#E04867",
-      "#E05B24",
-      "#E08175",
-    ],
     formattedDate: new Date().toISOString().substr(0, 10), // Initialize formattedDate with today's date
   }),
   async mounted() {
     await this.fetchDesserts();
     // this.loadEventsFromPatients();
-    console.log('ENV :',process.env.NODE_ENV, this.endpointUrl)
+    console.log('ENV :', process.env.NODE_ENV, this.endpointUrl)
     console.log("my data event", this.events);
   },
   computed: {
@@ -63,16 +54,13 @@ export default {
       this.formattedDate = today.toISOString().substr(0, 10); // อัปเดต formattedDate ด้วย
       this.type = "day"; // เปลี่ยนการแสดงผลเป็นรายวัน
     },
-    getEventColor(event) {
-      return event.color;
-    },
     prev() {
       this.$refs.calendar.prev();
-      
+
     },
     next() {
       this.$refs.calendar.next();
-      
+
     },
     showEvent({ nativeEvent, event }) {
       const open = () => {
@@ -89,7 +77,6 @@ export default {
       } else {
         open();
       }
-
       nativeEvent.stopPropagation();
     },
 
@@ -112,38 +99,41 @@ export default {
           // Clear existing events
           this.events = [];
 
-          appointments.forEach((appointment, index) => {
+          appointments.forEach((appointment) => {
             const patient = patients.find(p => p.hn === appointment.hn);
 
-            if (patient && appointment.status_case_id !== 'ยกเลิก' && appointment.status_case_id !== 'เสร็จสิ้น') {
-              // Convert the Thai Buddhist year to the Gregorian year by subtracting 543
+            if (patient) {
               const gregorianDate = dayjs(appointment.service_date).subtract(543, 'year');
               const formattedDate = gregorianDate.format('YYYY-MM-DD');
-              console.log(`Converted date: ${formattedDate}`);
-
               const timeComponents = appointment.time.split(':');
               const hours = parseInt(timeComponents[0], 10).toString().padStart(2, '0');
               const minutes = parseInt(timeComponents[1], 10).toString().padStart(2, '0');
               const formattedTime = `${hours}:${minutes}`;
-              console.log(`Formatted time: ${formattedTime}`);
-
-              // Create a Date object for the start time in ISO format
               const startTime = `${formattedDate}T${formattedTime}`;
-              console.log(`Start time: ${startTime}`);
+              // Map status_case_id to specific colors
+              const statusColors = {
 
-              const colorIndex = index % this.colors.length;
+                'ยกเลิก': '#e0e0e0',  // Purple
+                'เสร็จสิ้น': '#4caf50',  // Green
+                'กำลังดำเนินงาน': '#ffeb3b',  // Yellow
+                'รอรับงาน': '#f44336',  // Red
+              };
+              // Default color if status not found
+              const eventColor = statusColors[appointment.status_case_id] || '#000000';
+              
               const event = {
-                name: ` ${appointment.hn}`,
+                name: appointment.status_case_id === 'ยกเลิก' ? 'เคสถูกยกเลิก' : appointment.hn,
                 start: startTime,
-                color: this.colors[colorIndex],
+                color: eventColor,
                 address: `ที่อยู่ : ${appointment.address}`,
                 lati: `ละติจูด : ${appointment.lati}`,
                 longi: `ลองติจูด : ${appointment.longi}`,
                 time: `เวลา : ${formattedTime}`,
-                type: `ประเภทผู้ป่วย : ${patient.type_patient_name || 'N/A'}`, // Fallback to 'N/A' if undefined
-                trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name || 'N/A'}`, // Fallback to 'N/A' if undefined
-                other: `เพิ่มเติม : ${patient.other || 'N/A'}`, // Fallback to 'N/A' if undefined
-                
+                type: `ประเภทผู้ป่วย : ${patient.type_patient_name || 'N/A'}`,
+                trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name || 'N/A'}`,
+                other: `เพิ่มเติม : ${patient.other || 'N/A'}`,
+                class: appointment.status_case_id === 'ยกเลิก' ? 'cancelled-event' : '',
+                hn: appointment.status_case_id === 'ยกเลิก' ? `<s>${appointment.hn}</s>` : appointment.hn,  // ขีดฆ่า HN ถ้าเคสถูกยกเลิก
               };
               this.events.push(event);
             }

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
+
 export default {
   props: {
     dialog: Boolean,
@@ -11,12 +12,17 @@ export default {
       date: new Date().toISOString().substr(0, 10),
       menu: false,
       formattedTime: dayjs().format('HH:mm'),
+      timeMenu: false,
+      hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')),
+      minutes: Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0')),
+      selectedHour: '',
+      selectedMinute: '',
       loading: false,
       snackbar: {
         show: false,
-        timeout: 3000, // Adjust timeout as needed
-        color: '', // Color for snackbar
-        message: '' // Message to display in snackbar
+        timeout: 3000,
+        color: '',
+        message: ''
       },
       rules: {
         number: (value) => {
@@ -61,6 +67,11 @@ export default {
       const thaiDate = dayjs(this.date).add(543, 'year');
       const thaiFormattedDate = thaiDate.format('DD-MM-YYYY');
       return thaiFormattedDate;
+    },
+    timeDisplay() {
+      return this.selectedHour && this.selectedMinute
+        ? `${this.selectedHour}:${this.selectedMinute}`
+        : this.editedItem.time || this.formattedTime;
     }
   },
   methods: {
@@ -73,9 +84,9 @@ export default {
         case 'ผู้ป่วยฉุกเฉินวิกฤติ':
           return 'red';
         case 'ผู้ป่วยทั่วไป':
-          return 'grey'; // or any other color you prefer
+          return 'grey';
         default:
-          return 'default-color'; // set a default color if needed
+          return 'default-color';
       }
     },
     async save() {
@@ -95,11 +106,11 @@ export default {
     },
     validateForm() {
       for (const key in this.editedItem) {
-        if (key === 'eventnum') { // Check if the field is 'eventnum'
+        if (key === 'eventnum') {
           if (this.editedItem[key].length !== 12) {
-            return false; // Return false if length is not 12
+            return false;
           }
-        } else { // For other fields, validate as before
+        } else {
           const fieldRef = this.$refs[key];
           if (fieldRef && fieldRef.validate) {
             fieldRef.validate();
@@ -111,32 +122,38 @@ export default {
       }
       return true;
     },
+    updateHour(hour) {
+      this.selectedHour = hour;
+      this.updateTime();
+    },
+    updateMinute(minute) {
+      this.selectedMinute = minute;
+      this.updateTime();
+    },
     updateTime() {
-      this.formattedTime = dayjs().format('HH:mm');
+      if (this.selectedHour && this.selectedMinute) {
+        this.formattedTime = `${this.selectedHour}:${this.selectedMinute}`;
+        this.timeMenu = false; // Close the menu after updating time
+      }
     },
     formatDateForPicker(selectedDate) {
       const today = new Date(selectedDate);
       const selected = new Date(selectedDate);
 
-      // Check if the selected date is today or in the future
       if (selected >= today) {
         return selected;
       } else {
-        // If selected date is in the past, return today's date
         return today;
       }
     },
     async getCurrentLocation() {
-      this.loading = true
+      this.loading = true;
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // ขอความอนุญาตให้เข้าถึงตำแหน่งปัจจุบันของผู้ใช้
         const position = await this.askForLocationPermission();
-        // อ่านค่า Latitude และ Longitude จากตำแหน่งปัจจุบัน
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        // กำหนดค่า Latitude และ Longitude ให้กับตัวแปร editedItem
         this.editedItem.lati = latitude;
         this.editedItem.longi = longitude;
         this.$forceUpdate();
@@ -148,14 +165,12 @@ export default {
         };
       } catch (error) {
         console.error('Error getting current location:', error);
-        // Update snackbar to show error message
         this.snackbar = {
           show: true,
           color: 'error',
           message: 'เกิดข้อผิดพลาดในการดึงตำแหน่ง'
         };
       } finally {
-        // Reset loading state
         this.loading = false;
       }
     },
@@ -170,9 +185,7 @@ export default {
     }
   },
   created() {
-    // Update the time every minute
     setInterval(this.updateTime, 60000);
-    // Initial update
     this.updateTime();
   },
 };

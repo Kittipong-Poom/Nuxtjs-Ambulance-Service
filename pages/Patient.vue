@@ -6,7 +6,7 @@
       </v-card-title>
       <v-card-title>
         <!-- Add new information -->
-        <v-btn depressed color="#1171b5" class="button1 mb-2 mr-3 white--text" @click="openDialog('add')">
+        <v-btn depressed color="#2B2C33" class="button1 mb-2 mr-3 white--text" @click="openDialog('add')">
           จัดการผู้ป่วยใหม่
         </v-btn>
 
