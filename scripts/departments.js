@@ -154,17 +154,7 @@ export default {
         console.error("Error:", error);
       }
     },
-        // async getbedpatient() {
-    //     try {
-    //         const response = await axios.get(`${this.endpointUrl}/api/gettype`);
-    //         console.log(this.endpointUrl);
-    //         console.log('getData:', response.data);
-    //         this.bedCount = response.data.length;
-    //         console.log('Data count:', this.bedCount);
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // },
+
   },
 
   async created() {

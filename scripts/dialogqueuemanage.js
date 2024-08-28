@@ -52,6 +52,9 @@ export default {
         this.timeMenu = false; // Close the menu after selecting time
       }
     },
+    updateHour() {
+      this.updateTime(); // Optional: Call updateTime if you want to update time immediately when the hour is changed
+    },
     async getCurrentLocation() {
       this.loading = true;
       try {
@@ -62,7 +65,7 @@ export default {
         this.editedItem.lati = latitude;
         this.editedItem.longi = longitude;
         this.$forceUpdate();
-
+  
         this.snackbar = {
           show: true,
           color: 'success',
@@ -107,9 +110,9 @@ export default {
         const buddhistDate = gregorianDate.year(buddhistYear).format('YYYY-MM-DD');
         console.log('Date check', buddhistDate)
         const response = await axios.put(`${this.endpointUrl}/api/appointments/${this.editedItem.id}`, { ...this.editedItem, service_date: buddhistDate });
-
+  
         this.editedItem.status_case_id = response.data.status_case_id;
-
+  
         this.$emit('update-success');
         this.closeDialog();
         Swal.fire({

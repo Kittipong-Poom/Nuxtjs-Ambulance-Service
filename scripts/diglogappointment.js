@@ -46,6 +46,10 @@ export default {
     },
   },
   methods: {
+    updateHour() {
+      // Optionally update the time immediately when the hour is changed
+      this.updateTime();
+    },
     updateTime() {
       if (this.selectedHour && this.selectedMinute) {
         this.editedItem.time = `${this.selectedHour}:${this.selectedMinute}`;
