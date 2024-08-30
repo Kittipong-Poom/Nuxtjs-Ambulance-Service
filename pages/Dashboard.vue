@@ -1,5 +1,5 @@
 <template>
-  <DepartmentCard />
+  <DepartmentCard /> 
 </template>
 
 
