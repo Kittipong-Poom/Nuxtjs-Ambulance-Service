@@ -90,7 +90,9 @@ export default {
 
   env: {
     NODE_ENV: process.env.NODE_ENV,
-    API_URL: process.env.NODE_ENV === 'production' ? process.env.API_URL_PRODUCTION : process.env.API_URL_DEVELOPMENT,
+    API_URL: process.env.NODE_ENV === 'showcase'
+      ? process.env.API_URL_SHOWCASE
+      : process.env.API_URL_DEVELOPMENT
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

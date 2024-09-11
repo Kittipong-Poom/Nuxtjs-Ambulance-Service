@@ -51,8 +51,10 @@
                   label="ลองติจูด*" outlined :rules="[rules.longi]" ref="longi" clearable></v-text-field>
               </v-col>
 
-              <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
-                :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
+              <v-btn class="button-location type1 mb-5 ml-4 " color="#63EE6C" @click="getCurrentLocation" :loading="loading">ตำแหน่งล่าสุดของคุณ
+              </v-btn>
+              <!-- <v-btn color="green" class="mb-5 ml-4" @click="getCurrentLocation" text outlined
+                :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn> -->
             </v-row>
             <v-row>
               <v-col cols="12" md="6">
@@ -75,8 +77,8 @@
                   label="กรอกรายละเอียดเพิ่มเติม" outlined :rules="[rules.other]" clearable></v-text-field>
               </v-col>
               <v-card-actions>
-                <v-btn v-if="(dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))"
-                  color="green" class="white--text button pa-6" @click.prevent="save">บันทึก</v-btn>
+                <v-btn v-if="(dialogTitle.includes('แก้ไข') || dialogTitle.includes('จัดการผู้ป่วยใหม่'))" color="green"
+                  class="white--text button pa-6" @click.prevent="save">บันทึก</v-btn>
                 <v-btn color="red" class="white--text button-cancel pa-6" @click="close">ยกเลิก</v-btn>
 
               </v-card-actions>

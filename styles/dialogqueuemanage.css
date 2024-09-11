@@ -1,31 +1,87 @@
 .button {
-    padding: 15px 20px;
-    border: none;
-    outline: none;
-    background-color: #4de42f;
-    color: #000000;
-    border-radius: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease-out;
-  }
-  
-  .button:hover {
-    transform: translateY(-3px);
-  }
-  
-  .button-cancel {
-    padding: 15px 20px;
-    border: none;
-    outline: none;
-    background-color: #ff0404;
-    color: #ffffff;
-    border-radius: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease-out;
-  }
-  
-  .button-cancel:hover {
-    transform: translateY(-3px);
-  }
+  padding: 15px 20px;
+  border: none;
+  outline: none;
+  background-color: #4de42f;
+  color: #000000;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+
+.button:hover {
+  transform: translateY(-3px);
+}
+
+.button-cancel {
+  padding: 15px 20px;
+  border: none;
+  outline: none;
+  background-color: #ff0404;
+  color: #ffffff;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+
+.button-cancel:hover {
+  transform: translateY(-3px);
+}
+
+.button-location-queue {
+  height: 50px;
+  width: 200px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+.button-location-queue:hover {
+  box-shadow: .5px .5px 150px #252525;
+}
+
+.type1-queue::after {
+  content: "กดเพื่อรับตำแหน่ง";
+  height: 50px;
+  width: 200px;
+  background-color: #ff0404;
+  color: #fff;
+  position: absolute;
+  transform: translateY(50px);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.type1-queue::before {
+  height: 50px;
+  width: 200px;
+  background-color: #fff;
+  color: #ff0404;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  transform: translateY(0px) scale(1.2);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.type1-queue:hover::after {
+  transform: translateY(0) scale(1.2);
+}
+
+.type1-queue:hover::before {
+  transform: translateY(-50px) scale(0) rotate(120deg);
+}

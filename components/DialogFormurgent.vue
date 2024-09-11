@@ -130,8 +130,8 @@
 
               </v-col>
             </v-row>
-            <v-btn color="green" class="mb-5 align-center justify-center" @click="getCurrentLocation" text
-              :loading="loading">ตำแหน่งล่าสุดของคุณ</v-btn>
+            <v-btn class="button-location-urgents type1-urgents mb-8"  color="#63EE6C" @click="getCurrentLocation" :loading="loading">ตำแหน่งล่าสุดของคุณ
+            </v-btn>
 
             <!-- การติดตามการนำส่งผู้ป่วย -->
             <v-select v-model="editedItem.patient_delivery" prepend-inner-icon="mdi-truck-plus" outlined

@@ -1,35 +1,35 @@
 .custom-icon-color ::v-deep .v-input__prepend-inner .v-icon {
-    color: red; /* เปลี่ยนสีไอคอนเป็นสีแดง */
-  }
+  color: red; /* เปลี่ยนสีไอคอนเป็นสีแดง */
+}
 
-  .button {
-    padding: 15px 20px;
-    border: none;
-    outline: none;
-    background-color: #4de42f;
-    color: #000000;
-    border-radius: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease-out;
-  }
-  
-  .button:hover {
-    transform: translateY(-3px);
-  }
-  
-  .button-cancel {
-    padding: 15px 20px;
-    border: none;
-    outline: none;
-    background-color: #ff0404;
-    color: #ffffff;
-    border-radius: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease-out;
-  }
-  
-  .button-cancel:hover {
-    transform: translateY(-3px);
-  }
+.button {
+  padding: 15px 20px;
+  border: none;
+  outline: none;
+  background-color: #4de42f;
+  color: #000000;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+
+.button:hover {
+  transform: translateY(-3px);
+}
+
+.button-cancel {
+  padding: 15px 20px;
+  border: none;
+  outline: none;
+  background-color: #ff0404;
+  color: #ffffff;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+
+.button-cancel:hover {
+  transform: translateY(-3px);
+}

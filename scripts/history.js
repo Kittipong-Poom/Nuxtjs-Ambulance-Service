@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       localDialog: this.dialog,
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
       appointments: [],
       currentPage: 1,
       itemsPerPage: 4,
@@ -26,8 +26,16 @@ export default {
   },
   computed: {
     paginatedAppointments() {
+      // Sort appointments, placing 'ยกเลิก' at the end
+      const sortedAppointments = this.appointments.sort((a, b) => {
+        if (a.status_case_id === 'ยกเลิก') return 1; // Move canceled cases to the end
+        if (b.status_case_id === 'ยกเลิก') return -1; // Move canceled cases to the end
+        return 0; // Preserve original order for other cases
+      });
+  
+      // Paginate appointments
       const start = (this.currentPage - 1) * this.itemsPerPage;
-      return this.appointments.slice(start, start + this.itemsPerPage);
+      return sortedAppointments.slice(start, start + this.itemsPerPage);
     },
     totalPages() {
       return Math.ceil(this.appointments.length / this.itemsPerPage);

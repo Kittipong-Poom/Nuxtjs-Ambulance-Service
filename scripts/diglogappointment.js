@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
       menu: false,
       timeMenu: false, // Add this line
       hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')),

@@ -20,7 +20,7 @@ export default {
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT
-          : process.env.API_URL_PRODUCTION,
+          : "https://ambulanceserver-uuhg.onrender.com",
     };
   },
   methods: {
@@ -29,15 +29,15 @@ export default {
       const currentMonth = today.getMonth() + 1; // Months are zero-based, so add 1
       const currentYear = today.getFullYear();
 
-      // If last update month and year are not set or if they are different from current month and year
+      // ถ้าเดือนหรือปีไม่ตรงกับปัจจุบัน ให้รีเซ็ตข้อมูลทั้งหมด
       if (
         this.lastUpdateMonth === null ||
         this.lastUpdateYear === null ||
         this.lastUpdateMonth !== currentMonth ||
         this.lastUpdateYear !== currentYear
       ) {
-        // Reset data and counts
-        this.bedCount = "";
+        // รีเซ็ตข้อมูลและตัวนับทั้งหมด
+        this.bedCount = "";   
         this.serviceCount = "";
         this.serviceCountOther = "";
         this.serviceBedCount = "";
@@ -48,12 +48,14 @@ export default {
         this.whiteCount = "";
         this.patientsCount = "";
         this.emergencyCount = "";
-
-        // Update last update month and year to current values
+        
+        // อัปเดตเดือนและปีสุดท้ายที่ทำการรีเซ็ต
         this.lastUpdateMonth = currentMonth;
         this.lastUpdateYear = currentYear;
       }
     },
+    
+    // ฟังก์ชันดึงข้อมูลจาก API ผู้ป่วยฉุกเฉิน
     async getpatient() {
       try {
         const response = await axios.get(`${this.endpointUrl}/api/patients`);
@@ -62,15 +64,6 @@ export default {
         } else {
           console.log("Response data is not an array:", response.data);
         }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    },
-
-    async getemergency() {
-      try {
-        const response = await axios.get(`${this.endpointUrl}/api/caseurgents`);
-        this.emergencyCount = response.data.length;
       } catch (error) {
         console.error("Error:", error);
       }
@@ -115,40 +108,92 @@ export default {
         console.error("Error:", error);
       }
     },
-
-    async getredemergency() {
+    
+    // ผู้ป่วยฉุกเฉินของเดือนปัจจุบัน
+    async getemergency() {
       try {
-        const response = await axios.get(`${this.endpointUrl}/api/getviolence`);
-        this.redCount = response.data.length;
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1; // เดือนปัจจุบัน
+        const currentYear = today.getFullYear(); // ปีปัจจุบัน
+    
+        const response = await axios.get(`${this.endpointUrl}/api/caseurgents`, {
+          params: {
+            month: currentMonth,
+            year: currentYear
+          }
+        });
+        this.emergencyCount = response.data.length; // นับจำนวนผู้ป่วยในเดือนปัจจุบัน
       } catch (error) {
         console.error("Error:", error);
       }
     },
+    
+    async getredemergency() {
+      try {
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1; // เดือนปัจจุบัน
+        const currentYear = today.getFullYear(); // ปีปัจจุบัน
+    
+        const response = await axios.get(`${this.endpointUrl}/api/getviolence`, {
+          params: {
+            month: currentMonth,
+            year: currentYear
+          }
+        });
+        this.redCount = response.data.length; // นับจำนวนผู้ป่วยสีแดงในเดือนปัจจุบัน
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+    
     async getyellowemergency() {
       try {
-        const response = await axios.get(
-          `${this.endpointUrl}/api/getviolence/yellow`
-        );
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1; // เดือนปัจจุบัน
+        const currentYear = today.getFullYear();
+    
+        const response = await axios.get(`${this.endpointUrl}/api/getviolence/yellow`, {
+          params: {
+            month: currentMonth,
+            year: currentYear
+          }
+        });
         this.yellowCount = response.data.length;
       } catch (error) {
         console.error("Error:", error);
       }
     },
+    
     async getgreenemergency() {
       try {
-        const response = await axios.get(
-          `${this.endpointUrl}/api/getviolence/green`
-        );
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1; // เดือนปัจจุบัน
+        const currentYear = today.getFullYear();
+    
+        const response = await axios.get(`${this.endpointUrl}/api/getviolence/green`, {
+          params: {
+            month: currentMonth,
+            year: currentYear
+          }
+        });
         this.greenCount = response.data.length;
       } catch (error) {
         console.error("Error:", error);
       }
     },
+    
     async getwhiteemergency() {
       try {
-        const response = await axios.get(
-          `${this.endpointUrl}/api/getviolence/white`
-        );
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1; // เดือนปัจจุบัน
+        const currentYear = today.getFullYear();
+    
+        const response = await axios.get(`${this.endpointUrl}/api/getviolence/white`, {
+          params: {
+            month: currentMonth,
+            year: currentYear
+          }
+        });
         this.whiteCount = response.data.length;
       } catch (error) {
         console.error("Error:", error);
@@ -163,17 +208,21 @@ export default {
       this.$router.push("/error");
     }
     console.log('ENV :',process.env.NODE_ENV, this.endpointUrl)
+    
     await this.resetDataIfNeeded();
-    // this.getbedpatient();
-    this.getservicepatient();
-    this.getredemergency();
-    this.getyellowemergency();
-    this.getgreenemergency();
-    this.getwhiteemergency();
-    this.getemergency();
-    this.getpatient();
-    this.getservicepatientOther();
-    this.getAllservicepatient();
-    this.getservicepatientBed();
+    
+    // ดึงข้อมูลต่างๆ เมื่อคอมโพเนนต์ถูกสร้าง
+    await Promise.all([
+      this.getservicepatient(),
+      this.getredemergency(),
+      this.getyellowemergency(),
+      this.getgreenemergency(),
+      this.getwhiteemergency(),
+      this.getemergency(),
+      this.getpatient(),
+      this.getservicepatientOther(),
+      this.getAllservicepatient(),
+      this.getservicepatientBed()
+    ]);
   },
 };

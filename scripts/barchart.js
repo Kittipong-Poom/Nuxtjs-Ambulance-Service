@@ -64,7 +64,7 @@ export default {
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT
-          : process.env.API_URL_PRODUCTION,
+          : "https://ambulanceserver-uuhg.onrender.com",
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {
@@ -141,25 +141,30 @@ export default {
   methods: {
     async loadData() {
       try {
-        const currentYear = new Date().getFullYear() + 543;
+        const currentYear = new Date().getFullYear() + 543; // ปีพุทธศักราช
 
-        // Reset chart data if it's a new year
-        if (this.currentYear !== currentYear) {
+        // โหลดปีล่าสุดที่บันทึกไว้จาก localStorage
+        const lastLoadedYear = localStorage.getItem("lastLoadedYear");
+
+        // รีเซ็ตข้อมูลหากปีเปลี่ยนไป
+        if (!lastLoadedYear || parseInt(lastLoadedYear) !== currentYear) {
+          // ถ้าปีปัจจุบันต่างจากปีที่โหลดล่าสุด
           this.currentYear = currentYear;
           this.chartData.datasets.forEach(
-            (dataset) => (dataset.data = Array(12).fill(0))
+            (dataset) => (dataset.data = Array(12).fill(0)) // รีเซ็ตข้อมูลกราฟ
           );
+
+          // บันทึกปีใหม่ลงใน localStorage
+          localStorage.setItem("lastLoadedYear", currentYear);
         }
 
-        // Fetch data for emergency patients from /api/caseurgents
+        // ดึงข้อมูลผู้ป่วยฉุกเฉินจาก /api/caseurgents
         const responseUrgent = await axios.get(
           this.endpointUrl + "/api/caseurgents"
         );
         const dataUrgent = responseUrgent.data;
 
-        // Check if data is an array
         if (Array.isArray(dataUrgent)) {
-          // Process data for emergency patients
           this.chartData.datasets[0].data = this.countTypes(dataUrgent);
         } else {
           console.error(
@@ -168,15 +173,13 @@ export default {
           );
         }
 
-        // Fetch data for scheduled patients from /api/appointments
+        // ดึงข้อมูลผู้ป่วยนัดรับจาก /api/appointments
         const responseScheduled = await axios.get(
           this.endpointUrl + "/api/appointments"
         );
         const dataScheduled = responseScheduled.data;
 
-        // Check if data is an array
         if (Array.isArray(dataScheduled)) {
-          // Process data for scheduled patients
           this.chartData.datasets[1].data = this.countTypes(dataScheduled);
         } else {
           console.error(
@@ -185,7 +188,7 @@ export default {
           );
         }
 
-        this.loaded = true; // Set loaded to true after data is loaded
+        this.loaded = true; // กำหนดว่าโหลดข้อมูลเสร็จแล้ว
         console.log("Get Bar Chart Api Patient", this.countTypes(dataUrgent));
       } catch (error) {
         console.error("Error loading data:", error);
@@ -193,10 +196,35 @@ export default {
     },
 
     countTypes(data) {
-      const typeCounts = Array(12).fill(0); // Initialize an array with 12 zeros
+      const currentBuddhistYear = new Date().getFullYear() + 543; // ได้ปีพุทธศักราชปัจจุบัน
+      const typeCounts = Array(12).fill(0); // สร้าง array ขนาด 12 ที่เก็บข้อมูลของแต่ละเดือน
+
       data.forEach((item) => {
-        const month = new Date(item.service_date).getMonth(); // Get the month (0-11)
-        typeCounts[month]++; // Increment the count for the corresponding month
+        let serviceDate = new Date(item.service_date);
+
+        // แปลงปีพุทธศักราชให้เป็นปีคริสต์ศักราช
+        let year = serviceDate.getFullYear();
+
+        if (year > 2500) {
+          // สมมติว่าเป็นปีพุทธศักราช
+          year -= 543; // แปลงปีพุทธศักราชเป็นคริสต์ศักราช
+          serviceDate.setFullYear(year);
+        }
+
+        const buddhistYear = year + 543; // แปลงกลับเป็นปีพุทธศักราชเพื่อแสดงผล
+
+        // console.log(
+        //   "Processed date:",
+        //   serviceDate,
+        //   "Buddhist Year:",
+        //   buddhistYear
+        // );
+
+        // ตรวจสอบว่าปีพุทธศักราชเป็นปีปัจจุบันหรือไม่
+        if (buddhistYear === currentBuddhistYear) {
+          const month = serviceDate.getMonth(); // ดึงค่าเดือน (0-11)
+          typeCounts[month]++; // เพิ่มจำนวนของเดือนที่ตรงกัน
+        }
       });
       return typeCounts;
     },

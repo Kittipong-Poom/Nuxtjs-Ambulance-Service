@@ -1,359 +1,359 @@
 body {
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  }
-  
-  .center-container1 {
-    padding-top: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  
-  .button1 {
-    padding: 15px 25px;
-    border: unset;
-    border-radius: 15px;
-    color: #212121;
-    z-index: 1;
-    background: #212121;
-    position: relative;
-    font-weight: 1000;
-    font-size: 17px;
-    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
-    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
-    transition: all 250ms;
-    overflow: hidden;
-   }
-   
-   .button1::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 0;
-    border-radius: 15px;
-    background-color: #212121;
-    z-index: -1;
-    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
-    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
-    transition: all 250ms
-   }
-   
-   .button1:hover {
-    color: #212121;
-   }
-   
-   .button1:hover::before {
-    width: 100%;
-   }
-   
-  .my-chip {
-    width: 120px;
-    justify-content: center;
-  }
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 
-
-  .Btn {
-    position: relative;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100px;
-    height: 40px;
-    border: none;
-    padding: 12px 20px;
-    background-color: #4CAF50;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 10px;
-    box-shadow: 5px 5px 0px rgb(76, 175, 80);
-    transition-duration: .3s;
-  }
-  
-  .svg {
-    width: 13px;
-    position: absolute;
-    right: 0;
-    margin-right: 15px;
-    fill: white;
-    transition-duration: .3s;
-  }
-  
-  .Btn:hover {
-    color: transparent;
-  }
-  
-  .Btn:hover svg {
-    right: 43%;
-    margin: -5px;
-    padding: 0 ;
-    border: none;
-    transition-duration: .3s;
-  }
-  
-  .Btn:active {
-    transform: translate(3px , 3px);
-    transition-duration: .3s;
-    box-shadow: #4CAF50;
-  }
-  .Btn:hover .btn-text {
-    padding-top: 25px;
-    display: none;
-    position: relative;
-  }
-
-
-  /* From Uiverse.io by Creatlydev */ 
-.button-excel {
-  
-  line-height: 1;
-  text-decoration: none;
-  display: inline-flex;
+.center-container1 {
+  padding-top: 22px;
+  display: flex;
   align-items: center;
-  gap: .75rem;
-  background-color: var(--clr);
-  color: #fff;
-  border-radius: 10rem;
-  font-weight: 600;
-  padding: .75rem 1.5rem;
-  padding-left: 20px;
-  white-space: nowrap;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.button1 {
+  padding: 15px 25px;
+  border: unset;
+  border-radius: 15px;
+  color: #212121;
+  z-index: 1;
+  background: #212121;
+  position: relative;
+  font-weight: 1000;
+  font-size: 17px;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+  transition: all 250ms;
   overflow: hidden;
-  text-overflow: ellipsis;
-  transition: background-color .3s;
+ }
+ 
+ .button1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 15px;
+  background-color: #212121;
+  z-index: -1;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+  transition: all 250ms
+ }
+ 
+ .button1:hover {
+  color: #212121;
+ }
+ 
+ .button1:hover::before {
+  width: 100%;
+ }
+ 
+.my-chip {
+  width: 120px;
+  justify-content: center;
+}
+
+
+.Btn {
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100px;
+  height: 40px;
+  border: none;
+  padding: 12px 20px;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 5px 5px 0px rgb(76, 175, 80);
+  transition-duration: .3s;
+}
+
+.svg {
+  width: 13px;
+  position: absolute;
+  right: 0;
+  margin-right: 15px;
+  fill: white;
+  transition-duration: .3s;
+}
+
+.Btn:hover {
+  color: transparent;
+}
+
+.Btn:hover svg {
+  right: 43%;
+  margin: -5px;
+  padding: 0 ;
+  border: none;
+  transition-duration: .3s;
+}
+
+.Btn:active {
+  transform: translate(3px , 3px);
+  transition-duration: .3s;
+  box-shadow: #4CAF50;
+}
+.Btn:hover .btn-text {
+  padding-top: 25px;
+  display: none;
+  position: relative;
+}
+
+
+/* From Uiverse.io by Creatlydev */ 
+.button-excel {
+
+line-height: 1;
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: .75rem;
+background-color: var(--clr);
+color: #fff;
+border-radius: 10rem;
+font-weight: 600;
+padding: .75rem 1.5rem;
+padding-left: 20px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+transition: background-color .3s;
 }
 
 .button__icon-wrapper {
-  flex-shrink: 0;
-  width: 25px;
-  height: 25px;
-  position: relative;
-  color: var(--clr);
-  background-color: #fff;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
+flex-shrink: 0;
+width: 25px;
+height: 25px;
+position: relative;
+color: var(--clr);
+background-color: #fff;
+border-radius: 50%;
+display: grid;
+place-items: center;
+overflow: hidden;
 }
 
 .button-excel:hover {
-  background-color: #cf0808;
+background-color: #cf0808;
 }
 
 .button-excel:hover .button__icon-wrapper {
-  color: #cf0808;
+color: #cf0808;
 }
 
 .button__icon-svg--copy {
-  position: absolute;
-  transform: translate(-150%, 150%);
+position: absolute;
+transform: translate(-150%, 150%);
 }
 
 .button-excel:hover .button__icon-svg:first-child {
-  transition: transform .3s ease-in-out;
-  transform: translate(150%, -150%);
+transition: transform .3s ease-in-out;
+transform: translate(150%, -150%);
 }
 
 .button-excel:hover .button__icon-svg--copy {
-  transition: transform .3s ease-in-out .1s;
-  transform: translate(0);
+transition: transform .3s ease-in-out .1s;
+transform: translate(0);
 }
 
 .btn-all-delete {
-  position: relative;
-  background: transparent;
-  cursor: pointer;
-  outline-offset: 4px;
-  transition: filter 250ms;
-  user-select: none;
-  touch-action: manipulation;
-  font-size: 1.1rem;
-  color: white;
-  box-shadow: 10px 10px 4px rgba(231, 13, 13, 0.3);
-  background: rgb(255, 0, 0);
-  border-radius: 12px;
-  padding: 12px 27px;
-  border: 3px solid rgb(187, 8, 8);
+position: relative;
+background: transparent;
+cursor: pointer;
+outline-offset: 4px;
+transition: filter 250ms;
+user-select: none;
+touch-action: manipulation;
+font-size: 1.1rem;
+color: white;
+box-shadow: 10px 10px 4px rgba(231, 13, 13, 0.3);
+background: rgb(255, 0, 0);
+border-radius: 12px;
+padding: 12px 27px;
+border: 3px solid rgb(187, 8, 8);
 }
 
 .btn-all-delete:hover {
-  filter: brightness(110%);
+filter: brightness(110%);
 }
 
 .btn-all-delete:active {
-  transform: translateY(2px);
-  transition: transform 34ms;
+transform: translateY(2px);
+transition: transform 34ms;
 }
 
 /* ปุ่มแก้ไข */
 .button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
 
 }
 
 .edit-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #4CAF50;
-  border: none;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
-  cursor: pointer;
-  transition-duration: 0.3s;
-  overflow: hidden;
-  position: relative;
-  text-decoration: none !important;
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background-color: #4CAF50;
+border: none;
+font-weight: 600;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+cursor: pointer;
+transition-duration: 0.3s;
+overflow: hidden;
+position: relative;
+text-decoration: none !important;
 }
 
 .edit-svgIcon {
-  width: 17px;
-  transition-duration: 0.3s;
+width: 17px;
+transition-duration: 0.3s;
 }
 
 .edit-svgIcon path {
-  fill: white;
+fill: white;
 }
 
 .edit-button:hover {
-  width: 120px;
-  border-radius: 50px;
-  transition-duration: 0.3s;
-  background-color: #4CAF50;
-  align-items: center;
+width: 120px;
+border-radius: 50px;
+transition-duration: 0.3s;
+background-color: #4CAF50;
+align-items: center;
 }
 
 .edit-button:hover .edit-svgIcon {
-  width: 20px;
-  transition-duration: 0.3s;
-  transform: translateY(60%);
-  -webkit-transform: rotate(360deg);
-  -moz-transform: rotate(360deg);
-  -o-transform: rotate(360deg);
-  -ms-transform: rotate(360deg);
-  transform: rotate(360deg);
+width: 20px;
+transition-duration: 0.3s;
+transform: translateY(60%);
+-webkit-transform: rotate(360deg);
+-moz-transform: rotate(360deg);
+-o-transform: rotate(360deg);
+-ms-transform: rotate(360deg);
+transform: rotate(360deg);
 }
 
 .edit-button::before {
-  display: none;
-  content: "แก้ไข";
-  color: white;
-  transition-duration: 0.3s;
-  font-size: 2px;
+display: none;
+content: "แก้ไข";
+color: white;
+transition-duration: 0.3s;
+font-size: 2px;
 }
 
 .edit-button:hover::before {
-  display: block;
-  padding-right: 10px;
-  font-size: 13px;
-  opacity: 1;
-  transform: translateY(0px);
-  transition-duration: 0.3s;
+display: block;
+padding-right: 10px;
+font-size: 13px;
+opacity: 1;
+transform: translateY(0px);
+transition-duration: 0.3s;
 }
 
 /* ปุ่มนัดหมาย */
 
 .button-container-appoint {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
 
 }
 
 .edit-button-appoint {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #3a45df;
-  border: none;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
-  cursor: pointer;
-  transition-duration: 0.3s;
-  overflow: hidden;
-  position: relative;
-  text-decoration: none !important;
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background-color: #3a45df;
+border: none;
+font-weight: 600;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+cursor: pointer;
+transition-duration: 0.3s;
+overflow: hidden;
+position: relative;
+text-decoration: none !important;
 }
 
 .edit-svgIcon-appoint {
-  width: 17px;
-  transition-duration: 0.3s;
+width: 17px;
+transition-duration: 0.3s;
 }
 
 .edit-svgIcon-appoint path {
-  fill: white;
+fill: white;
 }
 
 .edit-button-appoint:hover {
-  width: 120px;
-  border-radius: 50px;
-  transition-duration: 0.3s;
-  background-color: #3a45df;
-  align-items: center;
+width: 120px;
+border-radius: 50px;
+transition-duration: 0.3s;
+background-color: #3a45df;
+align-items: center;
 }
 
 .edit-button-appoint:hover .edit-svgIcon-appoint {
-  width: 20px;
-  transition-duration: 0.3s;
-  transform: translateY(60%);
-  -webkit-transform: rotate(360deg);
-  -moz-transform: rotate(360deg);
-  -o-transform: rotate(360deg);
-  -ms-transform: rotate(360deg);
-  transform: rotate(360deg);
+width: 20px;
+transition-duration: 0.3s;
+transform: translateY(60%);
+-webkit-transform: rotate(360deg);
+-moz-transform: rotate(360deg);
+-o-transform: rotate(360deg);
+-ms-transform: rotate(360deg);
+transform: rotate(360deg);
 }
 
 .edit-button-appoint::before {
-  display: none;
-  content: "นัดหมาย";
-  color: white;
-  transition-duration: 0.3s;
-  font-size: 2px;
+display: none;
+content: "นัดหมาย";
+color: white;
+transition-duration: 0.3s;
+font-size: 2px;
 }
 
 .edit-button-appoint:hover::before {
-  display: block;
-  padding-right: 10px;
-  font-size: 13px;
-  opacity: 1;
-  transform: translateY(0px);
-  transition-duration: 0.3s;
+display: block;
+padding-right: 10px;
+font-size: 13px;
+opacity: 1;
+transform: translateY(0px);
+transition-duration: 0.3s;
 }
 
 /* แว่นขยาย */
 .container-input {
-  position: relative;
+position: relative;
 }
 
 .input {
-  width: 150px;
-  padding: 10px 0px 10px 40px;
-  border-radius: 9999px;
-  border: solid 1px #333;
-  transition: all .2s ease-in-out;
-  outline: none;
-  opacity: 0.8;
+width: 150px;
+padding: 10px 0px 10px 40px;
+border-radius: 9999px;
+border: solid 1px #333;
+transition: all .2s ease-in-out;
+outline: none;
+opacity: 0.8;
 }
 
 .container-input svg {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translate(0, -50%);
+position: absolute;
+top: 50%;
+left: 10px;
+transform: translate(0, -50%);
 }
 
 .input:focus {
-  opacity: 1;
-  width: 250px;
+opacity: 1;
+width: 250px;
 }
 

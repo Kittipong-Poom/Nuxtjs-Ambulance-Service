@@ -57,7 +57,7 @@ body {
 }
 
 .my-chip {
-  width: 120px;
+  width: 150px;
   justify-content: center;
 }
 
@@ -123,4 +123,61 @@ body {
 .text-field-collapsed {
   transition: width 0.3s ease-in-out;
   width: 1px; /* ขนาดปกติ */
+}
+
+
+.button-location-urgents {
+  height: 50px;
+  width: 200px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+.button-location-urgents:hover {
+  box-shadow: .5px .5px 150px #252525;
+}
+
+.type1-urgents::after {
+  content: "กดเพื่อรับตำแหน่ง";
+  height: 50px;
+  width: 200px;
+  background-color: #ff0404;
+  color: #fff;
+  position: absolute;
+  transform: translateY(50px);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.type1-urgents::before {
+  height: 50px;
+  width: 200px;
+  background-color: #fff;
+  color: #ff0404;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  transform: translateY(0px) scale(1.2);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.type1-urgents:hover::after {
+  transform: translateY(0) scale(1.2);
+}
+
+.type1-urgents:hover::before {
+  transform: translateY(-50px) scale(0) rotate(120deg);
 }
