@@ -37,21 +37,23 @@
                 <i class="fas fa-ambulance"></i>ผู้ป่วยฉุกเฉิน
               </router-link>
             </li>
-            <li class="nav-item dropdown">
-              <router-link class="nav-link" :to="isLoggedIn ? '/Maps' : '/'" :class="{ 'disabled-link': !isLoggedIn }"
-                @click.prevent="!isLoggedIn && redirectToLogin">
-                <i class="fas fa-map"></i>แผนที่พิกัดรถฉุกเฉิน
+            <!-- <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/Maps' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
+                <i class="fas fa-location-crosshairs"></i>แผนที่พิกัดรถฉุกเฉิน
               </router-link>
-              <div class="dropdown-menu">
-                <router-link class="dropdown-item" :to="isLoggedIn ? '/MapsStaticAppointment' : '/'"
-                  :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
-                  แผนที่การนัดหมาย
-                </router-link>
-                <router-link class="dropdown-item" :to="isLoggedIn ? '/MapsStaticUrgent' : '/'"
-                  :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
-                  แผนที่ฉุกเฉิน
-                </router-link>
-              </div>
+            </li> -->
+            <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/MapsStaticAppointment' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
+                <i class="fas fa-map"></i>แผนที่การนัดหมาย
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="isLoggedIn ? '/MapsStaticUrgent' : '/'"
+                :class="{ 'disabled-link': !isLoggedIn }" @click.prevent="!isLoggedIn && redirectToLogin">
+                <i class="fas fa-location-dot"></i>แผนที่ฉุกเฉิน
+              </router-link>
             </li>
             <v-tooltip>
               <template v-slot:activator="{ on, attrs }">

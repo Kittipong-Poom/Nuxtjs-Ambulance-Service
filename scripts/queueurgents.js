@@ -14,10 +14,7 @@ export default {
       selected: [],
       search: "",
       isFocused: false,
-      endpointUrl:
-        process.env.NODE_ENV === "development"
-          ? process.env.API_URL_DEVELOPMENT
-          : process.env.API_URL_PRODUCTION,
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
       headers: [
         { text: "เลขออกเหตุ", value: "eventnum", align: "center" },
         { text: "วัน/เดือน/ปี", value: "service_date", align: "center" },

@@ -61,10 +61,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl:
-        process.env.NODE_ENV === "development"
-          ? process.env.API_URL_DEVELOPMENT
-          : process.env.API_URL_PRODUCTION,
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {

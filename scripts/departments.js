@@ -17,10 +17,7 @@ export default {
       emergencyCount: "",
       lastUpdateMonth: null,
       lastUpdateYear: null,
-      endpointUrl:
-        process.env.NODE_ENV === "development"
-          ? process.env.API_URL_DEVELOPMENT
-          : process.env.API_URL_PRODUCTION,
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
     };
   },
   methods: {

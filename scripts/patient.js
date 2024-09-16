@@ -26,10 +26,7 @@ export default {
       search: "",
       action: "",
       isAppointmentDialogOpen: false,
-      endpointUrl:
-        process.env.NODE_ENV === "development"
-          ? process.env.API_URL_DEVELOPMENT
-          : process.env.API_URL_PRODUCTION,
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
       headers: [
         { text: "HN", value: "hn", align: "center" },
         { text: "อายุ", value: "age_name", align: "center" },

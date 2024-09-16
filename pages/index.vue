@@ -1,7 +1,9 @@
 <template>
   <div class="login-page-container">
     <div class="login-page">
-      <h2 class="text-2xl font-bold">Ambulance Nanglae</h2>
+      <h2 class="text-2xl font-bold">Ambulance Service</h2>
+      <li><strong>ชื่อผู้ใช้งาน:</strong> testuser</li>
+      <li><strong>รหัสผ่าน:</strong> testpass</li>
       <form @submit.prevent="login">
         <div class="form-group">
           <label for="username">รหัสผู้ใช้งาน:</label>
