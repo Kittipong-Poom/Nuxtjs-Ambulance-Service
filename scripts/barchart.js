@@ -64,7 +64,7 @@ export default {
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT
-          : "https://ambulanceserver-uuhg.onrender.com",
+          : process.env.API_URL_PRODUCTION,
       loaded: false, // Define the loaded property
       currentYear: new Date().getFullYear() + 543,
       chartData: {
@@ -213,12 +213,7 @@ export default {
 
         const buddhistYear = year + 543; // แปลงกลับเป็นปีพุทธศักราชเพื่อแสดงผล
 
-        // console.log(
-        //   "Processed date:",
-        //   serviceDate,
-        //   "Buddhist Year:",
-        //   buddhistYear
-        // );
+
 
         // ตรวจสอบว่าปีพุทธศักราชเป็นปีปัจจุบันหรือไม่
         if (buddhistYear === currentBuddhistYear) {

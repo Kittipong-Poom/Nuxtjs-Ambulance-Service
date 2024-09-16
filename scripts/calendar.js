@@ -2,7 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 export default {
   data: () => ({
-    endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+    endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
     focus: "",
     type: "month",
     typeToLabel: {

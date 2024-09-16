@@ -29,7 +29,7 @@ export default {
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT
-          : "https://ambulanceserver-uuhg.onrender.com",
+          : process.env.API_URL_PRODUCTION,
       headers: [
         { text: "HN", value: "hn", align: "center" },
         { text: "อายุ", value: "age_name", align: "center" },
@@ -271,7 +271,6 @@ export default {
 
     async saveItem(editedItem) {
       try {
-        const token = localStorage.getItem("token");
         let response;
         const isAddNewPatient = !editedItem.hn_id;
         const isUpdatePatientInfo = editedItem.hn_id && !editedItem.time;
@@ -300,9 +299,6 @@ export default {
               service_date: null,
               time: null,
             });
-            headers: {
-              Authorization: `Bearer ${token}`; // ส่ง token ไปกับคำขอ
-            }
 
             console.log("response:", response);
 

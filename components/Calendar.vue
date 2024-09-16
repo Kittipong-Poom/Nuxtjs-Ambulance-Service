@@ -49,7 +49,7 @@
               </v-list-item>
             </v-list>
           </v-menu>
- 
+
           <!-- Button group for desktop -->
           <v-btn-group v-else>
             <v-btn :style="{ backgroundColor: type === 'month' ? '#1976D2' : '#2C3E50', color: '#ffffff' }"

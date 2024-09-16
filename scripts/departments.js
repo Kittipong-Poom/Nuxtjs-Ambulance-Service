@@ -20,7 +20,7 @@ export default {
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT
-          : "https://ambulanceserver-uuhg.onrender.com",
+          : process.env.API_URL_PRODUCTION,
     };
   },
   methods: {

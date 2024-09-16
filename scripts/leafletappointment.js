@@ -4,9 +4,11 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
       map: null,
-      markers: []
+      markers: [],
+      selectedYear: null, // Default no year selected
+      years: []
     };
   },
   mounted() {
@@ -33,10 +35,31 @@ export default {
     async fetchMarkers() {
       try {
         const response = await axios.get(this.endpointUrl + `/api/latlongappoint`);
-        console.log(response.data); // Log API response
-        this.createMarkers(response.data); // Pass the correct data format
+        const markerDataArray = response.data;
+
+        // Populate years based on the marker data using `service_date`
+        this.populateYears(markerDataArray);
+        
+        // If a year is selected, filter markers by the selected year
+        const filteredMarkers = this.selectedYear 
+          ? markerDataArray.filter(marker => new Date(marker.service_date).getFullYear() === this.selectedYear) 
+          : markerDataArray;
+
+        this.createMarkers(filteredMarkers);
       } catch (error) {
         console.error('Error fetching markers:', error);
+      }
+    },
+    populateYears(markerDataArray) {
+      const uniqueYears = new Set();
+      markerDataArray.forEach(marker => {
+        const eventYear = new Date(marker.service_date).getFullYear(); // Using `service_date` instead of `date`
+        uniqueYears.add(eventYear);
+      });
+
+      this.years = Array.from(uniqueYears).sort((a, b) => b - a); // Sort in descending order
+      if (!this.selectedYear && this.years.length > 0) {
+        this.selectedYear = this.years[0]; // Set default year as the most recent year
       }
     },
 
@@ -71,6 +94,9 @@ export default {
         let group = new L.featureGroup(this.markers);
         this.map.fitBounds(group.getBounds());
       }
+    },
+    onYearChange() {
+      this.fetchMarkers(); // Fetch markers when the selected year changes
     }
   }
 }

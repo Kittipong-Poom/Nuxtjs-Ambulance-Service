@@ -10,6 +10,7 @@ export default {
   data() {
     return {
       date: new Date().toISOString().substr(0, 10),
+      maxDate: new Date().toISOString().substr(0, 10),
       menu: false,
       formattedTime: dayjs().format('HH:mm'),
       timeMenu: false,

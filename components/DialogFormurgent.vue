@@ -20,7 +20,7 @@
                     <v-text-field v-model="formattedDate" label="วันที่เกิดเหตุ" outlined
                       prepend-inner-icon="mdi-calendar" readonly v-bind="attrs" v-on="on" clearable></v-text-field>
                   </template>
-                  <v-date-picker  v-model="date" show-adjacent-months no-title scrollable locale="th">
+                  <v-date-picker  v-model="date" show-adjacent-months no-title scrollable :max="maxDate" locale="th">
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       ยกเลิก

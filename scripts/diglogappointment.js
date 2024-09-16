@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : process.env.API_URL_PRODUCTION,
       menu: false,
       timeMenu: false, // Add this line
       hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')),
@@ -75,7 +75,7 @@ export default {
           lati: this.editedItem.lati,
           longi: this.editedItem.longi,
           number: this.editedItem.number,
-          address: this.editedItem.address,
+          address: this.editedItem.address, 
         };
 
         const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);

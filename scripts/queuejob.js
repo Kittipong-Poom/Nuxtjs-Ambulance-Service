@@ -13,10 +13,11 @@ export default {
       endpointUrl:
         process.env.NODE_ENV === "development"
           ? process.env.API_URL_DEVELOPMENT
-          : "https://ambulanceserver-uuhg.onrender.com",
+          : process.env.API_URL_PRODUCTION,
       headers: [
         { text: "HN", value: "hn", align: "center" },
         { text: "เบอร์โทรศัพท์", value: "number", align: "center" },
+
         { text: "ที่อยู่", value: "address", align: "center" },
         { text: "ละติจูด", value: "lati", align: "center" },
         { text: "ลองติจูด", value: "longi", align: "center" },

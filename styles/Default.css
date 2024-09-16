@@ -16,47 +16,12 @@ i {
   pointer-events: none;
   opacity: 0.6;
 }
-.dropdown {
-  position: relative;
-}
+
 /* สำหรับปิดไว้ตอนยังไม่ได้ login */
 .navbar-toggler.disabled {
   pointer-events: none;
   opacity: 0.5;
   cursor: not-allowed;
-}
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #5161ce;
-  border-radius: 5px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-}
-
-.dropdown-menu .dropdown-item {
-  color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-menu .dropdown-item:hover {
-  background-color: #4a54a3;
-}
-
-.nav-item:hover .dropdown-menu {
-  display: block;
-}
-
-/* Adjust dropdown styling on mobile */
-@media (max-width: 991px) {
-  .dropdown-menu {
-    position: static;
-    box-shadow: none;
-  }
 }
 
 
