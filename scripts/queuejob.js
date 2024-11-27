@@ -10,9 +10,10 @@ export default {
     return {
       isDialogVisible: false,
       isAppointmentDialogOpen: false,
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV == 'development' ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',
       headers: [
-        { text: "HN", value: "hn", align: "center" },
+        { text: "เลข-HN", value: "hn", align: "center" },
+        { text: "ชื่อ_นามสกุล", value: "fname_lname", align: "center" },
         { text: "เบอร์โทรศัพท์", value: "number", align: "center" },
 
         { text: "ที่อยู่", value: "address", align: "center" },
@@ -24,6 +25,7 @@ export default {
           align: "center",
         },
         { text: "เวลานัดหมาย", value: "time", align: "center" },
+        { text: "รายละเอียดเพิ่มเติม", value: "other", align: "center" },
         { text: "สถานะ", value: "status_case_id", align: "center" },
         { text: "", value: "action", sortable: false, align: "center" },
       ],
@@ -45,6 +47,7 @@ export default {
         number: "",
         time: "",
         address: "",
+        fname_lname: "",
         lati: "",
         longi: "",
         other: "",
@@ -104,8 +107,8 @@ export default {
             : this.filteredDesserts;
           const exportData = dataToExport.map((item) => {
             return {
-              appointment_id: item.id,
               HN: item.hn,
+              ชื่อ_นามสกุล: item.fname_lname,
               เบอร์โทรศัพท์: item.number,
               ที่อยู่: item.address,
               ละติจูด: item.lati,
@@ -113,6 +116,7 @@ export default {
               วันที่นัดหมาย: item.service_date,
               เวลา: item.time,
               สถานะ: item.status_case_id,
+              รายละเอียดเพิ่มเติม: item.other,
             };
           });
           const worksheet = XLSX.utils.json_to_sheet(exportData);

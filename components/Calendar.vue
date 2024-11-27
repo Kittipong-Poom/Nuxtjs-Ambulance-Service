@@ -76,18 +76,19 @@
         <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
           <v-card style="border-radius: 15px;" color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-toolbar-title v-html="selectedEvent.hn"></v-toolbar-title> <!-- เปลี่ยนเป็น HN -->
+              <v-toolbar-title>{{ selectedEvent.hn }} {{ selectedEvent.fname_lname }}</v-toolbar-title><!-- เปลี่ยนเป็น HN -->
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
-              <v-icon>mdi-map-marker</v-icon> <span v-html="selectedEvent.address"></span>
+              <v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.fname_lname"></span></strong>
+              <br><v-icon>mdi-map-marker</v-icon> <span v-html="selectedEvent.address"></span>
               <br><strong> <v-icon>mdi-clock-time-four-outline</v-icon> <span
                   v-html="selectedEvent.time"></span></strong>
               <br><v-icon>mdi-medical-bag</v-icon> <span v-html="selectedEvent.type"></span>
               <br><v-icon>mdi-ambulance</v-icon><strong> <span v-html="selectedEvent.trackpatient"></span></strong>
-              <br><v-icon>mdi-chat-processing</v-icon><strong> <span v-html="selectedEvent.other"></span></strong>
               <br><v-icon>mdi-map-marker</v-icon><strong> <span v-html="selectedEvent.lati"></span></strong>
               <br><v-icon>mdi-map-marker</v-icon><strong> <span v-html="selectedEvent.longi"></span></strong>
+              <br><v-icon>mdi-list-status</v-icon><strong> <span v-html="selectedEvent.status_case_id"></span></strong>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">

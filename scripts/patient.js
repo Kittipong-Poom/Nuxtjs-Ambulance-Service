@@ -1,9 +1,10 @@
-import DialogAppointment from "~/components/DialogAppointment.vue";
-import DialogForm from "~/components/DialogForm.vue";
-import History from "~/components/History.vue";
-import axios from "axios";
-import Swal from "sweetalert2";
-import dayjs from "dayjs";
+import DialogAppointment from "~/components/DialogAppointment.vue";  // นำเข้า DialogAppointment Component
+import DialogForm from "~/components/DialogForm.vue";  // นำเข้า DialogForm Component
+import History from "~/components/History.vue";  // นำเข้า History Component
+import axios from "axios";  // นำเข้า Axios สำหรับการทำ HTTP Requests
+import Swal from "sweetalert2";  // นำเข้า SweetAlert2 สำหรับการแสดงผลแจ้งเตือน
+import dayjs from "dayjs";  // นำเข้า dayjs สำหรับการจัดการกับวันที่
+
 export default {
   components: {
     DialogForm,
@@ -12,49 +13,45 @@ export default {
   },
   data() {
     return {
-      openHistoryCard: false,
-      selectedHN: null,
-      hn: "",
-      isHistoryDialogOpen: false,
-      newDate: "",
-      confirm: false,
-      confirmItem: null,
-      dialogVisible: false,
-      events: [],
-      selected: [], // selected items
-      selectedForDeletion: [], // items selected for deletion
-      search: "",
-      action: "",
-      isAppointmentDialogOpen: false,
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      openHistoryCard: false,  // ตัวแปรสำหรับการเปิดหรือปิดการแสดงข้อมูลประวัติ
+      selectedHN: null,  // ตัวแปรเก็บ HN ของผู้ป่วยที่เลือก
+      hn: "",  // ตัวแปรเก็บค่า HN
+      isHistoryDialogOpen: false,  // ตัวแปรสำหรับการเปิด/ปิด Dialog ประวัติ
+      newDate: "",  // ตัวแปรสำหรับเก็บวันที่ใหม่
+      confirm: false,  // ตัวแปรสำหรับการยืนยันการลบ
+      confirmItem: null,  // เก็บข้อมูลที่เลือกสำหรับลบ
+      dialogVisible: false,  // ตัวแปรสำหรับการแสดง Dialog
+      events: [],  // ตัวแปรเก็บข้อมูล events
+      selected: [],  // ตัวแปรเก็บรายการที่ถูกเลือก
+      selectedForDeletion: [],  // ตัวแปรเก็บรายการที่เลือกสำหรับการลบ
+      search: "",  // ตัวแปรเก็บข้อมูลการค้นหา
+      action: "",  // ตัวแปรเก็บการกระทำที่ต้องการทำ
+      isAppointmentDialogOpen: false,  // ตัวแปรสำหรับเปิด/ปิด Dialog นัดหมาย
+      endpointUrl: process.env.NODE_ENV === "development" ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',  // ตั้งค่า URL สำหรับ API
       headers: [
-        { text: "HN", value: "hn", align: "center" },
+        { text: "เลข-HN", value: "hn", align: "center" },
+        { text: "ชื่อ_นามสกุล", value: "fname_lname", align: "center" },
         { text: "อายุ", value: "age_name", align: "center" },
         { text: "เพศ", value: "gender", align: "center" },
         { text: "เบอร์โทรศัพท์", value: "number", align: "center" },
         { text: "ประเภทผู้ป่วย", value: "type_patient_name", align: "center" },
-        {
-          text: "การติดตามการนำส่งผู้ป่วย",
-          value: "tracking_name",
-          align: "center",
-        },
         { text: "ที่อยู่", value: "address", align: "center" },
         { text: "ละติจูด", value: "lati", align: "center" },
         { text: "ลองติจูด", value: "longi", align: "center" },
-        { text: "เพิ่มเติม", value: "other", align: "center" },
+        { text: "การติดตามการนำส่งผู้ป่วย", value: "tracking_name", align: "center" },
+        { text: "รายละเอียดเพิ่มเติม", value: "other", align: "center" },
         { text: "", value: "action", sortable: false, align: "center" },
       ],
-      //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
-      desserts: [],
-      items_status: [],
-      statusColorMap: {
+      desserts: [],  // ข้อมูลผู้ป่วย
+      items_status: [],  // ข้อมูลสถานะ
+      statusColorMap: {  // สีที่ใช้สำหรับแต่ละสถานะ
         งานบริการ: "green",
         ผู้ป่วยติดเตียง: "yellow",
         อื่นๆ: "blue",
       },
-      dialog: false,
-      dialogTitle: "",
-      editedItem: {
+      dialog: false,  // ตัวแปรเปิด/ปิด Dialog
+      dialogTitle: "",  // ชื่อของ Dialog
+      editedItem: {  // ข้อมูลที่แก้ไขใน Dialog
         hn: "",
         ages_id: "",
         gender: "",
@@ -65,17 +62,20 @@ export default {
         longi: "",
         type_patient_id: "",
         other: "",
+        fname_lname: "",
         service_date: null,
         time: null,
       },
     };
   },
   mounted() {
+    // เมื่อ Component ถูกสร้างแล้ว ให้โหลดข้อมูล
     console.log("ENV :", process.env.NODE_ENV, this.endpointUrl);
     this.loadData();
   },
   computed: {
     filteredDesserts() {
+      // ฟังก์ชันกรองข้อมูลที่จะแสดง
       if (!this.search) {
         return this.desserts;
       }
@@ -87,17 +87,16 @@ export default {
       });
     },
     formattedDate() {
-      // Parse the Thai date string and subtract 543 years to get the correct year
+      // ฟังก์ชันแปลงวันที่จากไทยเป็นแบบที่สามารถเก็บในฐานข้อมูลได้
       const thaiDate = dayjs(this.date, "DD-MM-YYYY");
-      // เพิ่ม 543 ปีเพื่อเปลี่ยนเป็นปีไทย
       const thaiYearDate = thaiDate.add(543, "year");
-      // กำหนดรูปแบบของวันที่ในรูปแบบ YYYY-MM-DD เพื่อให้สามารถจัดเก็บในฐานข้อมูลได้
       const formattedDate = thaiYearDate.format("YYYY-MM-DD");
       return formattedDate;
     },
   },
   methods: {
     openHistoryDialog(hn) {
+      // ฟังก์ชันเปิด Dialog ประวัติของผู้ป่วย
       if (this.isAppointmentDialogOpen || this.dialog) {
         this.isAppointmentDialogOpen = false;
         this.dialog = false;
@@ -110,6 +109,7 @@ export default {
     },
 
     async exportToExcel() {
+      // ฟังก์ชันสำหรับส่งออกข้อมูลไปยังไฟล์ Excel
       if (this.filteredDesserts.length === 0) {
         Swal.fire({
           icon: "warning",
@@ -127,8 +127,8 @@ export default {
 
           const exportData = dataToExport.map((item) => {
             return {
-              hn_id: item.hn_id,
-              HN: item.hn,
+              เลข_HN: item.hn,
+              ชื่อ_นามสกุล: item.fname_lname,
               อายุ: item.age_name,
               เพศ: item.gender,
               เบอร์โทรศัพท์: item.number,
@@ -137,7 +137,7 @@ export default {
               ที่อยู่: item.address,
               ละติจูด: item.lati,
               ลองติจูด: item.longi,
-              เพิ่มเติม: item.other,
+              รายละเอียดเพิ่มเติม: item.other,
             };
           });
 
@@ -149,24 +149,24 @@ export default {
         .catch(error => {
           console.error('Error importing xlsx:', error);
           Swal.fire({
-              icon: 'error',
-              title: 'เกิดข้อผิดพลาด',
-              text: 'ไม่สามารถส่งออกข้อมูลได้',
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถส่งออกข้อมูลได้',
           });
-      });
+        });
     },
     handleSelectedItemsChange(selectedItems) {
-      // Update selectedForDeletion array when items are selected/unselected
+      // ฟังก์ชันอัพเดตรายการที่ถูกเลือก
       this.selected = selectedItems;
     },
     async deleteSelectedItems() {
+      // ฟังก์ชันลบรายการที่เลือก
       if (this.selected.length === 0) {
-        // Show warning message if no item is selected
         Swal.fire("แจ้งเตือน", "กรุณาเลือกรายการที่ต้องการลบ", "warning");
-        return; // Exit the function if no item is selected
+        return;  // ออกจากฟังก์ชันหากไม่มีรายการที่เลือก
       }
 
-      // Perform deletion confirmation
+      // ฟังก์ชันยืนยันการลบ
       const result = await Swal.fire({
         title: "ยืนยันการลบ",
         text: "ถ้าลบแล้วไม่สามรถกู้คืนข้อมูลได้อีก",
@@ -177,10 +177,9 @@ export default {
         confirmButtonText: "แน่นอน ลบ!",
       });
 
-      // Proceed with deletion if confirmed
       if (result.isConfirmed) {
         try {
-          // Delete only the selected items
+          // ลบรายการที่เลือก
           await Promise.all(
             this.selected.map(async (item) => {
               await axios.delete(
@@ -192,24 +191,21 @@ export default {
             })
           );
 
-          // Remove the selected items from the desserts array
           this.desserts = this.desserts.filter(
             (dessert) => !this.selected.includes(dessert)
           );
 
-          // Clear the selected items array
           this.selected = [];
 
-          // Show deletion success message
           Swal.fire("ลบแล้ว!", "รายการที่เลือกได้ถูกลบแล้ว", "success");
         } catch (error) {
           console.error("เกิดข้อผิดพลาดในการลบรายการ:", error);
-          // Show error message if deletion fails
           Swal.fire("ข้อผิดพลาด", "ไม่สามารถลบรายการที่เลือกได้", "error");
         }
       }
     },
     closeDialog() {
+      // ฟังก์ชันปิด Dialog
       this.dialog = false;
       this.isAppointmentDialogOpen = false;
       this.isHistoryDialogOpen = false;
@@ -218,7 +214,7 @@ export default {
       this.dialogVisible = false;
     },
     async openAppointmentDialog(item) {
-      // Close other dialogs if open
+      // ฟังก์ชันเปิด Dialog นัดหมาย
       if (this.dialog || this.isHistoryDialogOpen) {
         this.dialog = false;
         this.isHistoryDialogOpen = false;
@@ -226,30 +222,32 @@ export default {
       // Fetch status data
       try {
         const { data } = await axios.get(this.endpointUrl + "/api/status");
-        this.items_status = data;
+        this.items_status = data; // เก็บข้อมูลสถานะที่ดึงมาจาก API
       } catch (error) {
-        console.error("Error fetching status data:", error);
+        console.error("Error fetching status data:", error); // ถ้ามีข้อผิดพลาดในการดึงข้อมูลสถานะ
       }
+
       // Set editedItem and dialogTitle based on item data
-      this.editedItem = { ...item }; // Clone the item to avoid direct mutation
+      this.editedItem = { ...item }; // คัดลอกข้อมูลจาก item มาเก็บใน editedItem เพื่อหลีกเลี่ยงการแก้ไขโดยตรง
       console.log(item);
       console.log(this.editedItem.age_name);
-      this.dialogTitle = "นัดหมายผู้ป่วย";
-      // Show the appointment dialog
+      this.dialogTitle = "นัดหมายผู้ป่วย"; // กำหนดชื่อหัวข้อของ dialog เป็น "นัดหมายผู้ป่วย"
+      // แสดง dialog สำหรับนัดหมายผู้ป่วย
       this.isAppointmentDialogOpen = true;
+
     },
     formatDateForMySQL(dateString) {
-      // Extract the date parts
+      // แปลงวันที่ให้เป็นรูปแบบที่ MySQL ใช้
       if (!dateString) {
-        return null; // Return an empty string if dateString is undefined or null
+        return null; // ถ้าไม่มีข้อมูลวันที่ ให้คืนค่า null
       }
       const datePart = dateString.split("-");
-      // Rearrange the date parts to match MySQL format (YYYY-MM-DD)
+      // แปลงวันที่ให้เป็นรูปแบบ MySQL (YYYY-MM-DD)
       const formattedDate = `${datePart[2]}-${datePart[1]}-${datePart[0]}`;
       return formattedDate;
     },
     getTypeColor(type) {
-      return this.statusColorMap[type] || "defaultColor";
+      return this.statusColorMap[type] || "defaultColor"; // คืนค่าสีตามประเภทสถานะ
     },
 
     openDialog(action, item = null) {
@@ -261,24 +259,25 @@ export default {
 
       // เปิด dialog ใหม่
       this.dialogTitle =
-        action === "add" ? "จัดการผู้ป่วยใหม่" : "แก้ไขข้อมูลผู้ป่วย";
-      this.editedItem = action === "add" ? {} : { ...item };
+        action === "add" ? "จัดการผู้ป่วยใหม่" : "แก้ไขข้อมูลผู้ป่วย"; // กำหนดชื่อหัวข้อ dialog ตามการกระทำ
+      this.editedItem = action === "add" ? {} : { ...item }; // กำหนดข้อมูลใน editedItem ขึ้นอยู่กับ action
       this.dialog = true;
     },
 
     async saveItem(editedItem) {
       try {
+        const token = localStorage.getItem("token"); // ดึง token จาก localStorage
         let response;
-        const isAddNewPatient = !editedItem.hn_id;
-        const isUpdatePatientInfo = editedItem.hn_id && !editedItem.time;
-        const isUpdateAppointment = editedItem.hn_id && editedItem.time;
+        const isAddNewPatient = !editedItem.hn_id; // ตรวจสอบว่าคือการเพิ่มผู้ป่วยใหม่
+        const isUpdatePatientInfo = editedItem.hn_id && !editedItem.time; // ตรวจสอบว่าคือการอัพเดทข้อมูลผู้ป่วย
+        const isUpdateAppointment = editedItem.hn_id && editedItem.time; // ตรวจสอบว่าคือการอัพเดทนัดหมาย
 
         console.log("isAddNewPatient:", isAddNewPatient);
         console.log("isUpdatePatientInfo:", isUpdatePatientInfo);
         console.log("isUpdateAppointment:", isUpdateAppointment);
 
         if (isAddNewPatient) {
-          // Add new patient
+          // ถ้าเป็นการเพิ่มผู้ป่วยใหม่
           console.log("Adding new patient", editedItem);
 
           try {
@@ -292,10 +291,14 @@ export default {
               lati: editedItem.lati,
               longi: editedItem.longi,
               type_patient_id: editedItem.type_patient_id,
+              fname_lname: editedItem.fname_lname,
               other: editedItem.other,
               service_date: null,
               time: null,
             });
+            headers: {
+              Authorization: `Bearer ${token}`; // ส่ง token ไปกับคำขอ
+            }
 
             console.log("response:", response);
 
@@ -315,7 +318,7 @@ export default {
             return;
           }
         } else if (isUpdateAppointment) {
-          // Update appointment
+          // ถ้าเป็นการอัพเดทนัดหมาย
           console.log("Updating appointment", editedItem);
 
           try {
@@ -350,7 +353,7 @@ export default {
             return;
           }
         } else if (isUpdatePatientInfo) {
-          // Update patient information
+          // ถ้าเป็นการอัพเดทข้อมูลผู้ป่วย
           console.log("Updating patient info", editedItem);
 
           try {
@@ -365,6 +368,7 @@ export default {
                 address: editedItem.address,
                 lati: editedItem.lati,
                 longi: editedItem.longi,
+                fname_lname: editedItem.fname_lname,
                 type_patient_id: editedItem.type_patient_id,
                 other: editedItem.other,
               }
@@ -399,20 +403,20 @@ export default {
 
         this.$nextTick(() => {
           if (isAddNewPatient) {
-            this.desserts.push(savedPatient);
+            this.desserts.push(savedPatient); // ถ้าเป็นการเพิ่มผู้ป่วยใหม่ ให้เพิ่มลงใน array
           } else {
             const index = this.desserts.findIndex(
               (item) => item.hn_id === savedPatient.hn_id
             );
-            this.$set(this.desserts, index, savedPatient);
+            this.$set(this.desserts, index, savedPatient); // ถ้าเป็นการอัพเดท ให้แทนที่ข้อมูลเก่า
           }
           this.closeDialog();
         });
-        this.desserts = await this.fetchDataFromServer();
+        this.desserts = await this.fetchDataFromServer(); // ดึงข้อมูลผู้ป่วยจาก server
       } catch (error) {
         console.error("Error saving item:", error.response || error);
 
-        // Show an error notification
+        // แสดงการแจ้งเตือนเมื่อมีข้อผิดพลาด
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -425,19 +429,19 @@ export default {
 
     async deleteItem(item) {
       this.confirmItem = item;
-      this.confirm = true;
+      this.confirm = true; // เปิด dialog การยืนยันการลบ
     },
     cancelDelete() {
-      // Reset the confirm dialog and clear the confirmItem
+      // รีเซ็ตการยืนยันการลบ
       this.confirm = false;
       this.confirmItem = null;
     },
     async submitDelete() {
-      // Check if there is a confirmed item for deletion
+      // ตรวจสอบว่ามี item ที่ถูกยืนยันการลบ
       if (this.confirmItem) {
         const item = this.confirmItem;
 
-        // Show a confirmation dialog using SweetAlert2
+        // แสดง dialog การยืนยันการลบ
         const result = await Swal.fire({
           title: "ยืนยันการลบ?",
           text: "เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้",
@@ -450,36 +454,39 @@ export default {
         });
 
         if (result.isConfirmed) {
-          // If the user confirms, proceed with the deletion
+          // ถ้าผู้ใช้ยืนยันการลบ
           try {
+            // ลบข้อมูลผู้ป่วยจาก API
             const response = await axios.delete(
               this.endpointUrl + `/api/patients/${item.hn_id}`
             );
+            // ลบข้อมูลการนัดหมายจาก API
             await axios.delete(
               this.endpointUrl + `/api/appointments/${item.hn}`
             );
+
             if (response.status === 200) {
-              // Remove the deleted patient from the local state
+              // ถ้าลบข้อมูลสำเร็จ ลบข้อมูลออกจาก array ใน local
               this.desserts = this.desserts.filter((p) => p.hn !== item.hn);
-              // Show success notification
+              // แสดงการแจ้งเตือนการลบสำเร็จ
               Swal.fire({
                 icon: "success",
                 title: "ลบข้อมูลสำเร็จ",
               });
               console.warn("This data delete already");
             } else {
-              // Show an error notification
+              // ถ้ามีข้อผิดพลาดในการลบแสดงการแจ้งเตือน
               Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: "เกิดข้อผิดพลาดในการลบข้อมูล",
               });
             }
+            // โหลดข้อมูลจากเซิร์ฟเวอร์ใหม่หลังการลบ
             this.desserts = await this.fetchDataFromServer();
           } catch (error) {
             console.error("Error deleting item:", error);
-
-            // Show an error notification
+            // แสดงการแจ้งเตือนหากเกิดข้อผิดพลาดในการลบ
             Swal.fire({
               icon: "error",
               title: "Error",
@@ -487,7 +494,7 @@ export default {
             });
           }
 
-          // Reset the confirm dialog and clear the confirmItem
+          // รีเซ็ตการแสดงผลยืนยันการลบ
           this.confirm = false;
           this.confirmItem = null;
         }
@@ -495,25 +502,29 @@ export default {
     },
     async loadData() {
       try {
+        // ดึงข้อมูลผู้ป่วยจากเซิร์ฟเวอร์
         const { data } = await axios.get(
           this.endpointUrl + "/api/patients",
           {}
         );
         console.log("This data Patient", data);
+        // ส่งข้อมูลที่ดึงได้ไปยัง parent component
         this.$emit("data-loaded", data);
+        // เก็บข้อมูลผู้ป่วยใน state
         this.desserts = data;
       } catch (error) {
+        // แสดงข้อผิดพลาดถ้าไม่สามารถดึงข้อมูลได้
         console.error("Error loading data:", error);
       }
     },
     async fetchDataFromServer() {
       try {
+        // ดึงข้อมูลผู้ป่วยจากเซิร์ฟเวอร์
         const { data } = await axios.get(this.endpointUrl + "/api/patients");
-
-        return data;
+        return data; // ส่งข้อมูลกลับ
       } catch (error) {
         console.error("Error fetching data from server:", error);
-        throw error; // Propagate the error to the caller
+        throw error; // หากเกิดข้อผิดพลาดให้ propagate error
       }
     },
   },

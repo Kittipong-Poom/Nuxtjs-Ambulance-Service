@@ -7,6 +7,10 @@
       <form @submit.prevent="save">
         <v-card-text>
           <v-text-field v-model="editedItem.hn" disabled outlined label="HN (Hospital Number)*"></v-text-field>
+
+          <!-- ชื่อ_นามสกุล -->
+          <v-text-field v-model="editedItem.fname_lname" prepend-inner-icon="mdi-account-box" label="ชื่อ_นามสกุล"
+            outlined clearable></v-text-field>
           <!-- วันที่ -->
           <v-row>
             <v-col cols="12" md="6">
@@ -58,7 +62,11 @@
 
           <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
-            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
+            :items="['รอรับงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
+
+          <!-- กรอกรายระเอียดเพิ่มเติม -->
+          <v-text-field v-model="editedItem.other" prepend-inner-icon="mdi-information" label="กรอกรายละเอียดเพิ่มเติม"
+            outlined clearable></v-text-field>
           <!-- บันทึก -->
           <v-card-actions>
             <v-btn color="green" class="white--text button pa-6" @click="save">บันทึก</v-btn>

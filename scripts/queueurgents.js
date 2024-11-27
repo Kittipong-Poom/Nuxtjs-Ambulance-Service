@@ -14,7 +14,7 @@ export default {
       selected: [],
       search: "",
       isFocused: false,
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV == 'development' ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',
       headers: [
         { text: "เลขออกเหตุ", value: "eventnum", align: "center" },
         { text: "วัน/เดือน/ปี", value: "service_date", align: "center" },
@@ -40,6 +40,7 @@ export default {
           value: "patient_delivery",
           align: "center",
         },
+        { text: "รายละเอียดเพิ่มเติม", value: "other", align: "center" },
         { text: "", value: "action", sortable: false, align: "center" },
       ],
       //พิกัดจะให้กดคลิกแล้วให้เป็นหน้า map
@@ -64,6 +65,7 @@ export default {
         lati: "",
         longi: "",
         patient_delivery: "",
+        other: "",
       },
     };
   },
@@ -199,6 +201,7 @@ export default {
           ละติจูด: item.lati,
           ลองติจูด: item.longi,
           การติดตามการนำส่งผู้ป่วย: item.patient_delivery,
+          รายละเอียดเพิ่มเติม: item.other,
         }));
 
         console.log("Export data formatted:", exportData);

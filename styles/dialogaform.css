@@ -19,7 +19,9 @@ transition: all 0.25s ease-out;
 .button:hover {
 transform: translateY(-3px);
 }
-
+#map {
+margin-top: 20px;
+}
 .button-cancel {
 padding: 15px 20px;
 border: none;

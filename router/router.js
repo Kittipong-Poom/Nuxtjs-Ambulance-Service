@@ -22,5 +22,19 @@ export default new Router({
     { path: "/MapsStaticAppointment", component: MapsStaticAppointment },
     { path: "/MapsStaticUrgent", component: MapsStaticUrgent },
     { path: "/", name: "Index", component: index },
+    {
+      path: '/Adminpage',
+      name: 'Adminpage',
+      component: Adminpage,
+      beforeEnter: (to, from, next) => {
+        // เช็คว่าใน localStorage มีข้อมูลของ Adminuser หรือไม่
+        const Adminuser = localStorage.getItem('Adminuser');
+        if (Adminuser) {
+          next(); // ถ้าเป็น Admin ให้ไปต่อที่หน้า Admin
+        } else {
+          next('/Dashboard'); // ถ้าไม่ใช่ Admin ให้เปลี่ยนเส้นทางไปหน้าอื่น
+        }
+      },
+    },
   ],
 });

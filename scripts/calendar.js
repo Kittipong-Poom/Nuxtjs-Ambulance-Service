@@ -2,7 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 export default {
   data: () => ({
-    endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+    endpointUrl: process.env.NODE_ENV == 'development' ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',
     focus: "",
     type: "month",
     typeToLabel: {
@@ -115,7 +115,7 @@ export default {
 
                 'ยกเลิก': '#e0e0e0',  // Purple
                 'เสร็จสิ้น': '#4caf50',  // Green
-                'กำลังดำเนินงาน': '#ffeb3b',  // Yellow
+                // 'กำลังดำเนินงาน': '#ffeb3b',  // Yellow
                 'รอรับงาน': '#f44336',  // Red
               };
               // Default color if status not found
@@ -128,12 +128,13 @@ export default {
                 address: `ที่อยู่ : ${appointment.address}`,
                 lati: `ละติจูด : ${appointment.lati}`,
                 longi: `ลองติจูด : ${appointment.longi}`,
+                status_case_id: `สถานะ : ${appointment.status_case_id}`,
                 time: `เวลา : ${formattedTime}`,
                 type: `ประเภทผู้ป่วย : ${patient.type_patient_name || 'N/A'}`,
                 trackpatient: `การติดตามการนำส่งผู้ป่วย : ${patient.tracking_name || 'N/A'}`,
-                other: `เพิ่มเติม : ${patient.other || 'N/A'}`,
+                fname_lname: `ชื่อ-สกุล : ${patient.fname_lname || 'N/A'}`,
                 class: appointment.status_case_id === 'ยกเลิก' ? 'cancelled-event' : '',
-                hn: appointment.status_case_id === 'ยกเลิก' ? `<s>${appointment.hn}</s>` : appointment.hn,  // ขีดฆ่า HN ถ้าเคสถูกยกเลิก
+                hn: appointment.status_case_id === 'ยกเลิก' ? `<s>${appointment.hn}</s>` : appointment.hn, // ขีดฆ่า HN ถ้าเคสถูกยกเลิก
               };
               this.events.push(event);
             }

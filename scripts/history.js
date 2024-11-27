@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       localDialog: this.dialog,
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV == 'development' ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',
       appointments: [],
       currentPage: 1,
       itemsPerPage: 4,

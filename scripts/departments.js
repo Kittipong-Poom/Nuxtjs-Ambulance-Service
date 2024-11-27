@@ -17,7 +17,7 @@ export default {
       emergencyCount: "",
       lastUpdateMonth: null,
       lastUpdateYear: null,
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV == 'development' ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',
     };
   },
   methods: {

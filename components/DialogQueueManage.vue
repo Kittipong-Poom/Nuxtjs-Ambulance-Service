@@ -7,6 +7,9 @@
       <form @submit.prevent="save">
         <v-card-text>
           <v-text-field v-model="editedItem.hn" disabled outlined label="HN (Hospital Number)*"></v-text-field>
+          <!-- ชื่อ_นามสกุล -->
+          <v-text-field v-model="editedItem.fname_lname" prepend-inner-icon="mdi-information" label="ชื่อ_นามสกุล"
+          outlined clearable></v-text-field>
           <!-- วันที่ -->
           <v-row>
             <v-col cols="12" md="6">
@@ -57,13 +60,42 @@
                 label="ลองจิจูด*" outlined ref="longi" clearable></v-text-field>
             </v-col>
           </v-row>
-          <v-btn class="button-location-queue type1-queue mb-5" color="#63EE6C" @click="getCurrentLocation"
-            :loading="loading">ตำแหน่งล่าสุดของคุณ
-          </v-btn>
+          <v-row class="ml-3 mb-3">
+            
+            <v-btn class="button-location-queue type1-queue mb-5" color="#63EE6C" @click="getCurrentLocation"
+              :loading="loading">ตำแหน่งล่าสุดของคุณ
+            </v-btn>
+            <v-btn class="ml-5" color="#FFCA28" @click="mapDialog = true">เปิดแผนที่</v-btn>
+            
+          </v-row>
+
+          <v-dialog v-model="mapDialog" max-width="800px" @click:outside="closeMapDialog">
+            <v-card>
+              <v-card-title>
+                <div class=" align-center justify-space-between w-100 text-center">
+                  <span class="text-h5">เลือกตำแหน่งบนแผนที่</span>
+                  <v-text-field v-model="searchQuery" placeholder="ค้นหาสถานที่" prepend-inner-icon="mdi-magnify" outlined dense hide-details
+                    @keyup.enter="searchLocation">
+                  </v-text-field>
+                </div>
+              </v-card-title>
+              <v-card-text>
+                <div id="map" style="height: 400px; border-radius: 25px;"></div>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green" class="white--text" @click="saveLocation">บันทึก</v-btn>
+                <v-btn text color="red" class="white--text" @click="closeMapDialog">ยกเลิก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
           <!-- สถานะ -->
           <v-select v-model="editedItem.status_case_id" prepend-inner-icon="mdi-list-status" outlined label="สถานะ"
-            :items="['รอรับงาน', 'กำลังดำเนินงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
+            :items="['รอรับงาน', 'เสร็จสิ้น', 'ยกเลิก']" clearable></v-select>
+
+            <v-text-field v-model="editedItem.other" prepend-inner-icon="mdi-information" label="กรอกรายละเอียดเพิ่มเติม"
+            outlined clearable></v-text-field>
           <!-- บันทึก -->
           <v-card-actions>
             <v-btn color="green" class="white--text button pa-6" @click="save">บันทึก</v-btn>

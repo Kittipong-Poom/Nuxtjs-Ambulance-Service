@@ -1,6 +1,7 @@
 export default {
   data() {
     return {
+      isLoggedIn: !!localStorage.getItem("user"),
       isNavbarOpen: false,
       navItems: [
         { title: 'Dashboard', link: '/Dashboard', icon: 'mdi-view-dashboard' },
@@ -33,11 +34,10 @@ export default {
 
   methods: {
     logout() {
-      localStorage.removeItem("user"); // ลบข้อมูลผู้ใช้จาก localStorage
-      this.$router.push("/"); // นำทางไปยังหน้า login
-      setTimeout(() => {
-        location.reload();
-      }, 300);
+      localStorage.removeItem("user"); // ลบข้อมูลผู้ใช้
+      this.isLoggedIn = false; // อัปเดตสถานะ
+      this.isNavbarOpen = false; // ปิด Navbar
+      this.$router.push("/"); // นำทางไปหน้า Login
     },
     redirectToLogin() {
       this.$router.push("/");
@@ -112,5 +112,8 @@ export default {
   },
   mounted() {
     this.initNavbar();
+    if (!this.isLoggedIn) {
+      this.$router.push("/"); // ถ้าไม่ได้ล็อกอินให้กลับไปหน้า Login
+    }
   },
 };

@@ -22,10 +22,12 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/ambulancecar.ico' },
       { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.8.12/tailwind-experimental.min.css'}
+      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.8.12/tailwind-experimental.min.css'},
+      { rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.css'},
     ],
     script: [
       { src: 'https://code.jquery.com/jquery-3.4.1.min.js', body: true },
+      { src: 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.js', body: true },
     ]
   },
 

@@ -3,11 +3,45 @@
   position: relative;
   z-index: 1;
 }
+.filter-container {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9; /* พื้นหลังจาง ๆ */
+  padding: 10px 20px;
+  border: 1px solid #ddd; /* ขอบบาง ๆ */
+  border-radius: 10px; /* ขอบโค้งมน */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* เงาเล็ก ๆ */
+}
+
+.filter-label {
+  font-size: 18px; /* ขนาดตัวอักษรใหญ่ขึ้นเล็กน้อย */
+  font-weight: bold; /* ทำตัวหนา */
+  color: #333; /* สีข้อความ */
+  margin-right: 10px; /* เพิ่มช่องว่างระหว่างข้อความกับ select */
+}
+
 .custom-select {
-  width: 80px; 
-  height: 30px; 
-  background-color: #f9f9f9; 
-  color: #333; 
-  padding: 2px; 
-  font-size: 16px; 
+  width: 120px;
+  height: 35px;
+  background-color: #ffffff; /* สีพื้นหลัง */
+  color: #333; /* สีข้อความ */
+  padding: 5px 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer; /* เปลี่ยนเมาส์เป็น pointer */
+}
+
+.custom-select:hover {
+  background-color: #f0f8ff;
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }

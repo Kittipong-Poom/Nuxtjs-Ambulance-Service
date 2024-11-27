@@ -8,6 +8,7 @@ export default {
       type: Object,
       default: () => ({
         service_date: '',
+        fname_lname: '',
         time: '',
         lati: '',
         longi: '',
@@ -15,13 +16,14 @@ export default {
         hn: '',
         number: '',
         address: '',
+        other: '',
       }),
     },
     dialogTitle: String,
   },
   data() {
     return {
-      endpointUrl: process.env.NODE_ENV === 'development' ? process.env.API_URL_DEVELOPMENT : "https://ambulanceserver-uuhg.onrender.com",
+      endpointUrl: process.env.NODE_ENV == 'development' ? process.env.API_URL_DEVELOPMENT : 'https://server-nuxtjs-ambulance.onrender.com',
       menu: false,
       timeMenu: false, // Add this line
       hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')),
@@ -69,6 +71,7 @@ export default {
         const buddhistDate = gregorianDate.year(buddhistYear).format('YYYY-MM-DD');
         const postData = {
           service_date: buddhistDate,
+          fname_lname: this.editedItem.fname_lname,
           time: this.editedItem.time,
           hn: this.editedItem.hn,
           status_case_id: this.editedItem.status_case_id,
@@ -76,6 +79,7 @@ export default {
           longi: this.editedItem.longi,
           number: this.editedItem.number,
           address: this.editedItem.address, 
+          other: this.editedItem.other,
         };
 
         const response = await axios.post(`${this.endpointUrl}/api/appointments`, postData);
